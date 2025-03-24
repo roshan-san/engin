@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { Users, Rocket, Lightbulb, Network, Users2, ArrowRight } from "lucide-react";
+import { Users, Rocket, Lightbulb, Network, Users2 } from "lucide-react";
 import { Card, CardContent, CardHeader, } from './ui/card';
 import { Badge } from './ui/badge';
 import { motion } from 'framer-motion';
@@ -83,7 +83,7 @@ export default function Features() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
       >
-        {features.map((feature, index) => (
+        {features.map((feature) => (
           <motion.div key={feature.title} variants={itemVariants}>
             <Card className="h-full border overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-primary/50 hover:translate-y-2 group">
               <CardHeader className="pb-2">
