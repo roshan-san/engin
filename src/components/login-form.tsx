@@ -1,5 +1,5 @@
 "use client";
-import { LogOut, Github, Mail } from "lucide-react";
+import { Github, } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
