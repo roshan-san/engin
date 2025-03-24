@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { ThemeToggle } from "./theme-toggle";
 
 export default function Header() {

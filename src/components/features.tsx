@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React from 'react';
 import { Users, Rocket, Lightbulb, Network, Users2 } from "lucide-react";
 import { Card, CardContent, CardHeader } from './ui/card';
 
