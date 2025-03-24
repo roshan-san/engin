@@ -14,11 +14,8 @@ const Hero = () => {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] w-full flex items-center justify-center overflow-hidden border-b border-accent">
-      <div className="max-w-screen-xl w-full flex flex-col lg:flex-row mx-auto items-center justify-between gap-y-14 gap-x-10 px-6 py-12 lg:py-0">
+      <div className="max-w-screen-xl w-full flex flex-col lg:flex-row mx-auto items-center justify-between gap-y-8 gap-x-10 px-6 py-6 lg:py-0">
         <div className="max-w-xl">
-          <Badge className="rounded-full py-1 border-none">
-            Just released v1.0.0
-          </Badge>
           <h1 className="mt-6 max-w-[20ch] text-3xl xs:text-4xl sm:text-5xl lg:text-[2.75rem] xl:text-5xl font-bold !leading-[1.2] bg-gradient-to-r from-gray-400 to-gray-200 text-transparent bg-clip-text tracking-tight">
             Got an idea? Launch your startup today!
           </h1>
@@ -36,7 +33,7 @@ const Hero = () => {
             </Button>
           </div>
         </div>
-        <div className="relative lg:max-w-lg xl:max-w-xl w-full bg-accent rounded-xl aspect-square">
+        <div className="w-full lg:w-auto max-w-md bg-background shadow-md rounded-xl border border-border">
           <LoginForm />
         </div>
       </div>
