@@ -13,7 +13,6 @@ export default function Onboarding() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [isRegistered, setIsRegistered] = useState(false);
   const totalSteps = 5;
   const [userData, setUserData] = useState({
     type: "",
@@ -43,8 +42,8 @@ export default function Onboarding() {
     try {
       await signIn(provider);
       toast.success("Logged in!");
-    } catch (error) {
-      toast.error("Login failed");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : String(e));
     }
   };
 
@@ -59,7 +58,6 @@ export default function Onboarding() {
   const handleFinish = () => {
     toast.success("Onboarding complete!");
     localStorage.setItem("isRegistered", "true"); 
-    setIsRegistered(true);
     router.push("/dashboard");
   };
 
