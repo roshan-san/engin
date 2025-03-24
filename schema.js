@@ -31,8 +31,8 @@ location : string ,//location of the user,  will get it when onboarding
 skills : [string,string,string],//array of skills of the user , will get it when onboarding
 areasofinterest : [string,string,string],//array of areas of interest of the user , will get it when onboarding
 experience: string ,//experience of the user , will get it when onboarding
-connections: [username,username,....],//array of connections of the user , will be updated when user connects with another user
-pendingrequests :[username,username,....],//array of pending requests to connect with the user , will be updated when user gets a request
+connections: [username,username,],//array of connections of the user , will be updated when user connects with another user
+pendingrequests :[username,username,],//array of pending requests to connect with the user , will be updated when user gets a request
 availablefor: string ,//(fulltime,parttime,contract), will get it when onboarding ,should be automatically updated if hired by founder
 linkedin: string,//linkedin profile of the user,  will get it when onboarding
 github: string,//github profile of the user,  will get it when onboarding
