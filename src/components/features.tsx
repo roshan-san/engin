@@ -1,63 +1,111 @@
-"use client"
+"use client";
 import React from 'react';
-import { Users, Rocket, Lightbulb, Network, Users2 } from "lucide-react";
-import { Card, CardContent, CardHeader } from './ui/card';
+import { Users, Rocket, Lightbulb, Network, Users2, ArrowRight } from "lucide-react";
+import { Card, CardContent, CardHeader, CardFooter } from './ui/card';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { motion } from 'framer-motion';
 
 const features = [
   {
-    title: "Expert guidance for your journey",
+    title: "Expert Guidance",
+    tagline: "Learn from the best",
     details: "Connect with experienced industry leaders who guide you through your startup journey.",
-    icon: Users
+    icon: Users,
+    color: "bg-blue-500/10 text-blue-500"
   },
   {
-    title: "Fuel your startup's growth",
+    title: "Investment Access",
+    tagline: "Fuel your growth",
     details: "Access a network of investors ready to fuel your startup's growth and success.",
-    icon: Rocket
+    icon: Rocket,
+    color: "bg-green-500/10 text-green-500"
   },
   {
-    title: "Transform ideas into ventures",
-    details: "Transform your groundbreaking ideas into successful business ventures.",
-    icon: Lightbulb
+    title: "Idea Realization",
+    tagline: "From concept to company",
+    details: "Transform your groundbreaking ideas into successful business ventures with structured guidance.",
+    icon: Lightbulb,
+    color: "bg-yellow-500/10 text-yellow-500"
   },
   {
-    title: "Build valuable connections",
-    details: "Build valuable connections within our thriving startup ecosystem.",
-    icon: Network
+    title: "Networking",
+    tagline: "Build valuable connections",
+    details: "Connect within our thriving startup ecosystem of founders, mentors, and industry experts.",
+    icon: Network,
+    color: "bg-purple-500/10 text-purple-500"
   },
   {
-    title: "Create something extraordinary",
-    details: "Partner with like-minded innovators to create something extraordinary.",
-    icon: Users2
+    title: "Collaboration",
+    tagline: "Create together",
+    details: "Partner with like-minded innovators to create something extraordinary and disruptive.",
+    icon: Users2,
+    color: "bg-red-500/10 text-red-500"
   }
 ];
 
 export default function Features() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.5 }
+    }
+  };
+
   return (
-    <div
+    <section
       id="features"
-      className="max-w-screen-xl mx-auto w-full py-12 xs:py-20 px-6"
+      className="max-w-screen-xl mx-auto w-full py-16 px-6"
     >
-      <div className="mt-8 xs:mt-14 w-full mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-12">
-        {features.map((feature) => (
-          <Card
-            key={feature.title}
-            className="flex flex-col border rounded-xl overflow-hidden shadow-none"
-          >
-            <CardHeader>
-              <feature.icon />
-              <h4 className="!mt-3 text-xl font-bold tracking-tight">
-                {feature.title}
-              </h4>
-              <p className="mt-1 text-muted-foreground text-sm xs:text-[17px]">
-                {feature.details}
-              </p>
-            </CardHeader>
-            <CardContent className="mt-auto px-0 pb-0">
-              <div className="bg-muted h-52 ml-6 rounded-tl-xl" />
-            </CardContent>
-          </Card>
-        ))}
+      <div className="text-center mb-12">
+        <Badge className="mb-3">Features</Badge>
+        <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">Everything you need to succeed</h2>
+        <p className="text-muted-foreground max-w-2xl mx-auto">
+          We provide all the tools and connections you need to turn your vision into reality.
+        </p>
       </div>
-    </div>
+
+      <motion.div 
+        className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+      >
+        {features.map((feature, index) => (
+          <motion.div key={feature.title} variants={itemVariants}>
+            <Card className="h-full border overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-primary/50 hover:translate-y-2 group">
+              <CardHeader className="pb-2">
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${feature.color} group-hover:scale-110 transition-transform`}>
+                  <feature.icon className="h-6 w-6" />
+                </div>
+                <Badge variant="outline" className="mb-2">{feature.tagline}</Badge>
+                <h3 className="text-xl font-bold tracking-tight group-hover:text-primary transition-colors">
+                  {feature.title}
+                </h3>
+              </CardHeader>
+              
+              <CardContent>
+                <p className="text-muted-foreground">
+                  {feature.details}
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </motion.div>
+    </section>
   );
 }
