@@ -21,30 +21,38 @@ investors : [profileid,profileid,profileid],//same as above , but for investors
 
 }
 user={
-username: string ,//username of the user , will get it when onboarding
+    
 avatar: string ,//link to profilephoto , will get it from oauth provider (google,github)
 name : string ,//name of the user , will get it from oauth provider (google,github)
-description: string ,//description of the user , will get it when onboarding
 email : string ,//email of the user , will get it from oauth provider (google,github)
-type : string ,//type of the user (creator,collabtr,investor), will get it when onboarding
-location : string ,//location of the user,  will get it when onboarding
+
+type : string ,//type of the user (mentor, creator/collaborator, investor), will get it when onboarding
+
+username: string ,//username of the user , will get it when onboarding
+bio: string ,//description of the user , will get it when onboarding
+
 skills : [string,string,string],//array of skills of the user , will get it when onboarding
 areasofinterest : [string,string,string],//array of areas of interest of the user , will get it when onboarding
 experience: string ,//experience of the user , will get it when onboarding
-connections: [username,username,],//array of connections of the user , will be updated when user connects with another user
-pendingrequests :[username,username,],//array of pending requests to connect with the user , will be updated when user gets a request
+
+location : string ,//location of the user,  will get it when onboarding
 availablefor: string ,//(fulltime,parttime,contract), will get it when onboarding ,should be automatically updated if hired by founder
+
 linkedin: string,//linkedin profile of the user,  will get it when onboarding
 github: string,//github profile of the user,  will get it when onboarding
-appliedstartups : [startupid,startupid,startupid],//array of startups that the user has applied to , will be updated when user applies to a startup
-current : startupid,//current startup that the user is working with , will be updated when user is hired by founder
-currentrole : string,//role of the user in the current startup , will be updated when user is hired by founder
 
+connections: [username,username,],//array of connections of the user , will be updated when user connects with another user
+pendingrequests :[username,username,],//array of pending requests to connect with the user , will be updated when user gets a request
+appliedstartups : [startupid,startupid,startupid],//array of startups that the user has applied to , will be updated when user applies to a startup
+instartups : [startupid,startupid],//current startup that the user is working with , will be updated when user is hired by founder
+role:[]
 }
 role={
     name : string ,//name of the role
     requirements : string ,//requirements of the role
+    description : string ,//description of the role
+    skills: [string,string,string],//skills required for the role
+    experience: string ,//experience required for the role
     equity: int ,//equity offered by the startup for this role
     type : string ,//type of the role (fulltime,parttime,contract)
-
 }

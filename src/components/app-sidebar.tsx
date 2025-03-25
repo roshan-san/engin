@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Laptop, Search, Users } from "lucide-react"
+import { DollarSignIcon, Laptop, MessageCircle, Search, Users } from "lucide-react"
 
 import {
   Sidebar,
@@ -22,6 +22,8 @@ const items = [
   { title: "Dashboard", url: "/", icon: Laptop },
   { title: "Explore Startups", url: "/explore", icon: Search },
   { title: "Connections", url: "/connections", icon: Users },
+  { title: "Messaging", url: "/message", icon: MessageCircle },
+  { title: "Funding", url: "/funding", icon: DollarSignIcon },
 ]
 
 export function AppSidebar() {

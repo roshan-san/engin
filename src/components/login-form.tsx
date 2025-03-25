@@ -1,5 +1,5 @@
 "use client";
-import { Github, } from "lucide-react";
+import { Github } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -79,7 +79,7 @@ export default function Onboarding() {
         <Progress value={(step / totalSteps) * 100} className="mt-2" />
       </CardHeader>
       <CardContent className="p-4">
-        {step === 1 ? (
+        {step === 1 && status !== "authenticated" ? (
           <div className="space-y-3 text-center">
             <p className="text-sm">Log in to continue your onboarding.</p>
             <Button variant="outline" className="w-full" onClick={() => handleLogin("github")}>
@@ -95,7 +95,7 @@ export default function Onboarding() {
         ) : (
           <div>
             {step === 2 && (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div className="flex items-center gap-3">
                   {session?.user?.image && (
                     <img
@@ -104,7 +104,7 @@ export default function Onboarding() {
                       className="w-10 h-10 rounded-full"
                     />
                   )}
-                  <p className="text-sm font-medium">What describes you best?</p>
+                  <p className="text-xl">What describes you best?</p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-2">

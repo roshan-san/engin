@@ -2,10 +2,9 @@
 
 import { useSession, signOut } from "next-auth/react";
 import {
-  BadgeCheck,
-  Bell,
   ChevronsUpDown,
   LogOut,
+  PersonStanding,
   Sparkles,
 } from "lucide-react";
 import {
@@ -87,12 +86,8 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
+                <PersonStanding />
+                Edit Profile
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
