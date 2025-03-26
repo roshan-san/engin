@@ -8,7 +8,7 @@ export default function layout({children}:{ children:React.ReactNode}) {
     <AppSidebar />
     
     <main>
-      <SidebarTrigger className="md:hidden"/>
+      <SidebarTrigger className="md:hidden" />
       {children}
       </main>
     </SidebarProvider>
