@@ -18,18 +18,19 @@ interface Message {
 const sampleMessages: Message[] = [
   {
     id: 1,
-    name: "Alex Johnson",
-    lastMessage: "Thanks for connecting about the AI project!",
+    name: "person 1",
+    lastMessage: "kkk",
     timestamp: "2m ago",
     unread: 2,
-    avatar: "/path/to/avatar"
+    avatar: ""
   },
   {
     id: 2,
-    name: "Samantha Lee",
-    lastMessage: "Let's discuss the collaboration details.",
+    name: "person 2",
+    lastMessage: "ohhh",
     timestamp: "1h ago",
-    unread: 1
+    unread: 1,
+    avatar: ""
   }
 ];
 
@@ -49,7 +50,6 @@ export default function MessagesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Conversations List */}
         <div className="border rounded-lg">
           <div className="p-4 border-b relative">
             <Search className="absolute left-7 top-7 h-4 w-4 text-gray-500" />
@@ -90,7 +90,6 @@ export default function MessagesPage() {
           ))}
         </div>
 
-        {/* Chat Window */}
         <div className="md:col-span-2 border rounded-lg flex flex-col">
           {selectedChat ? (
             <>
@@ -102,7 +101,6 @@ export default function MessagesPage() {
                 <h3 className="font-semibold">{selectedChat.name}</h3>
               </div>
               <div className="flex-1 p-4 overflow-y-auto">
-                {/* Placeholder for chat messages */}
                 <div className="text-center text-muted-foreground">
                   No messages yet. Start the conversation!
                 </div>

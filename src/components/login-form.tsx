@@ -9,9 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { User } from "@/types/types";
 import axios, { AxiosError } from "axios";
-import { Session } from "next-auth";
 
 export default function Onboarding() {
   const { data: session } = useSession();
@@ -26,7 +24,6 @@ export default function Onboarding() {
     try {
       await signIn(provider);
       toast.success("Logged in!");
-
       const response = await axios.post(
         "http://localhost:4444/checkuser/",
         {
@@ -38,11 +35,6 @@ export default function Onboarding() {
           },
         }
       );
-
-      if (response.status !== 200) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
       const data = response.data;
       if (data.exists) {
         toast.success("User exists, redirecting to dashboard...");
@@ -52,14 +44,7 @@ export default function Onboarding() {
         setStep(2);
       }
     } catch (e) {
-      let errorMessage = "An error occurred during login.";
-      if (e instanceof Error) {
-        errorMessage = e.message;
-      } else if (axios.isAxiosError(e) && e.response) {
-        errorMessage = `Server error: ${e.response.data.message || e.response.statusText}`;
-      }
-      console.error("Login error:", errorMessage);
-      toast.error(errorMessage);
+      console.error("Login error:", e);
     }
   };
 
@@ -104,7 +89,8 @@ export default function Onboarding() {
   });
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/" });
+    await signOut( );
+    router.push("/");
   };
 
   const handleChange = (name: string, value: any) => {
@@ -323,7 +309,7 @@ export default function Onboarding() {
               Next
             </Button>
           ) : (
-            <Button onClick={handleSubmit(handleFinish)} size="sm">
+            <Button onClick={handleFinish} size="sm">
               Finish
             </Button>
           )}
