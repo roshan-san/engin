@@ -34,7 +34,6 @@ export function NavUser() {
 
   const user = session?.user;
   const handleSignOut = async () => {
-    localStorage.removeItem("isRegistered"); 
     await signOut({ callbackUrl: "/" }); 
   };
 

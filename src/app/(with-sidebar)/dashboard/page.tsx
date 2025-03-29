@@ -41,22 +41,6 @@ export default function DashboardPage() {
     const { name, value } = e.target;
     setStartupData({ ...startupData, [name]: value });
   };
-
-  const getStepTitle = (step:number) => {
-    switch (step) {
-      case 1:
-        return "Startup Details";
-      case 2:
-        return "Problem & Solution";
-      case 3:
-        return "Industry & Location";
-      case 4:
-        return "Patent & Funding";
-      default:
-        return "";
-    }
-  };
-
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
@@ -78,7 +62,9 @@ export default function DashboardPage() {
           </VisuallyHidden>
           <Card className="rounded-xl">
             <CardHeader>
-              <CardTitle>{getStepTitle(step)}</CardTitle>
+              <CardTitle>
+                
+              </CardTitle>
               <Progress value={((step - 1) / totalSteps) * 100} className="mt-2" />
             </CardHeader>
             <CardContent className="p-4">
