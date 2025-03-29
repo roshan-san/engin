@@ -16,7 +16,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-import { NavUser } from "./NavUser"
+import { NavUser } from "./nav-user"
 
 const items = [
   { title: "Dashboard", url: "/", icon: Laptop },

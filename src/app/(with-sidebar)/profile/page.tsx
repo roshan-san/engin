@@ -19,7 +19,7 @@ export default function ProfilePage() {
     email: "alex.johnson@example.com",
     location: "San Francisco, CA",
     linkedin: "https://linkedin.com/in/alexjohnson",
-    github: "https://github.com/alexjohnson"
+    github: "https://github.com/alexjohnson"  
   });
 
   const [isEditing, setIsEditing] = useState(false);
