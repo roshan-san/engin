@@ -1,12 +1,11 @@
 // types.ts
 
 export type User = {
-    id: number;
     email: string;
-    avatar: string | null;
-    peru: string | null;
+    avatar: string ;
+    peru: string ;
     username: string;
-    bio: string | null;
+    bio: string ;
     type: string;
     skills: string[];
     areasofinterest: string[];
@@ -25,7 +24,7 @@ export type User = {
   export type Startup = {
     id: number;
     name: string;
-    description: string | null;
+    description: string;
     problem: string;
     solution: string;
     industry: string;

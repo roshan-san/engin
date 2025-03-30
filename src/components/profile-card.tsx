@@ -1,14 +1,12 @@
 import React from 'react';
-import { User } from "@/types/types"; // Assuming your User type is defined here
 import { UserPlus, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
+import { User } from '@/types/types';
 
-interface ProfileCardProps {
-    user: User;
-}
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ user }) => {
-    function onProfileClick(username: number) {
+
+const ProfileCard= ({ user }:User) => {
+    function onProfileClick(username: string) {
         toast(`Navigating to ${username}'s profile...`);
     }
 
@@ -38,7 +36,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ user }) => {
                         {user.avatar && (
                             <img
                                 src={user.avatar}
-                                alt={user.name}
+                                alt={user.peru}
                                 className="w-full h-full object-cover 
                                     transition-transform duration-300 
                                     group-hover:scale-110"
