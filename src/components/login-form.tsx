@@ -1,13 +1,13 @@
 "use client";
 import { Github } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession ,} from "next-auth/react";
 import { useForm } from "react-hook-form";
 import axios, { AxiosError } from "axios";
 
@@ -20,36 +20,35 @@ export default function Onboarding() {
   const selectedType = watch("type");
   const selectedAF = watch("availableFor");   
 
+  useEffect(() => {
+    if (session?.user) {
+      axios
+        .post("http://localhost:4444/checkuser/", { email: session.user.email })
+        .then((response) => {
+          console.log("Response from /checkuser/:", response.data);
+
+          const data = response.data;
+          if (data.exists) {
+            toast.success("User exists, redirecting to dashboard...");
+            router.push("/dashboard");
+          } else {
+            toast("First time registering");
+            setStep(2);
+          }
+        })
+        .catch((error) => {
+          console.error("Error checking user:", error);
+          toast.error("Error checking user.");
+        });
+    } else {
+      console.log("Session user not found.");
+    }
+  }, [session, router]);
+
   const handleLogin = async (provider: "github" | "google") => {
     try {
       await signIn(provider);
-      toast.success("Logged in!");
-
-      if (session?.user?.email) {
-        const response = await axios.post(
-          "http://localhost:4444/checkuser/",
-          {
-            email: session.user.email,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        const data = response.data;
-        if (data.exists) {
-          toast.success("User exists, redirecting to dashboard...");
-          router.push("/dashboard");
-        } else {
-          toast("First time registering");
-          setStep(2);
-        }
-      } else {
-        toast.error("Email not found.");
-      }
-
+      toast("Logging in!");
     } catch (e) {
       console.error("Login error:", e);
       toast.error("Login failed. Please try again.");

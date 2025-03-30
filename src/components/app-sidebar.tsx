@@ -19,7 +19,7 @@ import {
 import { NavUser } from "./nav-user"
 
 const items = [
-  { title: "Dashboard", url: "/", icon: Laptop },
+  { title: "Dashboard", url: "/dashboard", icon: Laptop },
   { title: "Explore Startups", url: "/explore", icon: Search },
   { title: "Connections", url: "/connections", icon: Users },
   { title: "Messaging", url: "/message", icon: MessageCircle },
