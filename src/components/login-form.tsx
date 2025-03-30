@@ -18,33 +18,41 @@ export default function Onboarding() {
   const totalSteps = 6;
   const { handleSubmit, setValue ,watch} = useForm();
   const selectedType = watch("type");
-  const selectedAF = watch("availableFor");
+  const selectedAF = watch("availableFor");   
 
   const handleLogin = async (provider: "github" | "google") => {
     try {
       await signIn(provider);
       toast.success("Logged in!");
-      const response = await axios.post(
-        "http://localhost:4444/checkuser/",
-        {
-          email: session?.user?.email,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+
+      if (session?.user?.email) {
+        const response = await axios.post(
+          "http://localhost:4444/checkuser/",
+          {
+            email: session.user.email,
           },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const data = response.data;
+        if (data.exists) {
+          toast.success("User exists, redirecting to dashboard...");
+          router.push("/dashboard");
+        } else {
+          toast("First time registering");
+          setStep(2);
         }
-      );
-      const data = response.data;
-      if (data.exists) {
-        toast.success("User exists, redirecting to dashboard...");
-        router.push("/dashboard");
       } else {
-        toast("First time registering");
-        setStep(2);
+        toast.error("Email not found.");
       }
+
     } catch (e) {
       console.error("Login error:", e);
+      toast.error("Login failed. Please try again.");
     }
   };
 
@@ -53,6 +61,8 @@ export default function Onboarding() {
   };
 
   const handleFinish = handleSubmit(async (data: any) => {
+    console.log("Data submitted:", data);
+    
     try {
       console.log(data);
       
@@ -71,20 +81,12 @@ export default function Onboarding() {
         }
       );
 
-      if (response.status !== 200) {
-        throw new Error(`Failed to create user. Status: ${response.status}`);
-      }
-
       toast.success("Onboarding complete!");
       router.push("/dashboard");
     } catch (error) {
-      let errorMessage = "An error occurred.";
-      if (axios.isAxiosError(error) && error.response) {
-        errorMessage = `Server error: ${error.response.data.message || error.response.statusText}`;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      toast.error(errorMessage);
+      console.log("Error during onboarding:", error);
+      
+      toast.error("some err");
     }
   });
 
