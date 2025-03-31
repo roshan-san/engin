@@ -1,13 +1,20 @@
-import React from 'react'
+"use client";
+import StartupForm from "@/components/startup-form";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
 
-export default function page() {
+export default function Page() {
+
   return (
-    <div>
-      will have a floating create start up button on bottom right corner 
-      when its clicked it will open a dialogbox with the form to create a startup
-      the form has the field that i mentioned in schema .js 
-      after posting the startup will be appended to the start up database with the founder username 
-      and all the neccsary field mentioned in the schema js
+    <div className="container mx-auto p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Your Dashboard</h1>
+      </div>
+      <StartupForm/>
+      
     </div>
-  )
+  );
 }

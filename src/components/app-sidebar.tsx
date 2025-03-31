@@ -16,10 +16,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-import { NavUser } from "./NavUser"
+import { NavUser } from "./nav-user"
 
 const items = [
-  { title: "Dashboard", url: "/", icon: Laptop },
+  { title: "Dashboard", url: "/dashboard", icon: Laptop },
   { title: "Explore Startups", url: "/explore", icon: Search },
   { title: "Connections", url: "/connections", icon: Users },
   { title: "Messaging", url: "/message", icon: MessageCircle },
@@ -31,12 +31,12 @@ export function AppSidebar() {
   const { setOpen } = useSidebar()
 
   return (
-    <Sidebar variant="floating" collapsible="icon">
+    <Sidebar variant="floating" collapsible="icon"
+>
       <SidebarContent
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setTimeout(() => setOpen(false), 500)}
-      >
-        <SidebarGroup>
+>
+        <SidebarGroup onMouseEnter={() => setOpen(true)}
+    onMouseLeave={() => setOpen(false)}>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-2">
               {items.map((item) => {
@@ -61,7 +61,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter >
         <NavUser />
       </SidebarFooter>
     </Sidebar>
