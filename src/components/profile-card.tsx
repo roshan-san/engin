@@ -59,7 +59,7 @@ const ProfileCard = ( {user }:{user:any}) => {
             </div>
 
             <div className="flex flex-wrap gap-2 mb-4">
-                {user.interests.map((interest, idx) => (
+                {user.interests.map((interest:any, idx:any) => (
                     <span 
                         key={idx} 
                         className="text-xs bg-gray-100 dark:bg-gray-800 rounded-full px-2 py-1 
