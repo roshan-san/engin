@@ -12,8 +12,10 @@ import { FaLinkedin, FaGithub, FaQuestionCircle, FaExclamation } from 'react-ico
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
-const fetchUser = async (email: string) => {
+
+const fetchUser = async (email: any) => {
     const { data } = await axios.get(`http://localhost:4444/getuser/?email=${email}`);
     console.log(data);
 
@@ -22,13 +24,15 @@ const fetchUser = async (email: string) => {
 
 
 export default function UserProfile() {
+
     return (<QueryClientProvider client={queryClient}>
         <Comp />
 
     </QueryClientProvider>)
 }
 function Comp() {
-    const email = 'roshanjeyarubanr@gmail.com';
+    const session= useSession()
+    const email = session.data?.user?.email;
     const [activeTab, setActiveTab] = useState('startups');
 
     const { data: user, isLoading, error } = useQuery({
@@ -52,11 +56,9 @@ function Comp() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Left Column */}
                     <div className="space-y-6">
                         <Card>
                             <CardContent className="pt-6">
-                                {/* Profile Header */}
                                 <div className="flex flex-col items-center text-center mb-6">
                                     <Avatar className="w-24 h-24 mb-4">
                                         <AvatarImage src={user.avatar} alt={user.username} />
@@ -71,7 +73,6 @@ function Comp() {
                                 </div>
 
 
-                                {/* Contact Info */}
                                 <div className="space-y-3 mb-6">
                                     <div className="flex items-center gap-3">
                                         <Mail className="h-4 w-4 text-gray-500" />
@@ -103,7 +104,6 @@ function Comp() {
                             </CardContent>
                         </Card>
 
-                        {/* Skills */}
                         <Card>
                             <CardHeader>
                                 <CardTitle className="text-lg">Skills</CardTitle>
@@ -118,7 +118,6 @@ function Comp() {
                                 </div>
                             </CardContent>
                         </Card>
-                        {/* Interest */}
                         <Card>
                             <CardHeader>
                                 <CardTitle className="text-lg">Areas Of Interest</CardTitle>
@@ -135,9 +134,6 @@ function Comp() {
                         </Card>
                     </div>
 
-
-
-                    {/* Right Column */}
                     <div className="md:col-span-2">
                         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                             <TabsList className="grid w-full grid-cols-3 mb-6">
@@ -153,11 +149,9 @@ function Comp() {
                                             key={startup.id}
                                             className="relative bg-accent rounded-2xl shadow-lg p-6 transition-transform transform hover:scale-105 hover:shadow-xl"
                                         >
-                                            {/* Startup Name */}
                                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{startup.name}</h2>
                                             <p className="mt-2 text-gray-600 dark:text-gray-300 text-sm">{startup.description}</p>
 
-                                            {/* Details Section */}
                                             <div className="mt-4 space-y-3">
                                                 <div className="flex items-center text-gray-700 dark:text-gray-400 text-sm">
                                                     <FaQuestionCircle className="w-4 h-4 text-yellow-500 mr-2" />
@@ -224,14 +218,13 @@ function Comp() {
                                                                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                                                                     {experience.name}
                                                                 </h3>
-                                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                                <p className="text-xl text-gray-500 dark:text-gray-400">
                                                                     {experience.role} at {experience.company}
                                                                 </p>
                                                                 <p className="text-sm text-gray-500 dark:text-gray-400">
                                                                     {startDate} - {endDate}
                                                                 </p>
                                                             </div>
-                                                            {/* Optional: Add an icon or small image here */}
                                                         </div>
                                                         <p className="text-sm text-gray-700 dark:text-gray-300">
                                                             {experience.description}
