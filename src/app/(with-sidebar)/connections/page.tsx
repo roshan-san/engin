@@ -3,10 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search } from "lucide-react";
-import ProfileCard from '@/components/profile-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import axios from 'axios';
 import { User } from '@/types/types'; // Assuming you have a User type defined
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 const CollaboratorSearch = () => {
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -16,33 +17,29 @@ const CollaboratorSearch = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
     const [page, setPage] = useState<number>(1);
-    const [loadingMore, setLoadingMore] = useState<boolean>(false); // Add loading state
 
 
     const handleLoadMore = () => {
+        toast("hello")
+        console.log("hello")
         setPage((prevPage) => prevPage + 1);
+        fetchUsers()
     };
+    const fetchUsers = async () => {
+        try {
+            const response = await axios.get<User[]>(`http://localhost:4444/users?_page=${page}}&q=${searchQuery}`) // Type the response
+            setUsers(response.data);
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await axios.get<User[]>(`http://loaclhost:4444/users?_page=${page}}&q=${searchQuery}`); // Type the response
-                setUsers(response.data);
+            const interests = new Set<string>();
+            response.data.forEach((user: User) => {
+                user.areasofinterest.forEach((interest: string) => interests.add(interest));
+            });
+            setAllInterests(["all", ...Array.from(interests)]);
 
-                // Extract unique interests from users
-                const interests = new Set<string>();
-                response.data.forEach((user: User) => {
-                    user.areasofinterest.forEach((interest: string) => interests.add(interest));
-                });
-                setAllInterests(["all", ...Array.from(interests)]); // Add 'all' and unique interests
-
-            } catch (error) {
-                console.error('Error fetching users:', error);
-            }
-        };
-
-        fetchUsers();
-    }, [page, limit, searchQuery]);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    };
 
     useEffect(() => {
         let filtered = users;
@@ -78,6 +75,7 @@ const CollaboratorSearch = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
+                <Button onClick={() => { fetchUsers()}}>Search</Button>
 
                 <Select
                     value={selectedInterest}
@@ -113,33 +111,41 @@ const CollaboratorSearch = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredUsers.length > 0 ? (
                     filteredUsers.map((user, index) => (
+                        <div>
+
                         <div
                             key={user.username}
                             className="animate-wiggle"
                             style={{
                                 animationDelay: `${(index % 3) * 100}ms`
                             }}
-                        >
+                            >
                             <pre>
                                 {JSON.stringify(user, null, 2)}
                             </pre>
+                            
+                            </div>
+                            <div className="flex justify-center mt-4">
+                                <Button
+                                    onClick={handleLoadMore}
+                                    className=" py-2 px-4 rounded"
+                                >
+                                    {'Load More'}
+                                </Button>
+                            </div>
                         </div>
+                        
+
                     ))
                 ) : (
                     <div className="col-span-full text-center py-12">
                         <p className="text-gray-500 dark:text-gray-400">No collaborators found matching your criteria.</p>
                     </div>
+
+
                 )}
             </div>
-            <div className="flex justify-center mt-4">
-                <button
-                    onClick={handleLoadMore}
-                    disabled={loadingMore}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                >
-                    {loadingMore ? 'Loading...' : 'Load More'}
-                </button>
-            </div>
+
 
         </div>
     );
