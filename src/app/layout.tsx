@@ -4,11 +4,13 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "sonner";
 import { SessionProvider } from "next-auth/react";
+import axios from "axios"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
+axios.defaults.baseURL="http://localhost:4444"
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",

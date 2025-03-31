@@ -23,7 +23,7 @@ export default function StartupForm() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Add submitting state
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,7 +66,7 @@ export default function StartupForm() {
       }
 
       await axios.post(
-        `http://localhost:4444/createstartup?email=${session.user.email}`,
+        `/createstartup?email=${session.user.email}`,
         data
       );
       setOpen(false);

@@ -23,7 +23,7 @@ export default function Onboarding() {
   useEffect(() => {
     if (session?.user) {
       axios
-        .post("http://localhost:4444/checkuser/", { email: session.user.email })
+        .post("checkuser/", { email: session.user.email })
         .then((response) => {
           console.log("Response from /checkuser/:", response.data);
 
@@ -66,7 +66,7 @@ export default function Onboarding() {
       console.log(data);
       
       const response = await axios.post(
-        "http://localhost:4444/createuser/",
+        "createuser/",
         {
           ...data,
           email: session?.user?.email,
