@@ -1,15 +1,29 @@
-import Hero from '@/components/hero';
-import Features from '@/components/features';
-import Footer from '@/components/footer';
-import Header from '@/components/header';
+import { auth } from "@/auth";
+import LoginForm from "@/components/landing/login-form";
+import LeftStuff from "@/components/landing/left-stuff";
+import Features from "@/components/landing/features";
+import Footer from "@/components/landing/footer";
+import Header from "@/components/landing/header";
 
-export default function Home() {
+const Hero = async () => {
+  const session = await auth();
+
   return (
     <div>
-    <Header/>
-    <Hero/>
+      <Header/>
+      
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center border-b border-accent">
+      <div className="max-w-screen-xl flex flex-col lg:flex-row items-center justify-around gap-6 px-6 py-4 lg:py-0 w-full mx-auto">
+      <LeftStuff />
+      <div className="mt-7 max-w-md w-full bg-background shadow-md rounded-xl border border-border mx-auto">
+        <LoginForm session={session} />
+      </div>
+      </div>
+    </div>
     <Features/>
-    <Footer/>
+      <Footer/>
     </div>
   );
-}
+};
+
+export default Hero;

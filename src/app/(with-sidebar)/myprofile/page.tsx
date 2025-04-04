@@ -80,17 +80,11 @@ function Comp() {
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <FaLinkedin className="h-4 w-4 text-gray-500" />
-                                        <Link href={user.linkedin} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 hover:underline" >
-
-                                            {user.linkedin}
-                                        </Link>
+                                        
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <FaGithub className="h-4 w-4 text-gray-500" />
-                                        <Link href={user.github} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 hover:underline" >
-
-                                            {user.github}
-                                        </Link>
+                                        
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <MapPin className="h-4 w-4 text-gray-500" />

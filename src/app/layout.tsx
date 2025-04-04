@@ -4,13 +4,14 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "sonner";
 import { SessionProvider } from "next-auth/react";
-import axios from "axios"
+import Features from "@/components/landing/features";
+import Footer from "@/components/landing/footer";
+import Header from "@/components/landing/header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-axios.defaults.baseURL="http://localhost:4444"
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -31,17 +32,18 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <SessionProvider>
-     <ThemeProvider
+      >
+        <SessionProvider>
+          <ThemeProvider
             attribute="class"
             defaultTheme="dark"
             enableSystem
-            >
+          >
             <Toaster />
             {children}
-        </ThemeProvider>
-            </SessionProvider>
+            
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
