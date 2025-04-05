@@ -2,6 +2,6 @@ import React from 'react'
 
 export default function page() {
   return (
-    <div className='mx-auto'>coming soon</div>
+    <div className=' text-center mx-auto'>coming soon</div>
   )
 }
