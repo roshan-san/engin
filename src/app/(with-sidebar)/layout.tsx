@@ -1,19 +1,18 @@
-import { AppSidebar } from '@/components/app-sidebar'
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
-import React from 'react'
-export default function layout({children}:{ children:React.ReactNode}) {
+import {  Sidebar } from "@/components/app-navigation";
+import Header from "@/components/landing/header";
+
+export default function layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className='flex h-screen'>
-
-    <SidebarProvider defaultOpen={false}  >
-    <AppSidebar />
-
-    
-    <main>
-      <SidebarTrigger className="md:hidden" />
-      {children}
-      </main>
-    </SidebarProvider>
+    <div className="h-screen">
+      <Header/>
+    <div className="grid grid-cols-2">
+      <div className=" h-">
+        <Sidebar />
       </div>
+        <div className="">
+          {children}
+        </div>
+    </div>
+    </div>
   )
 }   

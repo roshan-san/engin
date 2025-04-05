@@ -1,7 +1,6 @@
 "use client"
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { queryClient } from '@/queryclient';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import Image from 'next/image'
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
@@ -11,12 +10,11 @@ import { useState } from 'react';
 import { FaLinkedin, FaGithub, FaQuestionCircle, FaExclamation } from 'react-icons/fa';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
 
 const fetchUser = async (email: any) => {
-    const { data } = await axios.get(`http://localhost:4444/getuser/?email=${email}`);
+    const { data } = await axios.get(`getuser/?email=${email}`);
     console.log(data);
 
     return data;
@@ -24,13 +22,6 @@ const fetchUser = async (email: any) => {
 
 
 export default function UserProfile() {
-
-    return (<QueryClientProvider client={queryClient}>
-        <Comp />
-
-    </QueryClientProvider>)
-}
-function Comp() {
     const session= useSession()
     const email = session.data?.user?.email;
     const [activeTab, setActiveTab] = useState('startups');
@@ -80,17 +71,11 @@ function Comp() {
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <FaLinkedin className="h-4 w-4 text-gray-500" />
-                                        <Link href={user.linkedin} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 hover:underline" >
-
-                                            {user.linkedin}
-                                        </Link>
+                                        
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <FaGithub className="h-4 w-4 text-gray-500" />
-                                        <Link href={user.github} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 hover:underline" >
-
-                                            {user.github}
-                                        </Link>
+                                        
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <MapPin className="h-4 w-4 text-gray-500" />

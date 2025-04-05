@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Input } from "@/components/ui/input";
@@ -8,39 +7,49 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 export default function StartupForm() {
   const [step, setStep] = useState<number>(1);
   const totalSteps = 4;
   const { handleSubmit, register } = useForm();
   const { data: session, status } = useSession();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Add submitting state
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (status === "loading") return;
+  // Create mutation for submitting startup data
+  const createStartupMutation = useMutation({
+    mutationFn: async (data: any) => {
       if (!session?.user?.email) {
-        setError("User email not found. Please log in.");
-        setLoading(false);
-        return;
+        throw new Error("User email not found. Please log in.");
       }
+      return axios.post("/create", data);
+    },
+    onSuccess: () => {
+      setOpen(false);
+      toast.success("Startup created successfully!");
+    },
+    onError: (error: any) => {
+      console.error("Error creating startup:", error);
+      toast.error(error.message || "Failed to create startup. Please try again.");
+    }
+  });
 
-      setLoading(false);
-    };
+  const handleNext = () => {
+    setStep((prev) => prev + 1);
+  };
 
-    fetchData();
-  }, [session, status]);
+  const handleFinish = handleSubmit((data: any) => {
+    createStartupMutation.mutate(data);
+  });
 
-  if (status === "loading" || loading) {
+  // If user is not authenticated, show error
+  if (status === "loading") {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="animate-spin h-6 w-6 mr-2" />
@@ -49,36 +58,13 @@ export default function StartupForm() {
     );
   }
 
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
+  if (status === "unauthenticated") {
+    return <div className="text-red-500">User not authenticated. Please log in.</div>;
   }
 
-  const handleNext = () => {
-    setStep((prev) => prev + 1);
-  };
-
-  const handleFinish = handleSubmit(async (data: any) => {
-    setIsSubmitting(true); 
-    try {
-      if (!session?.user?.email) {
-        toast.error("User email not found. Please log in.");
-        return;
-      }
-
-      await axios.post(
-        `http://localhost:4444/createstartup?email=${session.user.email}`,
-        data
-      );
-      setOpen(false);
-
-      toast.success("Startup created successfully!");
-    } catch (error) {
-      console.error("Error creating startup:", error);
-      toast.error("Failed to create startup. Please try again.");
-    } finally {
-      setIsSubmitting(false); // Set submitting to false after completion
-    }
-  });
+  if (!session?.user?.email) {
+    return <div className="text-red-500">User email not found. Please log in.</div>;
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -102,9 +88,7 @@ export default function StartupForm() {
                     ? "Industry & Location"
                     : step === 4
                       ? "Team & Patent"
-                      : step === 5
-                        ? "Funding"
-                        : "Finish"}
+                      : "Finish"}
             </CardTitle>
             <Progress value={(step / totalSteps) * 100} className="mt-2" />
           </CardHeader>
@@ -199,8 +183,17 @@ export default function StartupForm() {
                   Next
                 </Button>
               ) : (
-                <Button type="submit" onClick={handleFinish} size="sm" disabled={isSubmitting}>
-                  {isSubmitting ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : "Finish"}
+                <Button 
+                  type="submit" 
+                  onClick={handleFinish} 
+                  size="sm" 
+                  disabled={createStartupMutation.isPending}
+                >
+                  {createStartupMutation.isPending ? (
+                    <><Loader2 className="animate-spin h-4 w-4 mr-2" /> Submitting...</>
+                  ) : (
+                    "Finish"
+                  )}
                 </Button>
               )}
             </div>
