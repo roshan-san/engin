@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import axios from 'axios';
-import { User } from '@/types/types'; // Assuming you have a User type defined
+import { User } from '@/types/types'; 
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 

@@ -1,7 +1,6 @@
 "use client"
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { queryClient } from '@/queryclient';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import Image from 'next/image'
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
@@ -11,12 +10,11 @@ import { useState } from 'react';
 import { FaLinkedin, FaGithub, FaQuestionCircle, FaExclamation } from 'react-icons/fa';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
 
 const fetchUser = async (email: any) => {
-    const { data } = await axios.get(`http://localhost:4444/getuser/?email=${email}`);
+    const { data } = await axios.get(`getuser/?email=${email}`);
     console.log(data);
 
     return data;
@@ -24,13 +22,6 @@ const fetchUser = async (email: any) => {
 
 
 export default function UserProfile() {
-
-    return (<QueryClientProvider client={queryClient}>
-        <Comp />
-
-    </QueryClientProvider>)
-}
-function Comp() {
     const session= useSession()
     const email = session.data?.user?.email;
     const [activeTab, setActiveTab] = useState('startups');

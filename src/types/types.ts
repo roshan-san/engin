@@ -1,5 +1,3 @@
-// types.ts
-
 export type User = {
     Id:number
     email: string;

@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "@/providers/theme-provider"
 import { Toaster } from "sonner";
 import { SessionProvider } from "next-auth/react";
-import Features from "@/components/landing/features";
-import Footer from "@/components/landing/footer";
-import Header from "@/components/landing/header";
+import TanstackProvider from "@/components/tanstack-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,11 +15,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-export const metadata: Metadata = {
-  title: "Engin",
-  description: "later pa",
-};
 
 export default function RootLayout({
   children,
@@ -34,15 +27,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-          >
-            <Toaster />
-            {children}
-            
-          </ThemeProvider>
+          <TanstackProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+            >
+              <Toaster />
+              {children}
+            </ThemeProvider>
+          </TanstackProvider>
         </SessionProvider>
       </body>
     </html>

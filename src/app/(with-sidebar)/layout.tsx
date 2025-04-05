@@ -3,13 +3,13 @@ import Header from "@/components/landing/header";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
+    <div className="h-screen">
       <Header/>
-    <div className='grid grid-cols-24'>
-      <div className="col-span-1 h-screen">
+    <div className="grid grid-cols-2">
+      <div className=" h-">
         <Sidebar />
       </div>
-        <div>
+        <div className="">
           {children}
         </div>
     </div>
