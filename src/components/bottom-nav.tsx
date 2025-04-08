@@ -21,14 +21,14 @@ const BottomNav = () => {
 
   return (
     <div
-      className={`fixed bottom-0 w-full py-4 z-10 bg-zinc-100 dark:bg-zinc-950 border-t dark:border-zinc-800 border-zinc-200 shadow-lg sm:hidden ${navClass}`}
+      className={`fixed bottom-0 w-full py-4 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-border shadow-lg sm:hidden ${navClass}`}
     >
       <div className="flex flex-row justify-around items-center bg-transparent w-full">
         <Link href="/" className="flex items-center">
           <FaHome
             size={32}
             className={`${
-              isDashboardActive ? 'text-blue-500' : 'text-gray-500'
+              isDashboardActive ? 'text-primary' : 'text-muted-foreground'
             }`}
           />
         </Link>
@@ -36,7 +36,7 @@ const BottomNav = () => {
           <FaSearch
             size={32}
             className={`${
-              isExploreActive ? 'text-blue-500' : 'text-gray-500'
+              isExploreActive ? 'text-primary' : 'text-muted-foreground'
             }`}
           />
         </Link>
@@ -44,7 +44,7 @@ const BottomNav = () => {
           <FaBell
             size={32}
             className={`${
-              isConnectionsActive ? 'text-blue-500' : 'text-gray-500'
+              isConnectionsActive ? 'text-primary' : 'text-muted-foreground'
             }`}
           />
         </Link>
@@ -52,15 +52,15 @@ const BottomNav = () => {
           <FaEnvelope
             size={32}
             className={`${
-              isMessagesActive ? 'text-blue-500' : 'text-gray-500'
+              isMessagesActive ? 'text-primary' : 'text-muted-foreground'
             }`}
           />
         </Link>
-        <Link href="/investments" className="flex items-center">
+        <Link href="/investment" className="flex items-center">
           <FaChartBar
             size={32}
             className={`${
-              isInvestmentActive ? 'text-blue-500' : 'text-gray-500'
+              isInvestmentActive ? 'text-primary' : 'text-muted-foreground'
             }`}
           />
         </Link>

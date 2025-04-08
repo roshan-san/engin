@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider"
@@ -24,20 +23,22 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
       >
-        <SessionProvider>
-          <TanstackProvider>
+        <TanstackProvider>
+          <SessionProvider>
             <ThemeProvider
               attribute="class"
               defaultTheme="dark"
               enableSystem
             >
-              <Toaster />
-              {children}
+              <div className="relative flex min-h-screen flex-col">
+                <Toaster />
+                {children}
+              </div>
             </ThemeProvider>
-          </TanstackProvider>
-        </SessionProvider>
+          </SessionProvider>
+        </TanstackProvider>
       </body>
     </html>
   );

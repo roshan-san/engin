@@ -39,10 +39,10 @@ export function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col w-24 bg-sidebar border-r p-2 h-full">
+    <div className="flex flex-col w-16 bg-background border-r border-border p-2 h-screen">
       <div className="flex-1">
         <TooltipProvider>
-          <div className="space-y-4">
+          <div className="space-y-1">
             {items.map((item) => {
               const isActive = pathname === item.url || pathname.startsWith(item.url + "/");
               return (
@@ -50,16 +50,16 @@ export function Sidebar() {
                   <TooltipTrigger asChild>
                     <Link
                       href={item.url}
-                      className={`flex flex-col justify-center p-3 text-center items-center gap-1 rounded-md transition-all ${
+                      className={`flex justify-center p-3 rounded-md transition-colors ${
                         isActive
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
-                          : "hover:bg-sidebar-hover text-muted-foreground hover:text-foreground"
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                       }`}
                     >
                       <item.icon className="size-5" />
                     </Link>
                   </TooltipTrigger>
-                  <TooltipContent side="right" className="bg-popover text-popover-foreground">
+                  <TooltipContent side="right">
                     {item.title}
                   </TooltipContent>
                 </Tooltip>
@@ -69,11 +69,11 @@ export function Sidebar() {
         </TooltipProvider>
       </div>
       
-      <div className="mt-auto pt-6 space-y-4">
+      <div className="space-y-1">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex justify-center">
+              <div className="flex justify-center p-3 rounded-md hover:bg-accent hover:text-accent-foreground">
                 <Ava />
               </div>
             </TooltipTrigger>
@@ -86,12 +86,12 @@ export function Sidebar() {
             <TooltipTrigger asChild>
               <button 
                 onClick={handleSignOut}
-                className="flex justify-center p-3 w-full text-center items-center rounded-md transition-all hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                className="flex justify-center p-3 w-full rounded-md transition-colors text-muted-foreground hover:bg-destructive hover:text-destructive-foreground border border-border/50 hover:border-destructive"
               >
                 <LogOut className="size-5" />
               </button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="bg-popover text-popover-foreground">
+            <TooltipContent side="right">
               Sign Out
             </TooltipContent>
           </Tooltip>

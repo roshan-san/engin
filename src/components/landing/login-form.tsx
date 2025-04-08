@@ -1,43 +1,62 @@
 "use client";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { signIn, signOut, useSession ,} from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { FaGithub, FaGoogle } from "react-icons/fa";
+import useMultiStepForm from "@/hook/use-multistep";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-export default function LoginForm(session: any) {
+export default function LoginForm() {
   const router = useRouter();
-  const [step, setStep] = useState<number>(1);
-  const totalSteps = 6;
-  const { handleSubmit, setValue ,watch} = useForm();
+  const { data: session, status } = useSession();
+  const userEmail = session?.user?.email;
+  const { handleSubmit, setValue, watch, register } = useForm();
+  const { goToStep, isFirstStep, isLastStep, nextStep, prevStep, step } = useMultiStepForm(6);
   const selectedType = watch("type");
-  const selectedAF = watch("availableFor");   
+  const selectedAF = watch("availableFor");
 
-  const handleLogin = async (provider: "github" | "google") => {
+  const { data: userData } = useQuery({
+    queryKey: ["user", userEmail],
+    queryFn: async () => {
+      if (!userEmail) return null;
+      const response = await axios.get(`/api/user/${userEmail}`);
+      return response.data;
+    },
+    enabled: !!userEmail,
+  });
+
+  const handleLogin = async (provider:"github" | "google") => {
+    await signIn(provider);
+  }
+
+  const handleFinish = handleSubmit(async (data) => {
     try {
-      await signIn(provider);
-      toast("Logging in!");
-    } catch (e) {
-      console.error("Login error:", e);
-      toast.error("Login failed. Please try again.");
+      await axios.post('/api/user', data);
+      toast.success("Profile updated successfully!");
+      router.push('/dashboard');
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error("Failed to update profile. Please try again.");
     }
-  };
-
-  const handleFinish = handleSubmit(async (data: any) => {
-    console.log("Data submitted:", data);
   });
 
   const handleSignOut = async () => {
-    await signOut( );
-    router.push("/");
+    await signOut({ redirect: false });
+    goToStep(1);
   };
 
-  const handleChange = (name: string, value: any) => {
+  interface HandleChangeParams {
+    name: string;
+    value: string | string[];
+  }
+
+  const handleChange = (name: HandleChangeParams["name"], value: HandleChangeParams["value"]) => {
     setValue(name, value);
   };
 
@@ -48,10 +67,10 @@ export default function LoginForm(session: any) {
           {step === 1
             ? "Log in to continue"
             : step === 2
-            ? `Welcome, ${session?.user?.name || "User"}!`
-            : "Complete Your Profile"}
+              ? `Welcome, ${session?.user?.name || "User"}!`
+              : "Complete Your Profile"}
         </CardTitle>
-        <Progress value={(step / totalSteps) * 100} className="mt-2" />
+        <Progress value={(step / 6) * 100} className="mt-2" />
       </CardHeader>
       <CardContent className="p-4">
         {step === 1 && (
@@ -62,7 +81,7 @@ export default function LoginForm(session: any) {
               className="w-full"
               onClick={() => handleLogin("github")}
             >
-              <FaGithub />
+              <FaGithub className="mr-2" />
               Login with GitHub
             </Button>
             <Button
@@ -70,7 +89,7 @@ export default function LoginForm(session: any) {
               className="w-full"
               onClick={() => handleLogin("google")}
             >
-              <FaGoogle/>
+              <FaGoogle className="mr-2" />
               Login with Google
             </Button>
           </div>
@@ -98,7 +117,7 @@ export default function LoginForm(session: any) {
                 Creator/Collaborator
               </Button>
               <Button
-                variant={selectedType=== "mentor" ? "default" : "outline"}
+                variant={selectedType === "mentor" ? "default" : "outline"}
                 onClick={() => handleChange("type", "mentor")}
                 className="text-xs h-auto py-1.5"
               >
@@ -117,16 +136,16 @@ export default function LoginForm(session: any) {
 
         {step === 3 && (
           <div className="space-y-3">
-            <p className="text-sm">Choose an unique username</p>
+            <p className="text-sm">Choose a unique username</p>
             <Input
               placeholder="username"
-              onChange={(e) => handleChange("username", e.target.value)}
+              {...register("username")}
               className="text-sm"
             />
             <p className="text-sm">Short description about yourself</p>
             <Input
               placeholder="bio"
-              onChange={(e) => handleChange("bio", e.target.value)}
+              {...register("bio")}
               className="text-sm"
             />
           </div>
@@ -136,7 +155,7 @@ export default function LoginForm(session: any) {
           <div className="space-y-3">
             <p className="text-sm">What are your top skills?</p>
             <Input
-              placeholder="Skills seperated by commas"
+              placeholder="Skills separated by commas"
               onChange={(e) =>
                 handleChange("skills", e.target.value.split(",").map((item) => item.trim()))
               }
@@ -144,7 +163,7 @@ export default function LoginForm(session: any) {
             />
             <p className="text-sm">What industries interest you?</p>
             <Input
-              placeholder="Areas of Interest seperated by commas"
+              placeholder="Areas of Interest separated by commas"
               onChange={(e) =>
                 handleChange(
                   "areasofinterest",
@@ -161,13 +180,13 @@ export default function LoginForm(session: any) {
             <p className="text-sm">Where are you from?</p>
             <Input
               placeholder="Enter your location"
-              onChange={(e) => handleChange("location", e.target.value)}
+              {...register("location")}
               className="text-sm"
             />
             <p className="text-sm">How are you looking to contribute?</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <Button
-                variant={selectedAF=== "full-time" ? "default" : "outline"}
+                variant={selectedAF === "full-time" ? "default" : "outline"}
                 onClick={() => handleChange("availableFor", "full-time")}
                 className="text-xs"
               >
@@ -181,7 +200,7 @@ export default function LoginForm(session: any) {
                 Part-time
               </Button>
               <Button
-                variant={selectedAF=== "contract" ? "default" : "outline"}
+                variant={selectedAF === "contract" ? "default" : "outline"}
                 onClick={() => handleChange("availableFor", "contract")}
                 className="text-xs"
               >
@@ -196,43 +215,44 @@ export default function LoginForm(session: any) {
             <p className="text-sm">Drop your professional profiles.</p>
             <Input
               placeholder="LinkedIn Profile"
-              onChange={(e) => handleChange("linkedin", e.target.value)}
+              {...register("linkedin")}
               className="text-sm"
             />
             <Input
               placeholder="GitHub Profile"
-              onChange={(e) => handleChange("github", e.target.value)}
+              {...register("github")}
               className="text-sm"
             />
           </div>
         )}
 
-        <div className="flex justify-between mt-4">
-          {step === 2 ? (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={handleSignOut}
-            >
-              Sign Out
-            </Button>
-          ) : (
-            <Button type="button" size="sm" onClick={() => setStep(step - 1)}>
-              Back
-            </Button>
-          )}
-
-          {step < totalSteps ? (
-            <Button type="button" size="sm" onClick={() => setStep(step + 1)}>
-              Next
-            </Button>
-          ) : (
-            <Button onClick={handleFinish} size="sm">
-              Finish
-            </Button>
-          )}
-        </div>
+        {!isFirstStep && (
+          <div className="flex justify-between mt-4">
+            {step === 2 ? (
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </Button>
+            ) : (
+              <Button type="button" size="sm" onClick={prevStep}>
+                Back
+              </Button>
+            )}
+            {!isLastStep ? (
+              <Button type="button" size="sm" onClick={nextStep}>
+                Next
+              </Button>
+            ) : (
+              <Button onClick={handleFinish} size="sm">
+                Finish
+              </Button>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

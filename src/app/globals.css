@@ -116,5 +116,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  .container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 }

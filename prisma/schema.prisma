@@ -29,6 +29,7 @@ model User {
   receivedConnections Connection[] @relation("receiverConnections")
   collaborations   Collaboration[]
   experiences      UserExperience[]
+  @@index([email])
 }
 
 model Startup {
