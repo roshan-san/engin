@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import SearchBar from '@/components/SearchBar';
+import SearchBar from '@/app/(with-sidebar)/explore/_comp/SearchBar';
 import StartupCard from '@/app/(with-sidebar)/explore/_comp/StartupCard';
 import { useStartups } from '@/hooks/useStartups';
 import { Loader2 } from 'lucide-react';
@@ -64,7 +64,7 @@ export default function ExplorePage() {
           <p className="text-sm text-muted-foreground">Try adjusting your search query</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className=" py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {startups.map((startup: any) => (
             <StartupCard
               key={startup.id}
