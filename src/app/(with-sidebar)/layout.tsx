@@ -1,4 +1,4 @@
-import { Sidebar } from "@/components/app-navigation";
+import { LeftBar, } from "@/components/leftbar";
 import Header from "@/components/landing/header";
 
 export default function layout({ children }: { children: React.ReactNode }) {
@@ -6,8 +6,8 @@ export default function layout({ children }: { children: React.ReactNode }) {
     <div className="h-screen flex flex-col bg-background">
       <Header />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
-        <main className="flex-1 p-6 overflow-auto bg-background">
+        <LeftBar />
+        <main className="flex-1 p-6 overflow-auto bg-background pb-20 md:pb-6">
           <div className="container mx-auto max-w-7xl">
             {children}
           </div>

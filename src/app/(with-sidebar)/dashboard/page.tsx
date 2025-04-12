@@ -1,5 +1,4 @@
 "use client";
-import Header from "@/components/landing/header";
 import { StartupForm } from "./_comp/startup-form";
 import { useSession } from "next-auth/react";
 

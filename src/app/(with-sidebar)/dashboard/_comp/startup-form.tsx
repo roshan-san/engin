@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Plus } from "lucide-react";
@@ -137,25 +136,22 @@ export function StartupForm({ founderEmail }: StartupFormProps) {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleKeyDown = (e:any) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       const currentFields = formSteps[currentStep].fields;
       const currentFieldIndex = currentFields.indexOf(e.currentTarget.id);
       
       if (currentFieldIndex < currentFields.length - 1) {
-        // Move to next field in current step
         const nextField = document.getElementById(currentFields[currentFieldIndex + 1]);
         if (nextField) nextField.focus();
       } else if (currentStep < formSteps.length - 1) {
-        // Move to next step
         nextStep();
         setTimeout(() => {
           const firstField = document.getElementById(formSteps[currentStep + 1].fields[0]);
           if (firstField) firstField.focus();
         }, 100);
       } else {
-        // On last field of last step, submit the form
         form.handleSubmit(onSubmit)();
       }
     }
