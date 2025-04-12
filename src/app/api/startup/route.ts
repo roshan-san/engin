@@ -1,9 +1,14 @@
-import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-// STARTUPS CRUD
+import { Prisma } from '@prisma/client';
+
 export async function GET(request: NextRequest): Promise<Response> {
   const id = request.nextUrl.searchParams.get("id");
+  const searchQuery = request.nextUrl.searchParams.get("q");
+  const page = parseInt(request.nextUrl.searchParams.get("page") || "1");
+  const limit = parseInt(request.nextUrl.searchParams.get("limit") || "9");
+  const skip = (page - 1) * limit;
+  
   try {
     if (id) {
       const startup = await prisma.startup.findUnique({
@@ -20,15 +25,45 @@ export async function GET(request: NextRequest): Promise<Response> {
       }
       return NextResponse.json(startup);
     } else {
-      const startups = await prisma.startup.findMany({
-        include: {
-          founder: true,
-          jobs: true,
-          investments: true,
-          collaborations: true
+      const where: Prisma.StartupWhereInput = searchQuery ? {
+        OR: [
+          { name: { contains: searchQuery, mode: Prisma.QueryMode.insensitive } },
+          { description: { contains: searchQuery, mode: Prisma.QueryMode.insensitive } },
+          { industry: { contains: searchQuery, mode: Prisma.QueryMode.insensitive } },
+          { location: { contains: searchQuery, mode: Prisma.QueryMode.insensitive } },
+          { problem: { contains: searchQuery, mode: Prisma.QueryMode.insensitive } },
+          { solution: { contains: searchQuery, mode: Prisma.QueryMode.insensitive } },
+          { patent: { contains: searchQuery, mode: Prisma.QueryMode.insensitive } }
+        ]
+      } : {};
+
+      const [startups, total] = await Promise.all([
+        prisma.startup.findMany({
+          where,
+          skip,
+          take: limit,
+          include: {
+            founder: true,
+            jobs: true,
+            investments: true,
+            collaborations: true
+          },
+          orderBy: {
+            id: 'desc'
+          }
+        }),
+        prisma.startup.count({ where })
+      ]);
+
+      return NextResponse.json({
+        startups,
+        pagination: {
+          total,
+          page,
+          limit,
+          hasMore: skip + startups.length < total
         }
       });
-      return NextResponse.json(startups);
     }
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -38,14 +73,35 @@ export async function GET(request: NextRequest): Promise<Response> {
 export async function POST(request: NextRequest): Promise<Response> {
   try {
     const data = await request.json();
+    console.log('Creating startup with data:', data); // Debug log
+
+    // Find user by email
+    const user = await prisma.user.findUnique({
+      where: { email: data.founderEmail }
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
     const startup = await prisma.startup.create({
       data: {
-        ...data,
-        founderId: parseInt(data.founderId)
+        name: data.name,
+        description: data.description,
+        problem: data.problem,
+        solution: data.solution,
+        industry: data.industry,
+        location: data.location,
+        teamSize: data.teamSize,
+        patent: data.patent,
+        funding: data.funding,
+        founderId: user.id
       }
     });
+
     return NextResponse.json(startup);
   } catch (error: any) {
+    console.error('Error creating startup:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

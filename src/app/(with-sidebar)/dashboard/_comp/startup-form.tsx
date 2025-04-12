@@ -1,19 +1,33 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { X, ChevronLeft, ChevronRight, Building2, Lightbulb, Users, DollarSign, MapPin, Shield } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Plus } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import axios from "axios";
+
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
-import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "sonner";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
 
-interface FormData {
+interface StartupFormData {
   name: string;
   description: string;
   problem: string;
@@ -23,78 +37,64 @@ interface FormData {
   teamSize: number;
   patent: string;
   funding: number;
+  founderEmail: string;
+}
+
+interface StartupFormProps {
+  founderEmail: string;
 }
 
 const formSteps = [
   {
     id: "basic",
     title: "Startup Basics",
-    icon: Building2,
     fields: ["name", "description"],
     comment: "Let's start with the basics. What's your startup's name and what does it do?"
   },
   {
     id: "problem",
-    title: "The Problem",
-    icon: Lightbulb,
+    title: "Problem & Solution",
     fields: ["problem", "solution"],
     comment: "Every great startup solves a problem. What's yours and how do you solve it?"
   },
   {
-    id: "industry",
-    title: "Industry & Location",
-    icon: MapPin,
-    fields: ["industry", "location"],
-    comment: "Where does your startup operate? Tell us about your industry and location."
+    id: "details",
+    title: "Company Details",
+    fields: ["industry", "location", "teamSize"],
+    comment: "Tell us about your company's industry, location, and team size."
   },
   {
-    id: "team",
-    title: "Team & Resources",
-    icon: Users,
-    fields: ["teamSize", "funding"],
-    comment: "How big is your team and what resources do you have?"
-  },
-  {
-    id: "patent",
-    title: "Intellectual Property",
-    icon: Shield,
-    fields: ["patent"],
-    comment: "Do you have any patents or intellectual property? This helps protect your innovation."
+    id: "resources",
+    title: "Resources & IP",
+    fields: ["patent", "funding"],
+    comment: "Do you have any patents or funding secured?"
   }
 ];
 
-async function createStartup(data: FormData) {
-  const response = await fetch("/api/startup", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to create startup");
-  }
-
-  return response.json();
+async function createStartup(data: StartupFormData) {
+  const response = await axios.post("/api/startup", data);
+  return response.data;
 }
 
-export default function StartupForm() {
+export function StartupForm({ founderEmail }: StartupFormProps) {
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
   const [currentStep, setCurrentStep] = useState(0);
   const [open, setOpen] = useState(false);
-  
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    description: "",
-    problem: "",
-    solution: "",
-    industry: "",
-    location: "",
-    teamSize: 1,
-    patent: "",
-    funding: 0,
+  const progress = ((currentStep + 1) / formSteps.length) * 100;
+
+  const form = useForm<StartupFormData>({
+    defaultValues: {
+      name: "",
+      description: "",
+      problem: "",
+      solution: "",
+      industry: "",
+      location: "",
+      teamSize: 1,
+      patent: "",
+      funding: 0,
+      founderEmail: founderEmail,
+    },
   });
 
   const mutation = useMutation({
@@ -103,194 +103,148 @@ export default function StartupForm() {
       queryClient.invalidateQueries({ queryKey: ["startups"] });
       toast.success("Startup created successfully!");
       setOpen(false);
+      form.reset();
     },
-    onError: () => {
-      toast.error("Failed to create startup");
-    },
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Failed to create startup");
+      } else {
+        toast.error("Failed to create startup");
+      }
+    }
   });
 
-  const handleChange = useCallback((field: keyof FormData, value: string | number) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!session?.user) {
-      toast.error("You must be logged in to create a startup");
-      return;
-    }
-    mutation.mutate(formData);
+  const onSubmit = (values: StartupFormData) => {
+    mutation.mutate({
+      ...values,
+      founderEmail: founderEmail,
+    });
   };
 
   const nextStep = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
+    const currentFields = formSteps[currentStep].fields;
+    const isValid = currentFields.every((field) => {
+      const value = form.getValues(field as keyof StartupFormData);
+      return value !== undefined && value !== null && value !== "";
+    });
+    
+    if (isValid) {
+      setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
+    }
   };
 
   const prevStep = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (e.key === 'Enter') {
       e.preventDefault();
       const currentFields = formSteps[currentStep].fields;
-      const currentIndex = currentFields.indexOf(e.currentTarget.id);
+      const currentFieldIndex = currentFields.indexOf(e.currentTarget.id);
       
-      if (currentIndex < currentFields.length - 1) {
-        const nextField = document.getElementById(currentFields[currentIndex + 1]);
-        nextField?.focus();
+      if (currentFieldIndex < currentFields.length - 1) {
+        // Move to next field in current step
+        const nextField = document.getElementById(currentFields[currentFieldIndex + 1]);
+        if (nextField) nextField.focus();
       } else if (currentStep < formSteps.length - 1) {
+        // Move to next step
         nextStep();
+        setTimeout(() => {
+          const firstField = document.getElementById(formSteps[currentStep + 1].fields[0]);
+          if (firstField) firstField.focus();
+        }, 100);
+      } else {
+        // On last field of last step, submit the form
+        form.handleSubmit(onSubmit)();
       }
-    }
-  };
-
-  const renderField = (field: keyof FormData) => {
-    switch (field) {
-      case "description":
-      case "problem":
-      case "solution":
-        return (
-          <div className="space-y-2">
-            <Label htmlFor={field} className="text-sm font-medium text-muted-foreground">
-              {field.charAt(0).toUpperCase() + field.slice(1)}
-            </Label>
-            <Textarea
-              id={field}
-              value={formData[field]}
-              onChange={(e) => handleChange(field, e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={`Enter ${field}`}
-              required
-              className="min-h-[100px] resize-none"
-            />
-          </div>
-        );
-      case "teamSize":
-      case "funding":
-        return (
-          <div className="space-y-2">
-            <Label htmlFor={field} className="text-sm font-medium text-muted-foreground">
-              {field === "teamSize" ? "Team Size" : "Initial Funding ($)"}
-            </Label>
-            <Input
-              id={field}
-              type="number"
-              value={formData[field]}
-              onChange={(e) => handleChange(field, parseInt(e.target.value))}
-              onKeyDown={handleKeyDown}
-              min={field === "teamSize" ? 1 : 0}
-              required
-            />
-          </div>
-        );
-      default:
-        return (
-          <div className="space-y-2">
-            <Label htmlFor={field} className="text-sm font-medium text-muted-foreground">
-              {field.charAt(0).toUpperCase() + field.slice(1)}
-            </Label>
-            <Input
-              id={field}
-              value={formData[field]}
-              onChange={(e) => handleChange(field, e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={`Enter ${field}`}
-              required
-            />
-          </div>
-        );
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70">
+        <Button className="flex items-center gap-2">
+          <Plus className="size-4" />
           Create Startup
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl p-0">
-        <Card className="w-full border-0 shadow-none">
-          <div className="flex items-center justify-between p-6 border-b">
-            <div className="flex items-center gap-3">
-              {(() => {
-                const Icon = formSteps[currentStep].icon;
-                return Icon && <Icon className="size-5 text-primary" />
-              })()}
-              <h2 className="text-xl font-semibold">{formSteps[currentStep].title}</h2>
-            </div>
-          </div>
-
-          <div className="p-6">
-            <div className="mb-6">
-              <div className="flex justify-between mb-2">
-                {formSteps.map((step, index) => (
-                  <div
-                    key={step.id}
-                    className={`h-1.5 w-1/5 rounded-full transition-colors ${
-                      index <= currentStep ? "bg-primary" : "bg-muted"
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <p className="text-sm text-muted-foreground">
-                {formSteps[currentStep].comment}
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentStep}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="space-y-6"
-                >
-                  {formSteps[currentStep].fields.map((field) => (
-                    <div key={field}>{renderField(field as keyof FormData)}</div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
-
-              <div className="flex justify-between pt-6 border-t">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={prevStep}
-                  disabled={currentStep === 0}
-                  className="flex items-center gap-2"
-                >
-                  <ChevronLeft className="size-4" />
-                  Back
-                </Button>
-                {currentStep === formSteps.length - 1 ? (
-                  <Button
-                    type="submit"
-                    className="flex items-center gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-                    disabled={mutation.isPending}
-                  >
-                    {mutation.isPending ? "Creating..." : "Create Startup"}
-                  </Button>
-                ) : (
-                  <Button
-                    type="button"
-                    onClick={nextStep}
-                    className="flex items-center gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-                  >
-                    Next
-                    <ChevronRight className="size-4" />
-                  </Button>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{formSteps[currentStep].title}</DialogTitle>
+          <p className="text-sm text-muted-foreground">{formSteps[currentStep].comment}</p>
+          <Progress value={progress} className="mt-2" />
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {formSteps[currentStep].fields.map((field) => (
+              <FormField
+                key={field}
+                control={form.control}
+                name={field as keyof StartupFormData}
+                render={({ field: formField }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {field.charAt(0).toUpperCase() + field.slice(1)}
+                    </FormLabel>
+                    <FormControl>
+                      {field === "description" || field === "problem" || field === "solution" ? (
+                        <Textarea
+                          id={field}
+                          placeholder={`Enter ${field}`}
+                          className="min-h-[100px]"
+                          onKeyDown={handleKeyDown}
+                          {...formField}
+                        />
+                      ) : field === "teamSize" || field === "funding" ? (
+                        <Input
+                          id={field}
+                          type="number"
+                          min={field === "teamSize" ? 1 : 0}
+                          placeholder={`Enter ${field}`}
+                          onKeyDown={handleKeyDown}
+                          {...formField}
+                          onChange={(e) => formField.onChange(Number(e.target.value))}
+                        />
+                      ) : (
+                        <Input
+                          id={field}
+                          placeholder={`Enter ${field}`}
+                          onKeyDown={handleKeyDown}
+                          {...formField}
+                        />
+                      )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-              </div>
-            </form>
-          </div>
-        </Card>
+              />
+            ))}
+
+            <div className="flex justify-between pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={prevStep}
+                disabled={currentStep === 0}
+              >
+                Back
+              </Button>
+              {currentStep === formSteps.length - 1 ? (
+                <Button 
+                  type="submit"
+                  disabled={mutation.isPending}
+                >
+                  {mutation.isPending ? "Creating..." : "Create Startup"}
+                </Button>
+              ) : (
+                <Button type="button" onClick={nextStep}>
+                  Next
+                </Button>
+              )}
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

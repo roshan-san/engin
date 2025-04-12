@@ -1,6 +1,6 @@
 "use client";
 import { useSession, signOut } from "next-auth/react";
-import { LogOut, Laptop, MessageCircle, Search, Users, DollarSign } from "lucide-react";
+import { Laptop, Search, Users, MessageCircle, DollarSign, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -40,7 +40,7 @@ export function Sidebar() {
 
   return (
     <div className="flex flex-col w-16 bg-background border-r border-border p-2 h-screen">
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col">
         <TooltipProvider>
           <div className="space-y-1">
             {items.map((item) => {
@@ -69,7 +69,7 @@ export function Sidebar() {
         </TooltipProvider>
       </div>
       
-      <div className="space-y-1">
+      <div className="flex flex-col gap-2 pt-2 border-t border-border">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -86,7 +86,25 @@ export function Sidebar() {
             <TooltipTrigger asChild>
               <button 
                 onClick={handleSignOut}
-                className="flex justify-center p-3 w-full rounded-md transition-colors text-muted-foreground hover:bg-destructive hover:text-destructive-foreground border border-border/50 hover:border-destructive"
+                className="flex justify-center p-3 w-full rounded-md transition-colors text-muted-foreground hover:bg-destructive hover:text-destructive-foreground border border-border/50 hover:border-destructive mt-2"
+              >
+                <LogOut className="size-5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              Sign Out
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+      
+      <div className="mt-auto">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleSignOut}
+                className="flex justify-center p-3 rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground w-full"
               >
                 <LogOut className="size-5" />
               </button>
