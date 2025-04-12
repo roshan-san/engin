@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { FaGithub, FaGoogle } from "react-icons/fa";
-import useMultiStepForm from "@/hook/use-multistep";
+import useMultiStepForm from "@/hooks/use-multistep";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
