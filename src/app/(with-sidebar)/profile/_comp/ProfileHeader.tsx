@@ -10,7 +10,6 @@ export default function ProfileHeader({ user, isOwnProfile, acceptedConnections,
     <div className="relative border-b">
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
                     <div className="flex flex-row items-center sm:items-end gap-4 sm:gap-8">
-                        {/* Avatar with enhanced styling */}
                         <motion.div 
                             className="relative group"
                             initial={{ scale: 0.8, opacity: 0 }}
@@ -51,18 +50,6 @@ export default function ProfileHeader({ user, isOwnProfile, acceptedConnections,
                                         <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 transition-transform duration-300 group-hover:scale-110" />
                                         {acceptedConnections.length} Connections
                                     </Button>
-                                    
-                                    {/* Edit Profile Button - Only show if it's the user's own profile */}
-                                    {isOwnProfile && (
-                                        <Button
-                                            variant="outline"
-                                            className="ml-auto transition-all duration-300 hover:scale-105"
-                                            onClick={() => setIsEditing(true)}
-                                        >
-                                            <Edit2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5" />
-                                            Edit Profile
-                                        </Button>
-                                    )}
                                 </div>
                             </motion.div>
                         </div>

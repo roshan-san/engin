@@ -15,20 +15,17 @@ export default function Page() {
       </div>
       
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Main Content */}
         <div className="flex-1 space-y-8">
-          {/* Dashboard Stats */}
+
           <DashboardStats />
         </div>
         
-        {/* Side Panel - Pending Connections */}
         <div className="w-full md:w-80 lg:w-96">
           <PendingConnections />
         </div>
       </div>
       
-      {/* Floating Create Startup Button */}
-      <div className="fixed bottom-6 right-6">
+      <div className="fixed bottom-6 right-6 pb-16 md:pb-6 z-10">
         <StartupForm founderEmail={email || ""}/>
       </div>
     </div>

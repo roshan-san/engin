@@ -11,10 +11,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Building2, 
   MapPin, 
   Users, 
-  Briefcase, 
   DollarSign, 
   FileText, 
   ArrowRight,
@@ -148,10 +146,8 @@ export default function StartupPage() {
 
   return (
     <div className="container py-6">
-      {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-6">
         <div className="flex flex-col gap-6">
-          {/* Header Section */}
           <div className="flex flex-col md:flex-row justify-between items-start gap-4">
             <div className="space-y-3 flex-1">
               <div className="flex items-center gap-2">
@@ -229,9 +225,7 @@ export default function StartupPage() {
             )}
           </div>
 
-          {/* Info Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Founder Info */}
             <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
               <Avatar className="h-10 w-10 ring-2 ring-primary/20">
                 <AvatarImage src={startup.founder.avatar} alt={startup.founder.username} />
@@ -245,7 +239,6 @@ export default function StartupPage() {
               </div>
             </div>
 
-            {/* Problem & Solution */}
             <div className="md:col-span-2 grid grid-cols-2 gap-4">
               <div className="p-3 bg-muted/30 rounded-lg">
                 <div className="flex items-center gap-2 mb-1">
@@ -265,7 +258,6 @@ export default function StartupPage() {
             </div>
           </div>
 
-          {/* Stats Row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-3 bg-muted/30 rounded-lg">
               <div className="flex items-center gap-2 mb-1">
@@ -304,7 +296,6 @@ export default function StartupPage() {
             )}
           </div>
           
-          {/* Social Links */}
           {(startup.founder.linkedin || startup.founder.github) && (
             <div className="flex gap-2">
               {startup.founder.linkedin && (
@@ -328,7 +319,6 @@ export default function StartupPage() {
         </div>
       </div>
 
-      {/* Tabs Section */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full md:w-auto grid-cols-3">
           <TabsTrigger value="jobs">Open Positions</TabsTrigger>
@@ -336,17 +326,14 @@ export default function StartupPage() {
           <TabsTrigger value="investors">Investors</TabsTrigger>
         </TabsList>
 
-        {/* Jobs Tab */}
         <TabsContent value="jobs">
           <JobsTab startup={startup} isOwner={!!isOwner} onRefetch={refetch} />
         </TabsContent>
 
-        {/* Team Tab */}
         <TabsContent value="team">
           <TeamTab startup={startup} isOwner={!!isOwner} />
         </TabsContent>
 
-        {/* Investors Tab */}
         <TabsContent value="investors">
           <InvestorsTab startup={startup} isOwner={!!isOwner} />
         </TabsContent>

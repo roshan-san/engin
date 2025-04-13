@@ -182,7 +182,6 @@ export default function UserProfile() {
         }
     }, [user, refetch]);
 
-    // Handle interests update
     const handleUpdateInterests = useCallback(async (interests: string[]) => {
         if (!user) return;
         
@@ -223,7 +222,6 @@ export default function UserProfile() {
         }
     }, [user, refetch]);
 
-    // Handle profile save
     const handleSave = useCallback(async () => {
         if (!user) return;
         
@@ -251,7 +249,6 @@ export default function UserProfile() {
         }
     }, [user, editedProfile, refetch]);
 
-    // Loading state
     if (isLoading || queryLoading) return (
         <div className="min-h-screen p-6">
             <div className="max-w-6xl mx-auto space-y-6">
@@ -270,7 +267,6 @@ export default function UserProfile() {
         </div>
     );
 
-    // Error state
     if (error) return (
         <div className="min-h-screen p-6 flex items-center justify-center">
             <Card className="w-full max-w-md">
@@ -286,7 +282,6 @@ export default function UserProfile() {
         </div>
     );
 
-    // User not found state
     if (!user) return (
         <div className="min-h-screen p-6 flex items-center justify-center">
             <Card className="w-full max-w-md">
