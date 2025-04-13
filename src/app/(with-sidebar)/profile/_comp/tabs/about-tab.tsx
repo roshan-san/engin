@@ -4,8 +4,8 @@ import { DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Mail, MapPin, Briefcase, Edit2, X, Plus } from 'lucide-react';
-import React from 'react'
+import { Mail, MapPin, Briefcase, Edit2, X, Plus, Loader2 } from 'lucide-react';
+import React, { useState } from 'react'
 import { Badge } from '@/components/ui/badge';
 
 export default function About({
@@ -54,9 +54,19 @@ export default function About({
     setNewInterest: (interest: string) => void;
     handleUpdateInterests: (interests: string[]) => void;
 }) {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveWithLoading = async () => {
+    setIsSaving(true);
+    try {
+      await handleSave();
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                                    {/* Left Column - Bio and Contact */}
                                     <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                                         <Card className="transition-all duration-300 hover:shadow-sm border-border">
                                             <CardHeader className="p-4 sm:p-6">
@@ -85,7 +95,20 @@ export default function About({
                                                                             className="mt-2"
                                                                         />
                                                                     </div>
-                                                                    <Button onClick={handleSave} className="w-full">Save Changes</Button>
+                                                                    <Button 
+                                                                        onClick={handleSaveWithLoading} 
+                                                                        className="w-full"
+                                                                        disabled={isSaving}
+                                                                    >
+                                                                        {isSaving ? (
+                                                                            <>
+                                                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                                                Saving...
+                                                                            </>
+                                                                        ) : (
+                                                                            "Save Changes"
+                                                                        )}
+                                                                    </Button>
                                                                 </div>
                                                             </DialogContent>
                                                         </Dialog>
@@ -120,7 +143,6 @@ export default function About({
                                         </Card>
                                     </div>
 
-                                    {/* Right Column - Skills and Interests */}
                                     <div className="space-y-4 sm:space-y-6">
                                         <Card className="transition-all duration-300 hover:shadow-sm border-border">
                                             <CardHeader className="flex flex-row items-center justify-between p-4 sm:p-6">
