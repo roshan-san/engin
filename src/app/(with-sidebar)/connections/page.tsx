@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import axios from 'axios';
 import { User } from '@/types/types'; 
 import { Button } from '@/components/ui/button';
@@ -24,7 +23,6 @@ const CollaboratorSearch = () => {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [selectedInterest, setSelectedInterest] = useState<string>("all");
-    const [activeTab, setActiveTab] = useState<string>("all");
     const [allInterests, setAllInterests] = useState<string[]>(["all"]);
     const [page, setPage] = useState<number>(1);
 
@@ -52,9 +50,6 @@ const CollaboratorSearch = () => {
 
     const filteredUsers = data?.users.filter(user => {
         if (selectedInterest !== "all" && !user.areasofinterest.includes(selectedInterest)) {
-            return false;
-        }
-        if (activeTab !== "all" && user.type !== activeTab) {
             return false;
         }
         return true;
@@ -115,20 +110,6 @@ const CollaboratorSearch = () => {
                     </SelectContent>
                 </Select>
             </div>
-
-            <Tabs defaultValue="all" className="mb-6" onValueChange={setActiveTab} value={activeTab}>
-                <TabsList className="w-full max-w-md">
-                    <TabsTrigger value="all" className="flex-1">All</TabsTrigger>
-                    <TabsTrigger value="Creators/Collaborators" className="flex-1">Creators/Collaborators</TabsTrigger>
-                    <TabsTrigger value="Investors" className="flex-1">Investors</TabsTrigger>
-                    <TabsTrigger value="Mentors" className="flex-1">Mentors</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="all"></TabsContent>
-                <TabsContent value="Creators/Collaborators"></TabsContent>
-                <TabsContent value="Investors"></TabsContent>
-                <TabsContent value="Mentors"></TabsContent>
-            </Tabs>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredUsers.length > 0 ? (
