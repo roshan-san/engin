@@ -1,4 +1,5 @@
 import { ThemeToggle } from "../theme-toggle";
+import { MobileProfileDropdown } from "./prof-dropdown";
 
 export default function Header() {
   return (
@@ -7,7 +8,10 @@ export default function Header() {
         <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-400 to-gray-200 text-transparent bg-clip-text">
           Engin
         </h1>
-        <ThemeToggle />
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <MobileProfileDropdown />
+        </div>
       </div>
     </header>
   );

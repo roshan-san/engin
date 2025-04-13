@@ -100,6 +100,7 @@ export function StartupForm({ founderEmail }: StartupFormProps) {
     mutationFn: createStartup,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["startups"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboardStats"] });
       toast.success("Startup created successfully!");
       setOpen(false);
       form.reset();

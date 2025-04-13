@@ -1,8 +1,8 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -36,6 +36,7 @@ import { JobsTab } from "./components/JobsTab";
 import { TeamTab } from "./components/TeamTab";
 import { InvestorsTab } from "./components/InvestorsTab";
 import { Startup } from "./types";
+import axios from "axios";
 
 async function fetchStartup(id: string) {
   const response = await fetch(`/api/startup?id=${id}`);
@@ -47,9 +48,12 @@ async function fetchStartup(id: string) {
 
 export default function StartupPage() {
   const params = useParams();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState("jobs");
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   const { data: startup, isLoading, error, refetch } = useQuery({
     queryKey: ["startup", params.id],
@@ -57,6 +61,27 @@ export default function StartupPage() {
   });
 
   const isOwner = session?.user?.email && startup?.founder?.email && session.user.email === startup.founder.email;
+
+  const deleteStartupMutation = useMutation({
+    mutationFn: async (startupId: number) => {
+      const { data } = await axios.delete(`/api/startup`, {
+        data: { id: startupId }
+      });
+      return data;
+    },
+    onSuccess: () => {
+      toast.success("Startup deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["startup", params.id] });
+      queryClient.invalidateQueries({ queryKey: ["startups"] });
+      router.back();
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    },
+    onError: () => {
+      toast.error("Failed to delete startup. Please try again.");
+    },
+  });
 
   const handleApply = async (jobId: number) => {
     if (!session?.user?.id) {
@@ -124,6 +149,11 @@ export default function StartupPage() {
     }
   };
 
+  const handleDeleteStartup = async () => {
+    if (!startup) return;
+    deleteStartupMutation.mutate(startup.id);
+  };
+
   if (isLoading) {
     return (
       <div className="container py-8 space-y-8">
@@ -161,7 +191,7 @@ export default function StartupPage() {
             </div>
             
             {isOwner && (
-              <div className="flex items-start">
+              <div className="flex items-start gap-2">
                 <Dialog open={isEditing} onOpenChange={setIsEditing}>
                   <DialogTrigger asChild>
                     <Button variant="outline" size="sm" className="gap-2">
@@ -219,6 +249,45 @@ export default function StartupPage() {
                         <Button type="submit">Save Changes</Button>
                       </DialogFooter>
                     </form>
+                  </DialogContent>
+                </Dialog>
+
+                <Dialog open={isDeleting} onOpenChange={setIsDeleting}>
+                  <DialogTrigger asChild>
+                    <Button variant="destructive" size="sm" className="gap-2">
+                      <Trash2 className="h-4 w-4" />
+                      Delete
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Delete Startup</DialogTitle>
+                      <DialogDescription>
+                        Are you sure you want to delete this startup? This action cannot be undone.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setIsDeleting(false)}>
+                        Cancel
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        onClick={handleDeleteStartup}
+                        disabled={deleteStartupMutation.isPending}
+                      >
+                        {deleteStartupMutation.isPending ? (
+                          <>
+                            <Clock className="h-4 w-4 animate-spin" />
+                            Deleting...
+                          </>
+                        ) : (
+                          <>
+                            <Trash2 className="h-4 w-4" />
+                            Delete
+                          </>
+                        )}
+                      </Button>
+                    </DialogFooter>
                   </DialogContent>
                 </Dialog>
               </div>

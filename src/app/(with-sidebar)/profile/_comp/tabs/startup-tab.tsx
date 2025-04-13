@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Briefcase, Plus } from 'lucide-react'
 import React from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function StartupTab({
     user,
@@ -13,6 +14,8 @@ export default function StartupTab({
     isOwnProfile: boolean,
     setIsEditing: (isEditing: boolean) => void
 }) {
+  const router = useRouter();
+
   return (
     <>
     {user.startups && user.startups.length > 0 ? (
@@ -44,7 +47,12 @@ export default function StartupTab({
                         <p className="text-xs sm:text-sm text-muted-foreground">Add your startups to showcase your work</p>
                     </div>
                     {isOwnProfile && (
-                        <Button variant="outline" size="sm" className="mt-2 transition-all duration-300 hover:scale-105 h-8 sm:h-9 text-xs sm:text-sm">
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="mt-2 transition-all duration-300 hover:scale-105 h-8 sm:h-9 text-xs sm:text-sm"
+                            onClick={() => router.push('/dashboard')}
+                        >
                             <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5" />
                             Add Startup
                         </Button>
