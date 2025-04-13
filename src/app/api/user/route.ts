@@ -116,9 +116,7 @@ export async function GET(request: NextRequest): Promise<Response> {
             OR: [
                 { peru: { contains: search, mode: Prisma.QueryMode.insensitive } },
                 { username: { contains: search, mode: Prisma.QueryMode.insensitive } },
-                { bio: { contains: search, mode: Prisma.QueryMode.insensitive } },
-                { skills: { has: search } },
-                { areasofinterest: { has: search } }
+                { type: { contains: search, mode: Prisma.QueryMode.insensitive } }
             ]
         } : {};
 

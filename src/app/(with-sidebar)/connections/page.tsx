@@ -1,13 +1,13 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search } from "lucide-react";
+import { Search, Users } from "lucide-react";
 import axios from 'axios';
 import { User } from '@/types/types'; 
 import { Button } from '@/components/ui/button';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { useInView } from 'react-intersection-observer';
 
 interface UserResponse {
     users: User[];
@@ -21,55 +21,77 @@ interface UserResponse {
 
 const CollaboratorSearch = () => {
     const router = useRouter();
+    const [searchInput, setSearchInput] = useState<string>("");
     const [searchQuery, setSearchQuery] = useState<string>("");
-    const [selectedInterest, setSelectedInterest] = useState<string>("all");
-    const [allInterests, setAllInterests] = useState<string[]>(["all"]);
-    const [page, setPage] = useState<number>(1);
+    const { ref, inView } = useInView();
+    const [isSearching, setIsSearching] = useState(false);
 
-    const { data, isLoading, error } = useQuery<UserResponse>({
-        queryKey: ['users', page, searchQuery],
-        queryFn: async () => {
-            const response = await axios.get<UserResponse>(`/api/user?page=${page}&search=${searchQuery}`);
-            return response.data;
-        },
-    });
-
-    const handleLoadMore = () => {
-        if (data?.pagination.hasMore) {
-            setPage((prevPage) => prevPage + 1);
+    const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            setIsSearching(true);
+            setSearchQuery(searchInput);
+            setTimeout(() => setIsSearching(false), 1000);
         }
     };
 
+    const {
+        data,
+        isLoading,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useInfiniteQuery<UserResponse>({
+        queryKey: ['users', searchQuery],
+        queryFn: async ({ pageParam = 1 }) => {
+            const response = await axios.get<UserResponse>(`/api/user?page=${pageParam}&search=${searchQuery}`);
+            return response.data;
+        },
+        getNextPageParam: (lastPage) => {
+            if (lastPage.pagination.hasMore) {
+                return lastPage.pagination.page + 1;
+            }
+            return undefined;
+        },
+        initialPageParam: 1,
+        gcTime: 1000 * 60 * 30, // Cache persists for 30 minutes
+    });
+
     useEffect(() => {
-        const interests = new Set<string>();
-        data?.users.forEach((user: User) => {
-            user.areasofinterest.forEach((interest: string) => interests.add(interest));
-        });
-        setAllInterests(["all", ...Array.from(interests)]);
-    }, [data?.users]);
-
-    const filteredUsers = data?.users.filter(user => {
-        if (selectedInterest !== "all" && !user.areasofinterest.includes(selectedInterest)) {
-            return false;
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
         }
-        return true;
-    }) || [];
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    if (isLoading) {
+    const filteredUsers = data?.pages.flatMap(page => page.users) || [];
+
+    // Initial loading state
+    if (isLoading && !data) {
         return (
             <div className="w-full max-w-6xl mx-auto p-6">
-                <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
+                    <Users className="h-12 w-12 animate-pulse text-muted-foreground" />
+                    <p className="text-muted-foreground">Loading users...</p>
                 </div>
             </div>
         );
     }
 
+    // Error state
     if (error) {
         return (
             <div className="w-full max-w-6xl mx-auto p-6">
-                <div className="text-center text-destructive">
-                    Error loading users. Please try again later.
+                <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
+                    <div className="text-destructive text-center">
+                        <p className="text-lg font-semibold">Error loading users</p>
+                        <p className="text-sm text-muted-foreground">Please try again later</p>
+                    </div>
+                    <Button 
+                        onClick={() => window.location.reload()}
+                        variant="outline"
+                    >
+                        Retry
+                    </Button>
                 </div>
             </div>
         );
@@ -85,30 +107,18 @@ const CollaboratorSearch = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div className="md:col-span-2 relative">
-                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Search className={`absolute left-3 top-2.5 h-4 w-4 ${isSearching ? 'animate-pulse text-primary' : 'text-muted-foreground'}`} />
                     <Input
-                        placeholder="Search by name, skills, or interests..."
+                        placeholder="Search by name, username, or type..."
                         className="pl-10"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        onKeyDown={handleSearch}
                     />
+                    <p className="text-xs text-muted-foreground mt-1">
+                        Press Enter to search. Try searching for "Investor", "Mentor", or someone's name
+                    </p>
                 </div>
-                <Button onClick={() => setPage(1)}>Search</Button>
-
-                <Select
-                    value={selectedInterest}
-                    onValueChange={setSelectedInterest}
-                    defaultValue="all"
-                >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Filter by interest" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {allInterests.map(interest => (
-                            <SelectItem key={interest} value={interest}>{interest}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -116,8 +126,7 @@ const CollaboratorSearch = () => {
                     filteredUsers.map((user, index) => (
                         <div 
                             key={user.username} 
-                            className="animate-wiggle cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-lg" 
-                            style={{ animationDelay: `${(index % 3) * 100}ms` }}
+                            className="cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-lg" 
                             onClick={() => router.push(`/profile/${user.username}`)}
                         >
                             <div className="bg-card p-6 rounded-lg shadow-sm">
@@ -130,6 +139,9 @@ const CollaboratorSearch = () => {
                                     <div>
                                         <h3 className="font-semibold">{user.peru}</h3>
                                         <p className="text-sm text-muted-foreground">@{user.username}</p>
+                                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                                            {user.type}
+                                        </span>
                                     </div>
                                 </div>
                                 <div className="space-y-2">
@@ -146,19 +158,25 @@ const CollaboratorSearch = () => {
                         </div>
                     ))
                 ) : (
-                    <div className="col-span-full text-center py-12">
-                        <p className="text-muted-foreground">No collaborators found matching your criteria.</p>
+                    <div className="col-span-full flex flex-col items-center justify-center py-16 space-y-4">
+                        <p className="text-lg text-muted-foreground">No connections found</p>
+                        <p className="text-sm text-muted-foreground text-center max-w-md">
+                            {searchQuery 
+                                ? `No results found for "${searchQuery}". Try searching for a name or type.`
+                                : "Start searching to find connections."}
+                        </p>
                     </div>
                 )}
             </div>
 
-            {data?.pagination.hasMore && (
-                <div className="flex justify-center mt-6">
-                    <Button onClick={handleLoadMore}>
-                        Load More
-                    </Button>
-                </div>
-            )}
+            <div ref={ref} className="h-10 flex items-center justify-center mt-6">
+                {isFetchingNextPage && (
+                    <div className="flex items-center space-x-2">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                        <span className="text-sm text-muted-foreground">Loading more...</span>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
