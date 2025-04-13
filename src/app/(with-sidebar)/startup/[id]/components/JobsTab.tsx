@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Briefcase, Plus, Edit, Trash2, Loader2 } from "lucide-react";
+import { Briefcase, Plus, Edit, Trash2, Loader2, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Startup } from "../types";
 import axios from "axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 interface JobsTabProps {
   startup: Startup;
@@ -36,6 +36,22 @@ export function JobsTab({ startup, isOwner, onRefetch }: JobsTabProps) {
   } | null>(null);
   
   const queryClient = useQueryClient();
+
+  // Query to fetch user's job applications
+  const { data: userApplications, isLoading: isLoadingApplications } = useQuery({
+    queryKey: ["job-applications"],
+    queryFn: async () => {
+      const { data } = await axios.get("/api/job-application");
+      return data;
+    },
+    enabled: !isOwner, // Only fetch if user is not the owner
+  });
+
+  // Helper function to check if user has applied to a job
+  const hasAppliedToJob = (jobId: number) => {
+    if (!userApplications) return false;
+    return userApplications.some((app: any) => app.jobId === jobId);
+  };
 
   const addJobMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -480,12 +496,18 @@ export function JobsTab({ startup, isOwner, onRefetch }: JobsTabProps) {
                     <Button 
                       className="w-full gap-2" 
                       onClick={() => handleApply(job.id)}
-                      disabled={applyMutation.isPending}
+                      disabled={applyMutation.isPending || hasAppliedToJob(job.id)}
+                      variant={hasAppliedToJob(job.id) ? "outline" : "default"}
                     >
                       {applyMutation.isPending ? (
                         <>
                           <Loader2 className="h-4 w-4 animate-spin" />
                           Applying...
+                        </>
+                      ) : hasAppliedToJob(job.id) ? (
+                        <>
+                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          Applied
                         </>
                       ) : (
                         <>
