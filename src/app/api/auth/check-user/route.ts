@@ -4,7 +4,6 @@ import { auth } from "@/auth";
 
 export async function GET(request: NextRequest): Promise<Response> {
     try {
-        // Get the current session
         const session = await auth();
 
         if (!session?.user?.email) {
@@ -13,7 +12,6 @@ export async function GET(request: NextRequest): Promise<Response> {
             }, { status: 401 });
         }
 
-        // Check if user exists in database
         const user = await prisma.user.findUnique({
             where: { email: session.user.email },
             select: {

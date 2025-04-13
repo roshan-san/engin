@@ -10,9 +10,20 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useQuery } from "@tanstack/react-query";
 
 function Ava() {
   const { data: session } = useSession();
+  const { data: userData } = useQuery({
+    queryKey: ["user", session?.user?.email],
+    queryFn: async () => {
+      if (!session?.user?.email) return null;
+      const response = await fetch(`/api/user?email=${session.user.email}`);
+      if (!response.ok) throw new Error('Failed to fetch user');
+      return response.json();
+    },
+    enabled: !!session?.user?.email,
+  });
 
   return (
     <Avatar className="h-8 w-8 rounded-lg">
@@ -25,6 +36,16 @@ function Ava() {
 export function LeftBar() {
   const { data: session } = useSession();
   const pathname = usePathname();
+  const { data: userData } = useQuery({
+    queryKey: ["user", session?.user?.email],
+    queryFn: async () => {
+      if (!session?.user?.email) return null;
+      const response = await fetch(`/api/user?email=${session.user.email}`);
+      if (!response.ok) throw new Error('Failed to fetch user');
+      return response.json();
+    },
+    enabled: !!session?.user?.email,
+  });
 
   const items = [
     { title: "Dashboard", url: "/dashboard", icon: Laptop },
@@ -75,12 +96,12 @@ export function LeftBar() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href="/myprofile" className="flex justify-center p-3 rounded-md hover:bg-accent hover:text-accent-foreground">
+                <Link href={`/profile/${userData?.username || ''}`} className="flex justify-center p-3 rounded-md hover:bg-accent hover:text-accent-foreground">
                   <Ava />
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="right">
-                {session?.user?.name || "Profile"}
+                {userData?.peru || "Profile"}
               </TooltipContent>
             </Tooltip>
             

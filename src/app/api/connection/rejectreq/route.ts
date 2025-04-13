@@ -2,7 +2,6 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
-
 export async function POST(request: NextRequest) {
   try {
     const session = await auth();
@@ -41,15 +40,15 @@ export async function POST(request: NextRequest) {
 
     const updatedConnection = await prisma.connection.update({
       where: { id: connectionId },
-      data: { status: "accepted" },
+      data: { status: "rejected" },
     });
 
     return NextResponse.json(updatedConnection);
   } catch (error) {
-    console.error("Error accepting connection:", error);
+    console.error("Error rejecting connection:", error);
     return NextResponse.json(
-      { error: "Failed to accept connection" },
+      { error: "Failed to reject connection" },
       { status: 500 }
     );
   }
-}
+} 

@@ -21,6 +21,7 @@ const userSchema = z.object({
 
 export async function GET(request: NextRequest): Promise<Response> {
     const email = request.nextUrl.searchParams.get("email");
+    const username = request.nextUrl.searchParams.get("username");
     const page = parseInt(request.nextUrl.searchParams.get("page") || "1");
     const search = request.nextUrl.searchParams.get("search") || "";
     const limit = 10; // Number of users per page
@@ -30,6 +31,48 @@ export async function GET(request: NextRequest): Promise<Response> {
         if (email) {
             const user = await prisma.user.findUnique({
                 where: { email },
+                include: {
+                    startups: true,
+                    experiences: true,
+                    sentConnections: {
+                        include: {
+                            receiver: {
+                                select: {
+                                    id: true,
+                                    peru: true,
+                                    username: true,
+                                    avatar: true,
+                                    type: true
+                                }
+                            }
+                        }
+                    },
+                    receivedConnections: {
+                        include: {
+                            sender: {
+                                select: {
+                                    id: true,
+                                    peru: true,
+                                    username: true,
+                                    avatar: true,
+                                    type: true
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            if (!user) {
+                return NextResponse.json({ error: "User not found" }, { status: 404 });
+            }
+            return NextResponse.json(user);
+        }
+        
+        // If username is provided, fetch single user by username
+        if (username) {
+            const user = await prisma.user.findUnique({
+                where: { username },
                 include: {
                     startups: true,
                     experiences: true,
