@@ -8,6 +8,7 @@ import axios from 'axios';
 import { User } from '@/types/types'; 
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 interface UserResponse {
     users: User[];
@@ -20,6 +21,7 @@ interface UserResponse {
 }
 
 const CollaboratorSearch = () => {
+    const router = useRouter();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [selectedInterest, setSelectedInterest] = useState<string>("all");
     const [activeTab, setActiveTab] = useState<string>("all");
@@ -131,7 +133,12 @@ const CollaboratorSearch = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredUsers.length > 0 ? (
                     filteredUsers.map((user, index) => (
-                        <div key={user.username} className="animate-wiggle" style={{ animationDelay: `${(index % 3) * 100}ms` }}>
+                        <div 
+                            key={user.username} 
+                            className="animate-wiggle cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-lg" 
+                            style={{ animationDelay: `${(index % 3) * 100}ms` }}
+                            onClick={() => router.push(`/profile/${user.username}`)}
+                        >
                             <div className="bg-card p-6 rounded-lg shadow-sm">
                                 <div className="flex items-center gap-4 mb-4">
                                     <img 
