@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Briefcase, Plus, Edit, Trash2 } from "lucide-react";
+import { Briefcase, Plus, Edit, Trash2, Loader2, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Startup } from "../types";
 import axios from "axios";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 interface JobsTabProps {
   startup: Startup;
@@ -33,6 +34,40 @@ export function JobsTab({ startup, isOwner, onRefetch }: JobsTabProps) {
     equity: number;
     type: string;
   } | null>(null);
+  
+  const queryClient = useQueryClient();
+
+  // Query to fetch user's job applications
+  const { data: userApplications, isLoading: isLoadingApplications } = useQuery({
+    queryKey: ["job-applications"],
+    queryFn: async () => {
+      const { data } = await axios.get("/api/job-application");
+      return data;
+    },
+    enabled: !isOwner, // Only fetch if user is not the owner
+  });
+
+  // Helper function to check if user has applied to a job
+  const hasAppliedToJob = (jobId: number) => {
+    if (!userApplications) return false;
+    return userApplications.some((app: any) => app.jobId === jobId);
+  };
+
+  const addJobMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await axios.post("/api/job", data);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Job added successfully!");
+      setIsAddingJob(false);
+      onRefetch();
+    },
+    onError: (error: any) => {
+      const errorMessage = error.response?.data?.error || "Failed to add job. Please try again.";
+      toast.error(errorMessage);
+    }
+  });
 
   const handleAddJob = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,30 +88,51 @@ export function JobsTab({ startup, isOwner, onRefetch }: JobsTabProps) {
         startupId: startup.id,
       };
       
-      await axios.post("/api/job", data);
-      
-      toast.success("Job added successfully!");
-      setIsAddingJob(false);
-      onRefetch();
+      addJobMutation.mutate(data);
     } catch (error) {
       toast.error("Failed to add job. Please try again.");
     }
   };
 
-  const handleDeleteJob = async () => {
-    if (!selectedJobId) return;
-    
-    try {
-      await axios.delete(`/api/job/${selectedJobId}`);
-      
+  const deleteJobMutation = useMutation({
+    mutationFn: async (jobId: number) => {
+      const response = await axios.delete(`/api/job/${jobId}`);
+      return response.data;
+    },
+    onSuccess: () => {
       toast.success("Job deleted successfully!");
       setIsDeletingJob(false);
       setSelectedJobId(null);
       onRefetch();
-    } catch (error) {
-      toast.error("Failed to delete job. Please try again.");
+    },
+    onError: (error: any) => {
+      const errorMessage = error.response?.data?.error || "Failed to delete job. Please try again.";
+      toast.error(errorMessage);
     }
+  });
+
+  const handleDeleteJob = async () => {
+    if (!selectedJobId) return;
+    deleteJobMutation.mutate(selectedJobId);
   };
+
+  const editJobMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await axios.put(`/api/job`, data);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Job updated successfully!");
+      setIsEditingJob(false);
+      setSelectedJob(null);
+      onRefetch();
+    },
+    onError: (error: any) => {
+      console.error("Error updating job:", error);
+      const errorMessage = error.response?.data?.error || "Failed to update job. Please try again.";
+      toast.error(errorMessage);
+    }
+  });
 
   const handleEditJob = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,16 +153,7 @@ export function JobsTab({ startup, isOwner, onRefetch }: JobsTabProps) {
         type: formData.get("type"),
       };
       
-      const response = await axios.put(`/api/job`, data);
-      
-      if (response.status === 200) {
-        toast.success("Job updated successfully!");
-        setIsEditingJob(false);
-        setSelectedJob(null);
-        onRefetch();
-      } else {
-        throw new Error("Failed to update job");
-      }
+      editJobMutation.mutate(data);
     } catch (error: any) {
       console.error("Error updating job:", error);
       const errorMessage = error.response?.data?.error || "Failed to update job. Please try again.";
@@ -114,13 +161,24 @@ export function JobsTab({ startup, isOwner, onRefetch }: JobsTabProps) {
     }
   };
 
-  const handleApply = async (jobId: number) => {
-    try {
-      await axios.post(`/api/job/${jobId}/apply`);
+  const applyMutation = useMutation({
+    mutationFn: async (jobId: number) => {
+      const { data } = await axios.post(`/api/job-application`, { jobId });
+      return data;
+    },
+    onSuccess: () => {
       toast.success("Application submitted successfully!");
-    } catch (error) {
-      toast.error("Failed to submit application. Please try again.");
+      // Invalidate relevant queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ["job-applications"] });
+    },
+    onError: (error: any) => {
+      const errorMessage = error.response?.data?.error || "Failed to submit application. Please try again.";
+      toast.error(errorMessage);
     }
+  });
+
+  const handleApply = async (jobId: number) => {
+    applyMutation.mutate(jobId);
   };
 
   return (
@@ -194,7 +252,16 @@ export function JobsTab({ startup, isOwner, onRefetch }: JobsTabProps) {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button type="submit">Add Position</Button>
+                  <Button type="submit" disabled={addJobMutation.isPending}>
+                    {addJobMutation.isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Adding...
+                      </>
+                    ) : (
+                      "Add Position"
+                    )}
+                  </Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -356,7 +423,16 @@ export function JobsTab({ startup, isOwner, onRefetch }: JobsTabProps) {
                               </div>
                             </div>
                             <DialogFooter>
-                              <Button type="submit">Save Changes</Button>
+                              <Button type="submit" disabled={editJobMutation.isPending}>
+                                {editJobMutation.isPending ? (
+                                  <>
+                                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                    Saving...
+                                  </>
+                                ) : (
+                                  "Save Changes"
+                                )}
+                              </Button>
                             </DialogFooter>
                           </form>
                         </DialogContent>
@@ -395,8 +471,22 @@ export function JobsTab({ startup, isOwner, onRefetch }: JobsTabProps) {
                             }}>
                               Cancel
                             </Button>
-                            <Button variant="destructive" onClick={handleDeleteJob}>
-                              Delete
+                            <Button 
+                              variant="destructive" 
+                              onClick={handleDeleteJob}
+                              disabled={deleteJobMutation.isPending}
+                            >
+                              {deleteJobMutation.isPending ? (
+                                <>
+                                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                  Deleting...
+                                </>
+                              ) : (
+                                <>
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Delete
+                                </>
+                              )}
                             </Button>
                           </DialogFooter>
                         </DialogContent>
@@ -406,9 +496,25 @@ export function JobsTab({ startup, isOwner, onRefetch }: JobsTabProps) {
                     <Button 
                       className="w-full gap-2" 
                       onClick={() => handleApply(job.id)}
+                      disabled={applyMutation.isPending || hasAppliedToJob(job.id)}
+                      variant={hasAppliedToJob(job.id) ? "outline" : "default"}
                     >
-                      <Briefcase className="h-4 w-4" />
-                      Apply Now
+                      {applyMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Applying...
+                        </>
+                      ) : hasAppliedToJob(job.id) ? (
+                        <>
+                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          Applied
+                        </>
+                      ) : (
+                        <>
+                          <Briefcase className="h-4 w-4" />
+                          Apply Now
+                        </>
+                      )}
                     </Button>
                   )}
                 </div>
