@@ -1,10 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Plus } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,19 +22,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
-
-interface StartupFormData {
-  name: string;
-  description: string;
-  problem: string;
-  solution: string;
-  industry: string;
-  location: string;
-  teamSize: number;
-  patent: string;
-  funding: number;
-  founderEmail: string;
-}
+import { useStartup, StartupFormData } from "@/hooks/createStartup";
 
 interface StartupFormProps {
   founderEmail: string;
@@ -70,16 +55,20 @@ const formSteps = [
   }
 ];
 
-async function createStartup(data: StartupFormData) {
-  const response = await axios.post("/api/startup", data);
-  return response.data;
-}
-
 export function StartupForm({ founderEmail }: StartupFormProps) {
-  const queryClient = useQueryClient();
   const [currentStep, setCurrentStep] = useState(0);
   const [open, setOpen] = useState(false);
-  const progress = ((currentStep + 1) / formSteps.length) * 100;
+  const { createStartup, isPending, isSuccess } = useStartup();
+  
+  const progress = ((currentStep) / formSteps.length) * 100;
+
+  useEffect(() => {
+    if (isSuccess) {
+      setOpen(false);
+      form.reset();
+    setCurrentStep(0);
+    }
+  }, [isSuccess]);
 
   const form = useForm<StartupFormData>({
     defaultValues: {
@@ -96,52 +85,32 @@ export function StartupForm({ founderEmail }: StartupFormProps) {
     },
   });
 
-  const mutation = useMutation({
-    mutationFn: createStartup,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["startups"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboardStats"] });
-      toast.success("Startup created successfully!");
-      setOpen(false);
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (!isOpen) {
       form.reset();
-    },
-    onError: (error) => {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "Failed to create startup");
-      } else {
-        toast.error("Failed to create startup");
-      }
+    setCurrentStep(0);;
     }
-  });
+  };
 
+ 
   const onSubmit = (values: StartupFormData) => {
-    mutation.mutate({
+    createStartup({
       ...values,
       founderEmail: founderEmail,
     });
   };
 
   const nextStep = () => {
-    const currentFields = formSteps[currentStep].fields;
-    const isValid = currentFields.every((field) => {
-      const value = form.getValues(field as keyof StartupFormData);
-      if (field === 'patent' || field === 'funding') {
-        return value !== undefined && value !== null;
-      }
-      return value !== undefined && value !== null && value !== "";
-    });
-    
-    if (isValid) {
-      if (currentStep === formSteps.length - 1) {
-        form.handleSubmit(onSubmit)();
-      } else {
-        setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
-      }
+    if (currentStep < formSteps.length - 1) {
+      setCurrentStep(currentStep + 1);
     }
   };
 
   const prevStep = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 0));
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
   };
 
   const handleKeyDown = (e:any) => {
@@ -160,13 +129,23 @@ export function StartupForm({ founderEmail }: StartupFormProps) {
           if (firstField) firstField.focus();
         }, 100);
       } else {
-        form.handleSubmit(onSubmit)();
+        
       }
     }
   };
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (currentStep === formSteps.length - 1) {
+      form.handleSubmit(onSubmit)(e);
+    } else {
+      nextStep();
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button className="flex items-center gap-2">
           <Plus className="size-4" />
@@ -180,7 +159,7 @@ export function StartupForm({ founderEmail }: StartupFormProps) {
           <Progress value={progress} className="mt-2" />
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleFormSubmit} className="space-y-4">
             {formSteps[currentStep].fields.map((field) => (
               <FormField
                 key={field}
@@ -199,6 +178,7 @@ export function StartupForm({ founderEmail }: StartupFormProps) {
                           className="min-h-[100px]"
                           onKeyDown={handleKeyDown}
                           {...formField}
+                          disabled={isPending}
                         />
                       ) : field === "teamSize" || field === "funding" ? (
                         <Input
@@ -209,6 +189,7 @@ export function StartupForm({ founderEmail }: StartupFormProps) {
                           onKeyDown={handleKeyDown}
                           {...formField}
                           onChange={(e) => formField.onChange(Number(e.target.value))}
+                          disabled={isPending}
                         />
                       ) : (
                         <Input
@@ -216,6 +197,7 @@ export function StartupForm({ founderEmail }: StartupFormProps) {
                           placeholder={`Enter ${field}`}
                           onKeyDown={handleKeyDown}
                           {...formField}
+                          disabled={isPending}
                         />
                       )}
                     </FormControl>
@@ -230,22 +212,18 @@ export function StartupForm({ founderEmail }: StartupFormProps) {
                 type="button"
                 variant="outline"
                 onClick={prevStep}
-                disabled={currentStep === 0}
+                disabled={currentStep === 0 || isPending}
               >
                 Back
               </Button>
-              {currentStep === formSteps.length - 1 ? (
-                <Button 
-                  type="submit"
-                  disabled={mutation.isPending}
-                >
-                  {mutation.isPending ? "Creating..." : "Create Startup"}
-                </Button>
-              ) : (
-                <Button type="button" onClick={nextStep}>
-                  Next
-                </Button>
-              )}
+              <Button 
+                type="submit"
+                disabled={isPending}
+              >
+                {currentStep === formSteps.length - 1 
+                  ? (isPending ? "Creating..." : "Create Startup") 
+                  : "Next"}
+              </Button>
             </div>
           </form>
         </Form>

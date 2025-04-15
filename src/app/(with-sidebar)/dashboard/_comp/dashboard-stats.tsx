@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { Users, Building2, TrendingUp } from "lucide-react";
-import { useDashboardStats } from "@/hooks/useDashboardStats";
+import { useDashboardStats } from "@/hooks/useStats";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 
