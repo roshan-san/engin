@@ -125,11 +125,18 @@ export function StartupForm({ founderEmail }: StartupFormProps) {
     const currentFields = formSteps[currentStep].fields;
     const isValid = currentFields.every((field) => {
       const value = form.getValues(field as keyof StartupFormData);
+      if (field === 'patent' || field === 'funding') {
+        return value !== undefined && value !== null;
+      }
       return value !== undefined && value !== null && value !== "";
     });
     
     if (isValid) {
-      setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
+      if (currentStep === formSteps.length - 1) {
+        form.handleSubmit(onSubmit)();
+      } else {
+        setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
+      }
     }
   };
 
