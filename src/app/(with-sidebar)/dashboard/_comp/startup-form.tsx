@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Plus } from "lucide-react";
-import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +22,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
-import { useStartup, StartupFormData } from "@/hooks/use-startup";
+import { useStartup, StartupFormData } from "@/hooks/createStartup";
 
 interface StartupFormProps {
   founderEmail: string;
@@ -87,25 +86,8 @@ export function StartupForm({ founderEmail }: StartupFormProps) {
   };
 
   const nextStep = () => {
-    const currentFields = formSteps[currentStep].fields;
-    const isValid = currentFields.every((field) => {
-      const value = form.getValues(field as keyof StartupFormData);
-      if (field === 'patent' || field === 'funding') {
-        return value !== undefined && value !== null;
-      }
-      return value !== undefined && value !== null && value !== "";
-    });
-    
-    if (isValid) {
-      if (currentStep === formSteps.length - 1) {
-        const formElement = document.querySelector('form');
-        if (formElement) {
-          const submitEvent = new Event('submit', { cancelable: true, bubbles: true });
-          formElement.dispatchEvent(submitEvent);
-        }
-      } else {
-        setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
-      }
+    if (currentStep < formSteps.length - 1) {
+      setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
     }
   };
 

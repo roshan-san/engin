@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import SearchBar from '@/app/(with-sidebar)/explore/_comp/SearchBar';
 import StartupCard from '@/components/StartupCard';
-import { useStartups } from '@/hooks/useStartups';
+import { useStartups } from '@/hooks/use-startups';
 import { Loader2 } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 
