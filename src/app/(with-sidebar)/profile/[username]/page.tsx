@@ -1,54 +1,21 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { DialogHeader } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { useQuery } from "@tanstack/react-query";
 import { User, Briefcase, Building2, Users, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import ProfileHeader from "../_comp/ProfileHeader";
 import About from "../_comp/tabs/about-tab";
 import ExpTab from "../_comp/tabs/exp-tab";
 import StartupTab from "../_comp/tabs/startup-tab";
-
-
-interface UserProfile {
-    id: string;
-    username: string;
-    email: string;
-    name: string;
-    bio: string;
-    avatar: string;
-    connections: {
-        id: string;
-        username: string;
-        name: string;
-        avatar: string;
-    }[];
-    skills?: string[];
-    areasofinterest?: string[];
-    startups?: any[];
-    experiences?: any[];
-    receivedConnections?: any[];
-    peru?: string;
-    type?: string;
-    location?: string;
-    linkedin?: string;
-    github?: string;
-}
-
-const fetchUser = async (username: string | null | undefined) => {
-    if (!username) throw new Error('Username is required');
-    const response = await fetch(`/api/user?username=${username}`);
-    if (!response.ok) throw new Error('Failed to fetch user');
-    return response.json();
-};
+import { useUserProfile } from "@/hooks/user/useUserProfile";
 
 export default function UserProfile() {
     const params = useParams();
@@ -57,199 +24,36 @@ export default function UserProfile() {
     const currentUserEmail = session?.user?.email;
     
     const [activeTab, setActiveTab] = useState('about');
-    const [isEditing, setIsEditing] = useState(false);
-    const [isEditingSkills, setIsEditingSkills] = useState(false);
-    const [isEditingInterests, setIsEditingInterests] = useState(false);
-    const [newSkill, setNewSkill] = useState('');
-    const [newInterest, setNewInterest] = useState('');
-    const [showConnections, setShowConnections] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [editedProfile, setEditedProfile] = useState<Partial<UserProfile>>({});
-
-    const { data: user, isLoading: queryLoading, error, refetch } = useQuery({
-        queryKey: ['user', username],
-        queryFn: () => fetchUser(username),
-        enabled: !!username,
-    });
-
-    useEffect(() => {
-        if (!queryLoading) {
-            setIsLoading(false);
-        }
-    }, [queryLoading]);
+    
+    const {
+        user,
+        isLoading,
+        error,
+        isEditing,
+        setIsEditing,
+        handleSave,
+        isEditingSkills,
+        setIsEditingSkills,
+        newSkill,
+        setNewSkill,
+        handleUpdateSkills,
+        isEditingInterests,
+        setIsEditingInterests,
+        newInterest,
+        setNewInterest,
+        handleUpdateInterests,
+        showConnections,
+        setShowConnections,
+        acceptedConnections,
+        isUpdating,
+        updateError
+    } = useUserProfile(username);
 
     const isOwnProfile = useMemo(() => {
         return currentUserEmail === user?.email;
     }, [currentUserEmail, user?.email]);
 
-    const acceptedConnections = useMemo(() => {
-        return user?.receivedConnections?.filter(
-            (connection: any) => connection.status === "accepted"
-        ) || [];
-    }, [user?.receivedConnections]);
-
-    useEffect(() => {
-        if (user) {
-            setEditedProfile(user);
-        }
-    }, [user]);
-
-    const handleUpdateProfile = useCallback(async (formData: FormData) => {
-        if (!user) return;
-        
-        try {
-            // Validate required fields
-            const requiredFields = ['peru', 'username', 'type', 'location'];
-            const missingFields = requiredFields.filter(field => !formData.get(field));
-            
-            if (missingFields.length > 0) {
-                console.error(`Please fill in all required fields: ${missingFields.join(', ')}`);
-                return;
-            }
-
-            // Validate URLs if provided
-            const linkedin = formData.get('linkedin') as string;
-            const github = formData.get('github') as string;
-            
-            if (linkedin && !linkedin.startsWith('https://www.linkedin.com/')) {
-                console.error('Please enter a valid LinkedIn URL');
-                return;
-            }
-            
-            if (github && !github.startsWith('https://github.com/')) {
-                console.error('Please enter a valid GitHub URL');
-                return;
-            }
-
-            const response = await fetch('/api/user', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id: user.id,
-                    ...Object.fromEntries(formData)
-                })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to update profile');
-            }
-            
-            setIsEditing(false);
-            refetch();
-        } catch (error: any) {
-            console.error(error.message || 'Failed to update profile');
-        }
-    }, [user, refetch]);
-
-    const handleUpdateSkills = useCallback(async (skills: string[]) => {
-        if (!user) return;
-        
-        try {
-            // Validate skills
-            if (skills.some(skill => skill.length < 2)) {
-                console.error('Skills must be at least 2 characters long');
-                return;
-            }
-
-            if (skills.some(skill => skill.length > 50)) {
-                console.error('Skills must be less than 50 characters long');
-                return;
-            }
-
-            // Remove duplicates
-            const uniqueSkills = [...new Set(skills)];
-
-            const response = await fetch('/api/user', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id: user.id,
-                    skills: uniqueSkills
-                })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to update skills');
-            }
-            
-            setIsEditingSkills(false);
-            setNewSkill('');
-            refetch();
-        } catch (error: any) {
-            console.error(error.message || 'Failed to update skills');
-        }
-    }, [user, refetch]);
-
-    const handleUpdateInterests = useCallback(async (interests: string[]) => {
-        if (!user) return;
-        
-        try {
-            // Validate interests
-            if (interests.some(interest => interest.length < 2)) {
-                console.error('Interests must be at least 2 characters long');
-                return;
-            }
-
-            if (interests.some(interest => interest.length > 50)) {
-                console.error('Interests must be less than 50 characters long');
-                return;
-            }
-
-            // Remove duplicates
-            const uniqueInterests = [...new Set(interests)];
-
-            const response = await fetch('/api/user', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id: user.id,
-                    areasofinterest: uniqueInterests
-                })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to update interests');
-            }
-            
-            setIsEditingInterests(false);
-            setNewInterest('');
-            refetch();
-        } catch (error: any) {
-            console.error(error.message || 'Failed to update areas of interest');
-        }
-    }, [user, refetch]);
-
-    const handleSave = useCallback(async () => {
-        if (!user) return;
-        
-        try {
-            const response = await fetch('/api/user', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id: user.id,
-                    ...editedProfile
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to update profile');
-            }
-            
-            const updatedProfile = await response.json();
-            setEditedProfile(updatedProfile);
-            setIsEditing(false);
-            refetch();
-        } catch (error: any) {
-            console.error(error.message || 'Failed to update profile');
-        }
-    }, [user, editedProfile, refetch]);
-
-    if (isLoading || queryLoading) return (
+    if (isLoading) return (
         <div className="min-h-screen p-6">
             <div className="max-w-6xl mx-auto space-y-6">
                 <Skeleton className="h-8 w-48" />
@@ -299,7 +103,16 @@ export default function UserProfile() {
 
     return (
         <div className="min-h-screen bg-background">
-            <ProfileHeader user={user} isOwnProfile={isOwnProfile} acceptedConnections={acceptedConnections} setShowConnections={setShowConnections} setIsEditing={setIsEditing} />
+            <ProfileHeader 
+                user={user} 
+                isOwnProfile={isOwnProfile} 
+                acceptedConnections={acceptedConnections} 
+                setShowConnections={setShowConnections} 
+                setIsEditing={setIsEditing}
+                handleSave={handleSave}
+                isUpdating={isUpdating}
+                updateError={updateError}
+            />
             <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
                 <div className="border-b mb-4 sm:mb-6 overflow-x-auto">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -334,8 +147,6 @@ export default function UserProfile() {
                                     isOwnProfile={isOwnProfile} 
                                     isEditing={isEditing} 
                                     setIsEditing={setIsEditing}
-                                    editedProfile={editedProfile} 
-                                    setEditedProfile={setEditedProfile} 
                                     handleSave={handleSave} 
                                     isEditingSkills={isEditingSkills} 
                                     setIsEditingSkills={setIsEditingSkills} 
@@ -346,7 +157,9 @@ export default function UserProfile() {
                                     setIsEditingInterests={setIsEditingInterests} 
                                     newInterest={newInterest} 
                                     setNewInterest={setNewInterest} 
-                                    handleUpdateInterests={handleUpdateInterests} 
+                                    handleUpdateInterests={handleUpdateInterests}
+                                    isUpdating={isUpdating}
+                                    updateError={updateError}
                                 />
                             </TabsContent>
 
@@ -367,9 +180,6 @@ export default function UserProfile() {
                 <DialogContent className="max-w-2xl w-[calc(100%-2rem)] sm:w-full">
                     <DialogHeader>
                         <DialogTitle>Connections</DialogTitle>
-                        <CardDescription>
-
-                        </CardDescription>
                     </DialogHeader>
                     {acceptedConnections.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">

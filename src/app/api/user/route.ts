@@ -5,18 +5,18 @@ import { z } from 'zod';
 
 // Validation schemas
 const userSchema = z.object({
-    email: z.string().email(),
-    username: z.string().min(3),
-    peru: z.string().min(2),
-    type: z.string(),
-    bio: z.string(),
-    location: z.string(),
-    avatar: z.string(),
+    email: z.string().email().optional(),
+    username: z.string().min(3).optional(),
+    peru: z.string().min(2).optional(),
+    type: z.string().optional(),
+    bio: z.string().optional(),
+    location: z.string().optional(),
+    avatar: z.string().optional(),
     linkedin: z.string().url().optional(),
     github: z.string().url().optional(),
-    skills: z.array(z.string()),
-    areasofinterest: z.array(z.string()),
-    availableFor: z.string(),
+    skills: z.array(z.string()).optional(),
+    areasofinterest: z.array(z.string()).optional(),
+    availableFor: z.string().optional(),
 });
 
 export async function GET(request: NextRequest): Promise<Response> {
@@ -231,8 +231,8 @@ export async function PUT(request: NextRequest): Promise<Response> {
             }, { status: 400 });
         }
 
-        // Validate request body
-        const validatedData = userSchema.partial().parse(data);
+        // Validate request body - no need for .partial() since all fields are already optional
+        const validatedData = userSchema.parse(data);
         
         const user = await prisma.user.update({ 
             where: { id }, 
