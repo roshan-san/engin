@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import SearchBar from '@/app/(with-sidebar)/explore/_comp/SearchBar';
-import StartupCard from '@/components/StartupCard';
+import { StartupCard } from '@/components/StartupCard';
 import { useStartups } from '@/hooks/use-startups';
 import { Loader2 } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
@@ -64,17 +64,12 @@ export default function ExplorePage() {
           <p className="text-sm text-muted-foreground">Try adjusting your search query</p>
         </div>
       ) : (
-        <div className=" py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {startups.map((startup: any) => (
             <StartupCard
               key={startup.id}
-              id={startup.id}
-              name={startup.name}
-              description={startup.description}
-              industry={startup.industry}
-              location={startup.location}
-              teamSize={startup.teamSize}
-              funding={startup.funding}
+              startup={startup}
+              showFounder={true}
               founder={startup.founder}
             />
           ))}

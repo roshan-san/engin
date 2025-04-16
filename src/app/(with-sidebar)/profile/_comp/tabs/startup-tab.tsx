@@ -1,4 +1,4 @@
-import StartupCard from '@/components/StartupCard'
+import { StartupCard } from '@/components/StartupCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Briefcase, Plus } from 'lucide-react'
@@ -23,17 +23,8 @@ export default function StartupTab({
             {user.startups.map((startup: any) => (
                 <StartupCard
                     key={startup.id}
-                    id={startup.id}
-                    name={startup.name}
-                    description={startup.description}
-                    industry={startup.industry}
-                    location={startup.location}
-                    teamSize={startup.teamSize}
-                    funding={startup.funding || 0}
-                    founder={{
-                        username: user.username,
-                        avatar: user.avatar || ''
-                    }}
+                    startup={startup}
+                    showFounder={false}
                 />
             ))}
         </div>
