@@ -58,9 +58,17 @@ const formSteps = [
 export function StartupForm({ founderEmail }: StartupFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [open, setOpen] = useState(false);
-  const { createStartup, isPending, } = useStartup();
+  const { createStartup, isPending, isSuccess } = useStartup();
   
   const progress = ((currentStep) / formSteps.length) * 100;
+
+  useEffect(() => {
+    if (isSuccess) {
+      setOpen(false);
+      form.reset();
+    setCurrentStep(0);
+    }
+  }, [isSuccess]);
 
   const form = useForm<StartupFormData>({
     defaultValues: {

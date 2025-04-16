@@ -42,5 +42,6 @@ export function useStartup() {
   return {
     createStartup: mutation.mutate,
     isPending: mutation.isPending,
+    isSuccess: mutation.isSuccess,
   };
 } 
