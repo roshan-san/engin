@@ -34,7 +34,7 @@ export function DashboardStats() {
 
   const handleCardClick = () => {
     if (userData?.username) {
-      router.push(`/profile/${userData.username}`);
+      router.push(`/startup`);
     }
   };
 
