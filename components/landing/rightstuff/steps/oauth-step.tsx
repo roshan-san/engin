@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { StepProps } from "../login-form";
 import { useTransition } from "react";
 import { FaGithub } from "react-icons/fa";
+import { signinWithGithub } from "@/lib/supabase/actions";
 
 export default function OAuthStep({ setStep, onNext }: StepProps) {
   const [isPending, startTransition] = useTransition();
@@ -10,9 +11,7 @@ export default function OAuthStep({ setStep, onNext }: StepProps) {
   const handleGithubLogin = async () => {
     startTransition(async () => {
       try {
-        await setTimeout(() => {
-          console.log('Login successful');
-        }, 1000);
+        await signinWithGithub();
       } catch (error) {
         console.error('Login failed:', error);
       }
