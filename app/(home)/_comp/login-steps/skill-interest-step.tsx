@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { Profile } from "@/types";
-import { StepProps } from "../login-form";
+import { StepProps } from "../rightstuff/login-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function SkillInterestStep({ onNext, onPrevious }: StepProps) {

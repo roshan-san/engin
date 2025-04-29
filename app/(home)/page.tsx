@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import LeftStuff from "@/components/landing/left-stuff";
-import Features from "@/components/landing/features";
-import Footer from "@/components/landing/footer";
-import Header from "@/components/landing/header";
-import LoginForm from "@/components/landing/rightstuff/login-form";
+import LeftStuff from "@/app/(home)/_comp/landing/left-stuff";
+import Features from "@/app/(home)/_comp/landing/features";
+import Footer from "@/app/(home)/_comp/landing/footer";
+import Header from "@/app/(home)/_comp/landing/header";
+import LoginForm from "@/features/logging-in/components/rightstuff/login-form";
 
 export default function Page() {
   const [mounted, setMounted] = useState(false)

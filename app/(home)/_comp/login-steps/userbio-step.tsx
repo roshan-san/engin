@@ -4,9 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { Profile } from "@/types";
-import { StepProps } from "../login-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignOutButton } from "../../../sign-out-button";
+import { StepProps } from "../forms/login-form";
+import SignOutButton from "./sign-out-button";
 
 export default function UserBioStep({ onNext, onPrevious }: StepProps) {
   const step1schema = z.object({

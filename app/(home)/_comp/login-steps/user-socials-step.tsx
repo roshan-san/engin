@@ -4,9 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { Profile } from "@/types";
-import { StepProps } from "../login-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { StepProps } from "../forms/login-form";
 export default function UserSocialsStep({ onNext, onPrevious }: StepProps) {
   const stepSchema = z.object({
     github_url: z.string().url().optional().or(z.literal("")),

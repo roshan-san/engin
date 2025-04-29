@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { StepProps } from "../login-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Select,

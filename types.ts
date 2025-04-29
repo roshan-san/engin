@@ -2,7 +2,6 @@ export type UserType = 'Creator/Collaborator' | 'Mentor' | 'Investor';
 export type EmploymentType = 'Full Time' | 'Part Time' | 'Contract';
 
 export interface Profile {
-    id: string;
     full_name: string;
     avatar_url: string;
     username: string;
