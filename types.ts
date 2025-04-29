@@ -1,9 +1,3 @@
-import { z } from 'zod';
-
-export const UserTypeEnum = z.enum(['Creator/Collaborator', 'Mentor', 'Investor']);
-export const EmploymentTypeEnum = z.enum(['Full Time', 'Part Time', 'Contract']);
-
-
 export type UserType = 'Creator/Collaborator' | 'Mentor' | 'Investor';
 export type EmploymentType = 'Full Time' | 'Part Time' | 'Contract';
 
