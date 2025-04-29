@@ -9,7 +9,6 @@ export type EmploymentType = 'Full Time' | 'Part Time' | 'Contract';
 
 export interface Profile {
     id: string;
-    email: string;
     full_name: string;
     avatar_url: string;
     username: string;
@@ -18,9 +17,8 @@ export interface Profile {
     interests: string[];
     user_type: UserType;
     location: string;
-    employment_type: EmploymentType;
+    employement_type: EmploymentType;
     linkedin_url?: string;
     github_url?: string;
-    onboarding_completed: boolean   ;
 }
 

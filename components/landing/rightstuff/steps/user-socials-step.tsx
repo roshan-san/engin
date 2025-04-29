@@ -22,7 +22,6 @@ export default function UserSocialsStep({ onNext, onPrevious }: StepProps) {
   });
 
   const onSubmit = (data: z.infer<typeof stepSchema>) => {
-    // Filter out empty strings and convert to Partial<Profile>
     const processedData: Partial<Profile> = {
       github_url: data.github_url || undefined,
       linkedin_url: data.linkedin_url || undefined,

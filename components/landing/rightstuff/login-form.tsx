@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react";
-
+import { useMutation } from '@tanstack/react-query'
 import { Profile } from "@/types";
 import { Progress } from "@/components/ui/progress";
 import UserSocialsStep from "./steps/user-socials-step"; 
@@ -8,6 +8,7 @@ import UserTypeStep from "./steps/usertype-step";
 import SkillInterestStep from "./steps/skill-interest-step";
 import UserBioStep from "./steps/userbio-step";
 import OauthStep from "./steps/oauth-step"; 
+import { createProfile } from "@/app/actions";
 
 const TOTAL_STEPS = 5;
 
@@ -19,16 +20,31 @@ export interface StepProps {
 
 export default function LoginForm() {
   const [step, setStep] = useState(0);
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState<Partial<Profile>>({});
+  
+  const { mutate: createProfileMutation, isPending, error } = useMutation({
+    mutationFn: (data: Partial<Profile>) => createProfile(data),
+    onSuccess: () => {
+      console.log('Profile created successfully');
+      // Handle success (e.g., redirect to dashboard)
+    },
+    onError: (error) => {
+      console.error('Error creating profile:', error);
+    }
+  });
 
-  const handleNext = (data: Partial<Profile>) => {
+  const handleNext = async (data: Partial<Profile>) => {
     if (data) {
       setUserData(prev => ({ ...prev, ...data }))
     }
     if (step < TOTAL_STEPS - 1) {
       setStep(step + 1);
-    }else{
-      console.log(userData)
+    } else {
+      try {
+        createProfileMutation({ ...userData, ...data });
+      } catch (err) {
+        console.error('Error creating profile:', err);
+      }
     }
   };
 
@@ -73,7 +89,10 @@ export default function LoginForm() {
         )}
         {step === 4 && (
           <div className="animate-in fade-in slide-in-from-right duration-300">
-            <UserSocialsStep onNext={handleNext} onPrevious={handlePrevious} />
+            <UserSocialsStep 
+              onNext={handleNext} 
+              onPrevious={handlePrevious} 
+            />
           </div>
         )}
       </div>

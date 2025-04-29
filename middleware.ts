@@ -1,84 +1,73 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
-  console.log('Middleware: Checking request for path:', request.nextUrl.pathname)
-
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
+export async function updateSession(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({
+    request,
   })
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL!, 
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get: (name: string) => request.cookies.get(name)?.value,
-        set: (name: string, value: string, options: CookieOptions) => {
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          })
+        getAll() {
+          return request.cookies.getAll()
         },
-        remove: (name: string, options: CookieOptions) => {
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+          supabaseResponse = NextResponse.next({
+            request,
           })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          )
         },
       },
-      cookieOptions: {
-        name: 'sb-auth-token',
-        path: '/',
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 7, // 1 week
-      }
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
-  console.log('Middleware: User status:', user ? 'Authenticated' : 'Not authenticated')
+  const path = request.nextUrl.pathname
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  // If user is signed in and trying to access the root path
-  if (user && request.nextUrl.pathname === '/') {
-    console.log('Middleware: Checking if user exists in profiles:', user.id)
-    
-    // Check if user exists in profiles table
-    const { data, error } = await supabase
+  if (user) {
+    const { data: profile } = await supabase
       .from('profiles')
       .select('id')
       .eq('id', user.id)
+      .single()
 
-    if (error) {
-      console.error('Middleware: Error fetching profile:', error)
-      return response
+    // Redirect to root if profile doesn't exist and not on root
+    if (!profile && path !== '/') {
+      return NextResponse.redirect(new URL('/', request.url))
     }
 
-    console.log('Middleware: Profile exists:', data && data.length > 0)
-
-    // If user doesn't exist in profiles, let them stay on the page
-    if (!data || data.length === 0) {
-      console.log('Middleware: Allowing access to form (profile not found)')
-      return response
+    // Redirect to dashboard if profile exists and on root
+    if (profile && path === '/') {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
     }
-
-    // If user exists in profiles, redirect to dashboard
-    console.log('Middleware: Redirecting to dashboard (profile exists)')
-    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  // If user is not signed in and trying to access protected routes
-  if (!user && !['/', '/auth/callback', '/auth/auth-code-error'].includes(request.nextUrl.pathname)) {
-    console.log('Middleware: Redirecting to login (not authenticated)')
-    return NextResponse.redirect(new URL('/', request.url))
-  }
+  // IMPORTANT: You *must* return the supabaseResponse object as it is.
+  // If you're creating a new response object with NextResponse.next() make sure to:
+  // 1. Pass the request in it, like so:
+  //    const myNewResponse = NextResponse.next({ request })
+  // 2. Copy over the cookies, like so:
+  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
+  // 3. Change the myNewResponse object to fit your needs, but avoid changing
+  //    the cookies!
+  // 4. Finally:
+  //    return myNewResponse
+  // If this is not done, you may be causing the browser and server to go out
+  // of sync and terminate the user's session prematurely!
 
-  console.log('Middleware: Allowing request to proceed')
+  return supabaseResponse
+}
+
+export async function middleware(request: NextRequest) {
+  const response = await updateSession(request)
   return response
 }
 
@@ -89,8 +78,9 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - api/ (API routes)
      * Feel free to modify this pattern to include more paths.
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/).*)',
   ],
 } 

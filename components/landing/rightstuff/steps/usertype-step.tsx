@@ -12,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FaUserCog, FaUserGraduate, FaUserTie, FaBriefcase, FaClock, FaFileContract } from "react-icons/fa";
-import { useRef, useEffect } from "react";
 
 export default function UserTypeStep({ onNext, onPrevious }: StepProps) {
 
