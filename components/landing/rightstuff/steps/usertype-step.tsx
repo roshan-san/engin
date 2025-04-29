@@ -15,13 +15,6 @@ import { FaUserCog, FaUserGraduate, FaUserTie, FaBriefcase, FaClock, FaFileContr
 import { useRef, useEffect } from "react";
 
 export default function UserTypeStep({ onNext, onPrevious }: StepProps) {
-  const formRef = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (formRef.current) {
-      formRef.current.focus();
-    }
-  }, []);
 
   const stepSchema = z.object({
     user_type: z.enum(["Creator/Collaborator", "Mentor", "Investor"] as const),
@@ -47,7 +40,6 @@ export default function UserTypeStep({ onNext, onPrevious }: StepProps) {
       
       <Form {...form}>
         <form 
-          ref={formRef}
           onSubmit={form.handleSubmit(onSubmit)} 
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
