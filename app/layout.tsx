@@ -1,14 +1,13 @@
 import { ThemeProvider } from "@/components/themes/theme-provider";
-import { QueryProvider } from "@/components/providers/query-provider";
 import "./globals.css";
+import TanstackProvider from "@/providers/tanstack-provider";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <html lang="en" suppressHydrationWarning>
-        <head />
-        <body suppressHydrationWarning>
-          <QueryProvider>
+        <body>
+            <TanstackProvider>
             <ThemeProvider
               attribute="class"
               defaultTheme="dark"
@@ -17,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             >
               {children}
             </ThemeProvider>
-          </QueryProvider>
+            </TanstackProvider>
         </body>
       </html>
     </>

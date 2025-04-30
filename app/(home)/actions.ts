@@ -7,20 +7,21 @@ export async function createProfile(profileData: Partial<Profile>) {
   try {
     const supabase = await createClient()
     
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      throw new Error('Unauthorized')
-    }
+    // const { data: { user } } = await supabase.auth.getUser()
+    // if (!user) {
+    //   throw new Error('Unauthorized')
+    // }
 
     const { error } = await supabase
       .from('profiles')
       .insert({
-        id: user.id,
+        id:"",
         ...profileData,
       })
 
     if (error) {
-      throw new Error(error.message)
+      console.log(error.message)
+      throw error
     }
 
     return { success: true }
