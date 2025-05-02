@@ -1,11 +1,13 @@
-import { createClient } from '@supabase/supabase-js'
 import { notFound } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { StartupForm } from "./_comp/StartupForm"
 import { TeamTab } from "./_comp/TeamTab"
 import { InvestorsTab } from "./_comp/InvestorsTab"
 import { JobsTab } from "./_comp/JobsTab"
-import { startups } from "@/db/schema"
+import { db } from "@/db"
+import { startups, profiles } from "@/db/schema"
+import { eq } from "drizzle-orm"
+import { createClient } from "@/lib/supabase"
 
 type Startup = typeof startups.$inferSelect & {
   founder?: {
@@ -14,48 +16,53 @@ type Startup = typeof startups.$inferSelect & {
   }
 }
 
-export default async function StartupPage({ params }: { params: { id: string } }) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+async function getStartup(id: string) {
+  const startupData = await db.query.startups.findFirst({
+    where: eq(startups.id, id),
+    with: {
+      founder: {
+        columns: {
+          username: true,
+          avatar_url: true,
+          id: true
+        }
+      }
+    }
+  })
 
-  const { data: { session } } = await supabase.auth.getSession()
-  const userId = session?.user?.id
-
-  const { data: startup } = await supabase
-    .from('startups')
-    .select(`
-      *,
-      founder:profiles (
-        username,
-        avatar_url
-      )
-    `)
-    .eq('id', params.id)
-    .single()
-
-  if (!startup) {
+  if (!startupData) {
     notFound()
   }
 
-  const isOwner = userId === startup.founder_id
+  return startupData
+}
 
-  const handleRefetch = async () => {
-    // Revalidate the page data
-    const { data: updatedStartup } = await supabase
-      .from('startups')
-      .select(`
-        *,
-        founder:profiles (
-          username,
-          avatar_url
-        )
-      `)
-      .eq('id', params.id)
-      .single()
+async function getCurrentUser() {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  return user
+}
 
-    return updatedStartup
+export default async function StartupPage({ params }: { params: { id: string } }) {
+  const [startupData, user] = await Promise.all([
+    getStartup(params.id),
+    getCurrentUser()
+  ])
+
+  const isOwner = user?.id === startupData.founderId
+
+  const startup: Startup = {
+    ...startupData,
+    founder: startupData.founder ? {
+      username: startupData.founder.username,
+      avatar_url: startupData.founder.avatar_url
+    } : undefined
+  }
+
+  const handleRefetch = async (): Promise<void> => {
+    // This function is used by JobsTab to refresh data
+    // The actual implementation is handled by the JobsTab component
+    return
   }
 
   return (

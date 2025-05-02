@@ -1,10 +1,7 @@
-import { integer, pgTable, text, uuid, timestamp, pgEnum, } from "drizzle-orm/pg-core";
+import { integer, pgTable, text, uuid, timestamp, pgEnum, index } from "drizzle-orm/pg-core";
 
-// Define enums for better type safety
 export const userTypeEnum = pgEnum('user_type', ['Creator/Collaborator', 'Investor', 'Mentor']);
 export const employmentTypeEnum = pgEnum('employment_type', ['Full-Time', 'Part-Time', 'Contract']);
-
-// Define connection status enum
 export const connectionStatusEnum = pgEnum('connection_status', ['pending', 'accepted', 'rejected',]);
 
 export const startups = pgTable("startups", {
@@ -18,7 +15,9 @@ export const startups = pgTable("startups", {
   funding: integer("funding").notNull(),
   founderId: uuid("founder_id").references(() => profiles.id),
   created_at: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("id_idx").on(table.id),
+]);
 
 export const profiles = pgTable("profiles", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -35,7 +34,9 @@ export const profiles = pgTable("profiles", {
   employment_type: employmentTypeEnum("employment_type").notNull(),
   full_name: text("full_name").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("id_idx").on(table.id),
+]) ;
 
 export const jobs = pgTable("jobs", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -43,14 +44,19 @@ export const jobs = pgTable("jobs", {
   description: text("description").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   startupId: uuid("startup_id").references(() => startups.id),
-});
+},(table) => [
+  index("startup_id_idx").on(table.startupId),
+]);
 
 export const applications = pgTable("applications", {
   id: uuid("id").defaultRandom().primaryKey(),
   jobId: uuid("job_id").references(() => jobs.id),
   profileId: uuid("profile_id").references(() => profiles.id),
   created_at: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("job_id_idx").on(table.jobId),
+  index("profile_id_idx").on(table.profileId),
+]);
 
 export const connections = pgTable("connections", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -58,6 +64,9 @@ export const connections = pgTable("connections", {
   receiverId: uuid("receiver_id").references(() => profiles.id).notNull(),
   status: connectionStatusEnum("status").default("pending").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("sender_id_idx").on(table.senderId),
+  index("receiver_id_idx").on(table.receiverId),
+]);
 
 
