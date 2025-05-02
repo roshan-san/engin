@@ -15,7 +15,7 @@ export function LeftBar() {
 
   const items = [
     { title: "Dashboard", url: "/dashboard", icon: Laptop },
-    { title: "Explore Startups", url: "/explore", icon: Search },
+    { title: "Startups", url: "/explore", icon: Search },
     { title: "Connections", url: "/connections", icon: Users },
     { title: "Messaging", url: "/message", icon: MessageCircle },
     { title: "Funding", url: "/funding", icon: DollarSign },
