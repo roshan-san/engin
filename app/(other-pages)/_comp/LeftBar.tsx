@@ -76,7 +76,7 @@ export function LeftBar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button 
-                  className="flex justify-center p-3 w-full rounded-lg transition-all duration-200 text-muted-foreground hover:bg-destructive/10 hover:text-destructive border border-border/50 hover:border-destructive/50 mt-2"
+                  variant="ghost"
                   onClick={() => {
                     signOut();
                   }}

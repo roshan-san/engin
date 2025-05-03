@@ -1,33 +1,36 @@
 "use client"
-import React from 'react'
+import React, { useTransition } from 'react'
 import { signOut } from '@/lib/supabase/actions'
-import { Button } from '../../../../components/ui/button'
+import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 
-export default function SignOutButton( {onPrevious}: {onPrevious: () => void} ) {
-  const [isLoading, setIsLoading] = React.useState(false)
+export default function SignOutButton({ onPrevious }: { onPrevious: () => void }) {
+  const [isPending, startTransition] = useTransition()
 
   const handleSignOut = async () => {
-    try {
-      setIsLoading(true)
+    startTransition(async () => {
       await signOut()
-    } catch (error) {
-      console.error('Error signing out:', error)
-    } finally {
-      setIsLoading(false)
       onPrevious()
-    }
+    })
   }
 
   return (
     <Button 
-      className="w-full h-10" 
-      variant="outline"
+      className="w-full sm:w-auto" 
+      variant="ghost"
       onClick={handleSignOut}
-      disabled={isLoading}
+      disabled={isPending}
+      size="default"
     >
-      {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-      Sign Out
+      {isPending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Signing out...
+        </>
+      ) : (
+        'Sign Out'
+      )}
     </Button>
+    
   )
 }
