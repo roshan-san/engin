@@ -1,22 +1,10 @@
-"use client"
-
-import { useEffect, useState } from "react"
 import LeftStuff from "@/app/(home)/_comp/landing/left-stuff";
-import Features from "@/app/(home)/_comp/landing/features";
+import Featuress from "@/app/(home)/_comp/landing/features";
 import Footer from "@/app/(home)/_comp/landing/footer";
 import Header from "@/app/(home)/_comp/landing/header";
-import LoginForm from "@/features/logging-in/components/rightstuff/login-form";
+import LoginForm from "./_comp/forms/login-form";
 
 export default function Page() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return null
-  }
 
   return (
     <div>
@@ -29,7 +17,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <Features />
+      <Featuress />
       <Footer />
     </div>
   );

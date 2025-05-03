@@ -1,13 +1,14 @@
-import { useForm } from "react-hook-form";
+'use client';
+
 import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { Profile } from "@/types";
-import { StepProps } from "../rightstuff/login-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-export default function SkillInterestStep({ onNext, onPrevious }: StepProps) {
+import { StepProps } from "../forms/login-form";
+import { profiles } from "@/lib/db/schema";
+import { useForm } from "react-hook-form";
+export default function SkillInterestStep({ handleNext, handlePrevious }: StepProps) {
   const stepSchema = z.object({
     skills: z.string().min(1, "Please enter at least one skill"),
     interests: z.string().min(1, "Please enter at least one interest"),
@@ -23,11 +24,11 @@ export default function SkillInterestStep({ onNext, onPrevious }: StepProps) {
 
   const onSubmit = (data: z.infer<typeof stepSchema>) => {
     // Convert comma-separated strings to arrays
-    const processedData: Partial<Profile> = {
+    const processedData: Partial<typeof profiles.$inferSelect> = {
       skills: data.skills.split(',').map(s => s.trim()).filter(Boolean),
       interests: data.interests.split(',').map(s => s.trim()).filter(Boolean),
     };
-    onNext(processedData);
+    handleNext(processedData);
   };
 
   return (
@@ -65,7 +66,7 @@ export default function SkillInterestStep({ onNext, onPrevious }: StepProps) {
           />
           
           <div className="flex justify-between">
-            <Button type="button" variant="outline" onClick={onPrevious}>
+            <Button type="button" variant="outline" onClick={handlePrevious}>
               Previous
             </Button>
             <Button type="submit">

@@ -1,3 +1,4 @@
+"use client"
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -11,30 +12,37 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FaUserCog, FaUserGraduate, FaUserTie, FaBriefcase, FaClock, FaFileContract } from "react-icons/fa";
+import { StepProps } from "../forms/login-form";
+import { profiles } from "@/lib/db/schema";
+import { motion } from "framer-motion";
 
-export default function UserTypeStep({ onNext, onPrevious }: StepProps) {
-
+export default function UserTypeStep({ handleNext, handlePrevious }: StepProps) {
   const stepSchema = z.object({
     user_type: z.enum(["Creator/Collaborator", "Mentor", "Investor"] as const),
-    employment_type: z.enum(["Full Time", "Part Time", "Contract"] as const)
+    employment_type: z.enum(["Full-Time", "Part-Time", "Contract"] as const)
   });
 
   const form = useForm<z.infer<typeof stepSchema>>({
     resolver: zodResolver(stepSchema),
     defaultValues: {
       user_type: "Creator/Collaborator",
-      employment_type: "Full Time"
+      employment_type: "Full-Time"
     },
   });
 
-  const onSubmit = (data: z.infer<typeof stepSchema>) => {
-    onNext(data);
+  const onSubmit = (data: Partial<typeof profiles.$inferSelect>) => {
+    handleNext(data);
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-2">What best describes you?</h2>
-      <p className="text-muted-foreground mb-8">Help us understand your role and availability to better match you with opportunities.</p>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="p-4 sm:p-6 max-w-2xl mx-auto w-full"
+    >
+      <h2 className="text-xl sm:text-2xl font-semibold mb-2">What best describes you?</h2>
+      <p className="text-muted-foreground mb-6 sm:mb-8 text-sm sm:text-base">Help us understand your role and availability to better match you with opportunities.</p>
       
       <Form {...form}>
         <form 
@@ -45,7 +53,7 @@ export default function UserTypeStep({ onNext, onPrevious }: StepProps) {
               form.handleSubmit(onSubmit)();
             }
           }}
-          className="space-y-6"
+          className="space-y-4 sm:space-y-6"
           tabIndex={0}
         >
           <FormField
@@ -53,31 +61,31 @@ export default function UserTypeStep({ onNext, onPrevious }: StepProps) {
             name="user_type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Primary Role</FormLabel>
-                <FormDescription>Select the role that best represents your main focus</FormDescription>
+                <FormLabel className="text-sm sm:text-base">Primary Role</FormLabel>
+                <FormDescription className="text-xs sm:text-sm">Select the role that best represents your main focus</FormDescription>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-11 sm:h-12">
                       <SelectValue placeholder="Select your role" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Creator/Collaborator" className="flex items-center gap-2">
-                      <FaUserCog className="text-primary" />
+                    <SelectItem value="Creator/Collaborator" className="flex items-center gap-2 py-2">
+                      <FaUserCog className="text-primary h-4 w-4 sm:h-5 sm:w-5" />
                       <div>
-                        <div className="font-medium">Creator/Collaborator</div>
+                        <div className="font-medium text-sm sm:text-base">Creator/Collaborator</div>
                       </div>
                     </SelectItem>
-                    <SelectItem value="Mentor" className="flex items-center gap-2">
-                      <FaUserGraduate className="text-primary" />
+                    <SelectItem value="Mentor" className="flex items-center gap-2 py-2">
+                      <FaUserGraduate className="text-primary h-4 w-4 sm:h-5 sm:w-5" />
                       <div>
-                        <div className="font-medium">Mentor</div>
+                        <div className="font-medium text-sm sm:text-base">Mentor</div>
                       </div>
                     </SelectItem>
-                    <SelectItem value="Investor" className="flex items-center gap-2">
-                      <FaUserTie className="text-primary" />
+                    <SelectItem value="Investor" className="flex items-center gap-2 py-2">
+                      <FaUserTie className="text-primary h-4 w-4 sm:h-5 sm:w-5" />
                       <div>
-                        <div className="font-medium">Investor</div>
+                        <div className="font-medium text-sm sm:text-base">Investor</div>
                       </div>
                     </SelectItem>
                   </SelectContent>
@@ -91,31 +99,31 @@ export default function UserTypeStep({ onNext, onPrevious }: StepProps) {
             name="employment_type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Preferred Work Type</FormLabel>
-                <FormDescription>Select your preferred working arrangement</FormDescription>
+                <FormLabel className="text-sm sm:text-base">Preferred Work Type</FormLabel>
+                <FormDescription className="text-xs sm:text-sm">Select your preferred working arrangement</FormDescription>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-11 sm:h-12">
                       <SelectValue placeholder="Select work type" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Full Time" className="flex items-center gap-2">
-                      <FaBriefcase className="text-primary" />
+                    <SelectItem value="Full-Time" className="flex items-center gap-2 py-2">
+                      <FaBriefcase className="text-primary h-4 w-4 sm:h-5 sm:w-5" />
                       <div>
-                        <div className="font-medium">Full Time</div>
+                        <div className="font-medium text-sm sm:text-base">Full Time</div>
                       </div>
                     </SelectItem>
-                    <SelectItem value="Part Time" className="flex items-center gap-2">
-                      <FaClock className="text-primary" />
+                    <SelectItem value="Part-Time" className="flex items-center gap-2 py-2">
+                      <FaClock className="text-primary h-4 w-4 sm:h-5 sm:w-5" />
                       <div>
-                        <div className="font-medium">Part Time</div>
+                        <div className="font-medium text-sm sm:text-base">Part Time</div>
                       </div>
                     </SelectItem>
-                    <SelectItem value="Contract" className="flex items-center gap-2">
-                      <FaFileContract className="text-primary" />
+                    <SelectItem value="Contract" className="flex items-center gap-2 py-2">
+                      <FaFileContract className="text-primary h-4 w-4 sm:h-5 sm:w-5" />
                       <div>
-                        <div className="font-medium">Contract</div>
+                        <div className="font-medium text-sm sm:text-base">Contract</div>
                       </div>
                     </SelectItem>
                   </SelectContent>
@@ -125,17 +133,25 @@ export default function UserTypeStep({ onNext, onPrevious }: StepProps) {
             )}
           />
           
-          <div className="flex justify-between pt-4">
-            <Button type="button" variant="outline" onClick={onPrevious}>
+          <div className="flex justify-between pt-4 gap-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={handlePrevious}
+              className="flex-1 h-11 sm:h-12 active:scale-[0.98]"
+            >
               Previous
             </Button>
-            <Button type="submit">
+            <Button 
+              type="submit"
+              className="flex-1 h-11 sm:h-12 active:scale-[0.98]"
+            >
               Next
             </Button>
           </div>
         </form>
       </Form>
-    </div>
+    </motion.div>
   );
 }
 

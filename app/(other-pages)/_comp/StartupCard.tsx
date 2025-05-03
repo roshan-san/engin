@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Building2, MapPin, Users, DollarSign, FileText, ArrowRight } from 'lucide-react';
-import { startups } from '@/db/schema';
+import { startups } from '@/lib/db/schema';
 
 interface StartupCardProps {
   startup: typeof startups.$inferSelect;

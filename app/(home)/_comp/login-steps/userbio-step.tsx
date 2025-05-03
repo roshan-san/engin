@@ -1,14 +1,15 @@
-import { useForm } from "react-hook-form";
+"use client"
 import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { Profile } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StepProps } from "../forms/login-form";
 import SignOutButton from "./sign-out-button";
+import { profiles } from "@/lib/db/schema";
+import { useForm } from "react-hook-form";
 
-export default function UserBioStep({ onNext, onPrevious }: StepProps) {
+export default function UserBioStep({ handleNext, handlePrevious }: StepProps) {
   const step1schema = z.object({
     username: z.string().min(1,{message: "Username is required"}).regex(/^[A-Za-z]/, {
       message: "Must start with an alphabet",
@@ -24,8 +25,8 @@ export default function UserBioStep({ onNext, onPrevious }: StepProps) {
     },
   });
 
-  const onSubmit = (data: Partial<Profile>) => {
-    onNext(data);
+  const onSubmit = (data: Partial<typeof profiles.$inferSelect>) => {
+    handleNext(data);
   };
 
   return (
@@ -68,7 +69,7 @@ export default function UserBioStep({ onNext, onPrevious }: StepProps) {
           </div>
           
           <div className="flex flex-col sm:flex-row justify-between gap-4 pt-4">
-            <SignOutButton onPrevious={onPrevious} />
+            <SignOutButton onPrevious={handlePrevious} />
             <Button 
               type="submit"
               className="w-full sm:w-auto"

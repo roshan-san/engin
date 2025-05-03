@@ -1,6 +1,6 @@
-import { Users, Rocket, Lightbulb, Network, Users2 } from "lucide-react";
-import { Badge } from '../../../../components/ui/badge';
-import { Card, CardContent, CardHeader } from '../../../../components/ui/card';
+import { Users, Rocket, Lightbulb, Network, Users as Users2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 const features = [
   {
@@ -40,7 +40,7 @@ const features = [
   }
 ];
 
-export default function Features() {
+export default function Featuress() {
   return (
     <section
       id="features"

@@ -1,45 +1,24 @@
+"use client"
 import { Button } from '@/components/ui/button'
 import { FaGithub, FaGoogle } from 'react-icons/fa'
-import { createClient } from '@/supabase/client'
-import { useQuery } from '@tanstack/react-query'
-import { Provider } from '@supabase/supabase-js'
 import { StepProps } from '../forms/login-form'
+import { OauthSignIn } from '@/lib/supabase/actions'
+import { Loader2 } from 'lucide-react'
+import { useState } from 'react'
 
-const OAuthStep = ({ onNext, setStep }: StepProps) => {
-  const supabase = createClient()
+const OAuthStep = ({ handleNext, handlePrevious, setStep }: StepProps) => {
+  const [isLoading, setIsLoading] = useState<'google' | 'github' | null>(null)
 
-  const { data: user } = useQuery({
-    queryKey: ['user'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      return user
+  const handleSubmit = async (provider: 'google' | 'github') => {
+    try {
+      setIsLoading(provider)
+      await OauthSignIn(provider)
+      setStep?.(1)
+    } catch (error) {
+      console.error('OAuth sign in error:', error)
+    } finally {
+      setIsLoading(null)
     }
-  })
-
-  const { data: profile } = useQuery({
-    queryKey: ['profile', user?.id],
-    queryFn: async () => {
-      if (!user) return null
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', user.id)
-        .single()
-      
-      if (error) throw error
-      return data
-    },
-    enabled: !!user
-  })
-
-  const handleOAuthSignIn = async (provider: Provider) => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${window.location.origin}/api/auth/callback`
-      }
-    })
-    if (error) console.error('OAuth error:', error)
   }
 
   return (
@@ -50,21 +29,31 @@ const OAuthStep = ({ onNext, setStep }: StepProps) => {
       </div>
 
       <div className="space-y-4">
-        <form className="space-y-4">
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleSubmit('google')
+        }}>
           <Button 
             className="w-full h-10" 
             variant="outline"
-            onClick={() => handleOAuthSignIn('google')}
+            type="submit"
+            disabled={isLoading === 'google'}
           >
-            <FaGoogle className="mr-2 h-4 w-4" />
+            {isLoading === 'google' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FaGoogle className="mr-2 h-4 w-4" />}
             Sign in with Google
           </Button>
+        </form>
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleSubmit('github')
+        }}>
           <Button 
             className="w-full h-10" 
             variant="outline"
-            onClick={() => handleOAuthSignIn('github')}
+            type="submit"
+            disabled={isLoading === 'github'}
           >
-            <FaGithub className="mr-2 h-4 w-4" />
+            {isLoading === 'github' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FaGithub className="mr-2 h-4 w-4" />}
             Sign in with Github
           </Button>
         </form>

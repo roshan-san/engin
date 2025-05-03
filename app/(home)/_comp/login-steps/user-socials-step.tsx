@@ -1,12 +1,18 @@
+'use client';
+
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { Profile } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StepProps } from "../forms/login-form";
-export default function UserSocialsStep({ onNext, onPrevious }: StepProps) {
+import { profiles } from "@/lib/db/schema";
+import { useMultiStepForm } from "../hooks/useMultiStepForm";
+
+export default function UserSocialsStep({ handleNext, handlePrevious }: StepProps) {
+  const { submitForm, isPending } = useMultiStepForm();
+
   const stepSchema = z.object({
     github_url: z.string().url().optional().or(z.literal("")),
     linkedin_url: z.string().url().optional().or(z.literal("")),
@@ -20,12 +26,12 @@ export default function UserSocialsStep({ onNext, onPrevious }: StepProps) {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof stepSchema>) => {
-    const processedData: Partial<Profile> = {
-      github_url: data.github_url || undefined,
-      linkedin_url: data.linkedin_url || undefined,
-    };
-    onNext(processedData);
+  const onSubmit = async (data: z.infer<typeof stepSchema>) => {
+    const processedData = {
+      github_url: data.github_url || null,
+      linkedin_url: data.linkedin_url || null,
+    } as Partial<typeof profiles.$inferSelect>;
+    await submitForm(processedData);
   };
 
   return (
@@ -63,11 +69,11 @@ export default function UserSocialsStep({ onNext, onPrevious }: StepProps) {
           />
           
           <div className="flex justify-between">
-            <Button type="button" variant="outline" onClick={onPrevious}>
+            <Button type="button" variant="outline" onClick={handlePrevious}>
               Previous
             </Button>
-            <Button type="submit">
-              Next
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Submitting..." : "Complete"}
             </Button>
           </div>
         </form>
