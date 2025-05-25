@@ -2,7 +2,7 @@ import { Users, Rocket, Lightbulb, Network, Users as Users2 } from "lucide-react
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
-const features = [
+const featureList = [
   {
     title: "Expert Guidance",
     tagline: "Learn from the best",
@@ -40,7 +40,7 @@ const features = [
   }
 ];
 
-export default function Featuress() {
+export default function Features() {
   return (
     <section
       id="features"
@@ -55,7 +55,7 @@ export default function Featuress() {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {features.map((feature) => (
+        {featureList.map((feature) => (
           <div key={feature.title} className="transform transition-all duration-300 hover:scale-105">
             <Card className="h-full border overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-primary/50">
               <CardHeader className="pb-2">

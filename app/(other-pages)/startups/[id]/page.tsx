@@ -1,5 +1,5 @@
 import React from 'react'
-import { getStartupById } from '@/app/(other-pages)/startup/actions'
+import { getStartupById } from '@/app/(other-pages)/startups/actions'
 export default async function page() {
   const startup = await getStartupById(id)
   return (

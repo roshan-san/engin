@@ -1,8 +1,10 @@
 import { integer, pgTable, text, uuid, timestamp, pgEnum, index } from "drizzle-orm/pg-core";
+import { user, session, account, verification } from "@/auth-schema";
 
 export const userTypeEnum = pgEnum('user_type', ['Creator/Collaborator', 'Investor', 'Mentor']);
 export const employmentTypeEnum = pgEnum('employment_type', ['Full-Time', 'Part-Time', 'Contract']);
 export const connectionStatusEnum = pgEnum('connection_status', ['pending', 'accepted', 'rejected',]);
+
 
 export const startups = pgTable("startups", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -16,7 +18,7 @@ export const startups = pgTable("startups", {
   founderId: uuid("founder_id").references(() => profiles.id),
   created_at: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
-  index("id_idx").on(table.id),
+  index("startups_id_idx").on(table.id),
 ]);
 
 export const profiles = pgTable("profiles", {
@@ -35,7 +37,7 @@ export const profiles = pgTable("profiles", {
   full_name: text("full_name").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
-  index("id_idx").on(table.id),
+  index("profiles_id_idx").on(table.id),
 ]) ;
 
 export const jobs = pgTable("jobs", {
@@ -45,7 +47,7 @@ export const jobs = pgTable("jobs", {
   created_at: timestamp("created_at").defaultNow().notNull(),
   startupId: uuid("startup_id").references(() => startups.id),
 },(table) => [
-  index("startup_id_idx").on(table.startupId),
+  index("jobs_startup_id_idx").on(table.startupId),
 ]);
 
 export const applications = pgTable("applications", {
@@ -54,8 +56,8 @@ export const applications = pgTable("applications", {
   profileId: uuid("profile_id").references(() => profiles.id),
   created_at: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
-  index("job_id_idx").on(table.jobId),
-  index("profile_id_idx").on(table.profileId),
+  index("applications_job_id_idx").on(table.jobId),
+  index("applications_profile_id_idx").on(table.profileId),
 ]);
 
 export const connections = pgTable("connections", {
@@ -65,8 +67,8 @@ export const connections = pgTable("connections", {
   status: connectionStatusEnum("status").default("pending").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
-  index("sender_id_idx").on(table.senderId),
-  index("receiver_id_idx").on(table.receiverId),
+  index("connections_sender_id_idx").on(table.senderId),
+  index("connections_receiver_id_idx").on(table.receiverId),
 ]);
 
-
+export { user, session, account, verification };

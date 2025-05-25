@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileForm } from "./_comp/profile-form";
 import { SettingsForm } from "./_comp/settings-form";
 import { Card } from "@/components/ui/card";
-
+import { Button } from "@/components/ui/button";
 export default function ProfilePage() {
   return (
     <div className="container mx-auto py-8">

@@ -1,10 +1,10 @@
 "use client"
 import { Progress } from "@/components/ui/progress";
-import OauthStep from "@/app/(home)/_comp/login-steps/oauth-step";
-import UserBioStep from "@/app/(home)/_comp/login-steps/userbio-step";
-import UserTypeStep from "@/app/(home)/_comp/login-steps/usertype-step";
-import SkillInterestStep from "@/app/(home)/_comp/login-steps/skill-interest-step";
-import UserSocialsStep from "@/app/(home)/_comp/login-steps/user-socials-step";
+import OauthStep from "@/app/(root)/comp/login-steps/oauth-step";
+import UserBioStep from "@/app/(root)/comp/login-steps/userbio-step";
+import UserTypeStep from "@/app/(root)/comp/login-steps/usertype-step";
+import SkillInterestStep from "@/app/(root)/comp/login-steps/skill-interest-step";
+import UserSocialsStep from "@/app/(root)/comp/login-steps/user-socials-step";
 import { profiles } from "@/lib/db/schema";
 import { useFormStore } from "../store/useFormStore";
 
