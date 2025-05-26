@@ -1,18 +1,29 @@
-import Features from "./comp/landing/features";
-import LeftStuff from "./comp/landing/left-stuff";
+import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/themes/theme-toggle";
 
 export default function Page() {
   return (
-    <div>
-      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center border-b border-accent">
-        <div className="max-w-screen-xl flex flex-col lg:flex-row items-center justify-around gap-6 px-6 py-4 lg:py-0 w-full mx-auto">
-          <LeftStuff />
-          <div className="mt-7 max-w-md w-full bg-background shadow-md rounded-xl border border-border mx-auto">
-           
-          </div>
+      <div className="min-h-screen border-4 border-accent">
+        {/* header bar */}
+        <div className="max-w-screen m-4 flex items-center justify-between">
+          <span className="text-4xl font-bold text-primary tracking-wider hover:text-accent transition-colors duration-300">
+            Engin
+          </span>
+          <ModeToggle />   
+        </div>
+
+        {/* main content */}
+        <div className="flex flex-col justify-center">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent-foreground text-transparent bg-clip-text tracking-tight">
+            Got an idea? Launch your startup today!
+          </h1>
+          <p className="text-lg">
+            Welcome to Engin – the ultimate platform where bold ideas meet the right people to bring them to life.
+          </p>
+        <Button>
+           Get started
+        </Button>
         </div>
       </div>
-      {/* <Features /> */}
-    </div>
   );
 }

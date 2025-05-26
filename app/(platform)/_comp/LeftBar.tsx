@@ -10,10 +10,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { signOut } from "@/lib/supabase/actions";
 export function LeftBar() {
   const pathname = usePathname();
-
   const items = [
     { title: "Dashboard", url: "/dashboard", icon: Laptop },
     { title: "Startups", url: "/explore", icon: Search },
@@ -77,9 +75,7 @@ export function LeftBar() {
               <TooltipTrigger asChild>
                 <Button 
                   variant="ghost"
-                  onClick={() => {
-                    signOut();
-                  }}
+              
                 >
                   <LogOut className="size-5" />
                 </Button>

@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import { StartupCard } from "@/app/(other-pages)/_comp/StartupCard";
+import { StartupCard } from "@/app/(platform)/_comp/StartupCard";
 
 const ITEMS_PER_PAGE = 6;
 

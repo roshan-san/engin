@@ -3,8 +3,7 @@ import { useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { Input } from "@/components/ui/input"
-import { ProfileCard } from "@/app/(other-pages)/_comp/ProfileCard"
-import { searchProfiles } from "@/app/(other-pages)/explore/actions"
+import { searchProfiles } from "@/app/(platform)/explore/actions"
 import { Loader2, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -57,7 +56,7 @@ export default function ExplorePage() {
       </div>
 
       <div className="space-y-3 md:space-y-4">
-        {profiles.map((profile) => (
+        {/* {profiles.map((profile) => (
           <ProfileCard
             key={profile.id}
             id={profile.id}
@@ -66,7 +65,7 @@ export default function ExplorePage() {
             avatarUrl={profile.avatar_url}
             bio={profile.bio}
           />
-        ))}
+        ))} */}
       </div>
 
       <div

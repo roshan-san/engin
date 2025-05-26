@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { startups } from "@/lib/db/schema"
-import { createStartup, updateStartup } from "@/app/(other-pages)/startups/actions"
+import { createStartup, updateStartup } from "@/app/(platform)/startups/actions"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
