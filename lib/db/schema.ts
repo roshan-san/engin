@@ -1,5 +1,5 @@
 import { integer, pgTable, text, uuid, timestamp, pgEnum, index } from "drizzle-orm/pg-core";
-import { user, session, account, verification } from "@/auth-schema";
+import { user, session, account, verification } from "@/lib/db/auth-schema";
 
 export const userTypeEnum = pgEnum('user_type', ['Creator/Collaborator', 'Investor', 'Mentor']);
 export const employmentTypeEnum = pgEnum('employment_type', ['Full-Time', 'Part-Time', 'Contract']);
