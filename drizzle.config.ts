@@ -3,8 +3,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: '.env.local' });
 export default defineConfig({
   dialect: "postgresql",
-  schema: "./lib/db/schema.ts",
-  out: "./lib/db/migrations",
+  schema: "./auth-schema.ts",
   dbCredentials: {
     url: process.env.DATABASE_URL!,
   },

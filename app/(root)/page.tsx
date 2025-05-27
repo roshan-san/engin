@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/themes/theme-toggle";
+import Link from "next/link";
 
 export default function Page() {
   return (
@@ -20,9 +21,11 @@ export default function Page() {
           <p className="text-lg">
             Welcome to Engin – the ultimate platform where bold ideas meet the right people to bring them to life.
           </p>
-        <Button>
-           Get started
-        </Button>
+        <Link href="/sign-up">
+          <Button>
+            Get started
+          </Button>
+        </Link>
         </div>
       </div>
   );
