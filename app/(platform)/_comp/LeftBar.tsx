@@ -14,7 +14,7 @@ export function LeftBar() {
   const pathname = usePathname();
   const items = [
     { title: "Dashboard", url: "/dashboard", icon: Laptop },
-    { title: "Startups", url: "/explore", icon: Search },
+    { title: "Startups", url: "/startups", icon: Search },
     { title: "Connections", url: "/connections", icon: Users },
     { title: "Messaging", url: "/message", icon: MessageCircle },
   ];
