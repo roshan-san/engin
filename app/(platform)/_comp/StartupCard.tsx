@@ -2,8 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Building2, MapPin, Users, DollarSign, FileText, ArrowRight } from 'lucide-react';
+import { Users, DollarSign, FileText, ArrowRight } from 'lucide-react';
 import { startups } from '@/lib/db/schema';
 
 interface StartupCardProps {

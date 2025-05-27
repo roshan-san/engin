@@ -1,8 +1,9 @@
 import React from 'react'
+
 export default function page() {
   return (
     <div>
-      have a search bar that searches various profiles on click goes /profile/username
+        shows a message list of profile tubes
     </div>
   )
 }
