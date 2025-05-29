@@ -1,5 +1,4 @@
 import { integer, pgTable, text, uuid, timestamp, pgEnum, index } from "drizzle-orm/pg-core";
-import { user, session, account, verification } from "@/lib/db/auth-schema";
 
 export const userTypeEnum = pgEnum('user_type', ['Creator/Collaborator', 'Investor', 'Mentor']);
 export const employmentTypeEnum = pgEnum('employment_type', ['Full-Time', 'Part-Time', 'Contract']);
@@ -70,5 +69,3 @@ export const connections = pgTable("connections", {
   index("connections_sender_id_idx").on(table.senderId),
   index("connections_receiver_id_idx").on(table.receiverId),
 ]);
-
-export { user, session, account, verification };
