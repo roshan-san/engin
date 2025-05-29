@@ -4,7 +4,7 @@ import { useTransition } from "react"
 import { FaGithub } from "react-icons/fa"
 import { signinWithGoogle } from "../actions"
 
-export function GithubLoginButton() {
+export function GoogleLoginButton() {
     const [isPending, startTransition] = useTransition()
   
     const handleLogin = async () => {
