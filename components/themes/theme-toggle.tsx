@@ -7,7 +7,11 @@ import { useTheme } from "next-themes"
 import { Switch } from "@/components/ui/switch"
 
 export function ModeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, mounted } = useTheme()
+
+  if (!mounted) {
+    return null // Or a loading spinner
+  }
 
   return (
     <div className="flex items-center gap-2">

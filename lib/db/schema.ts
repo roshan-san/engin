@@ -4,7 +4,7 @@ export const userTypeEnum = pgEnum('user_type', ['Creator/Collaborator', 'Invest
 export const employmentTypeEnum = pgEnum('employment_type', ['Full-Time', 'Part-Time', 'Contract']);
 export const connectionStatusEnum = pgEnum('connection_status', ['pending', 'accepted', 'rejected',]);
 
-
+ 
 export const startups = pgTable("startups", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),

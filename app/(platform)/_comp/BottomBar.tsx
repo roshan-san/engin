@@ -3,14 +3,14 @@ import Link from "next/link";
 
 const navigationItems = [
   { href: "/dashboard", icon: Laptop, label: "Home" },
-  { href: "/search", icon: Search, label: "Search" },
-  { href: "/teams", icon: Users, label: "Teams" },
-  { href: "/messages", icon: MessageCircle, label: "Chat" },
+  { href: "/startups", icon: Search, label: "Search" },
+  { href: "/connections", icon: Users, label: "Teams" },
+  { href: "/message", icon: MessageCircle, label: "Chat" },
 ];
 
 export function BottomBar() {
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-border/50 z-50 h-16">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-16">
       <div className="flex justify-around items-center h-full px-4">
         {navigationItems.map(({ href, icon: Icon, label }) => (
           <Link 
