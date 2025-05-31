@@ -1,105 +1,82 @@
-'use client'
+import { useEffect, useState, useRef } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { RealtimeChannel } from '@supabase/supabase-js';
 
-import { useCallback, useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { v4 as uuidv4 } from 'uuid'
+export type Message = {
+  id: number;
+  content: string;
+  username: string;
+  inserted_at: string;
+};
 
-export interface ChatUser {
-  name: string
-  id?: string
-}
+export function useRealtimeChat(roomId: string) {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isConnected, setIsConnected] = useState(false);
+  const supabase = createClient();
+  const channelRef = useRef<RealtimeChannel | null>(null);
 
-export interface ChatMessage {
-  id: string
-  content: string
-  createdAt: string
-  user: ChatUser
-}
-
-interface UseRealtimeChatProps {
-  roomName: string
-  username: string
-}
-
-export function useRealtimeChat({ roomName, username }: UseRealtimeChatProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [isConnected, setIsConnected] = useState(false)
-  const supabase = createClient()
-
-  // Set up realtime subscription
   useEffect(() => {
-    const channel = supabase.channel(`chat:${roomName}`)
+    // Fetch initial messages
+    const fetchMessages = async () => {
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('room_id', roomId)
+        .order('inserted_at', { ascending: true });
 
-    channel
-      .on('presence', { event: 'join' }, () => {
-        setIsConnected(true)
-      })
-      .on('presence', { event: 'leave' }, () => {
-        setIsConnected(false)
-      })
-      .on('broadcast', { event: 'message' }, (payload) => {
-        if (payload.payload && typeof payload.payload === 'object' && 'message' in payload.payload) {
-          const message = payload.payload.message as ChatMessage
-          setMessages((prev) => [...prev, message])
+      if (error) {
+        console.error('Error fetching messages:', error);
+        return;
+      }
+
+      setMessages(data || []);
+    };
+
+    fetchMessages();
+
+    // Subscribe to new messages
+    const channel = supabase
+      .channel(`room:${roomId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `room_id=eq.${roomId}`,
+        },
+        (payload) => {
+          setMessages((current) => [...current, payload.new as Message]);
         }
-      })
-      .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
-          await channel.track({
-            user: { name: username },
-            online_at: new Date().toISOString(),
-          })
-        }
-      })
+      )
+      .subscribe((status) => {
+        setIsConnected(status === 'SUBSCRIBED');
+      });
+
+    channelRef.current = channel;
 
     return () => {
-      supabase.removeChannel(channel)
+      channel.unsubscribe();
+    };
+  }, [roomId]);
+
+  const sendMessage = async (content: string, username: string) => {
+    if (!content.trim() || !username.trim()) return;
+
+    const { error } = await supabase.from('messages').insert({
+      content,
+      username,
+      room_id: roomId,
+    });
+
+    if (error) {
+      console.error('Error sending message:', error);
     }
-  }, [roomName, username])
-
-  const sendMessage = useCallback(
-    async (content: string) => {
-      if (!content.trim() || !isConnected) return
-
-      const message: ChatMessage = {
-        id: uuidv4(),
-        content,
-        createdAt: new Date().toISOString(),
-        user: {
-          name: username,
-        },
-      }
-
-      // Store message in database
-      try {
-        const { error } = await supabase.from('messages').insert({
-          id: message.id,
-          content: message.content,
-          room: roomName,
-          user_name: username,
-          created_at: message.createdAt,
-        })
-
-        if (error) {
-          console.error('Error storing message:', error)
-        }
-      } catch (error) {
-        console.error('Error storing message:', error)
-      }
-
-      // Broadcast message to channel
-      await supabase.channel(`chat:${roomName}`).send({
-        type: 'broadcast',
-        event: 'message',
-        payload: { message },
-      })
-    },
-    [isConnected, roomName, username]
-  )
+  };
 
   return {
     messages,
     sendMessage,
     isConnected,
-  }
+  };
 }

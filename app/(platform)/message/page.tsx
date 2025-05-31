@@ -1,130 +1,83 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { createClient } from '@/lib/supabase/client';
-
-const supabase = createClient();
-
-type Message = {
-  id: number;
-  content: string;
-  username: string;
-  inserted_at: string;
-};
-
-type PostgresChangesPayload = {
-  new: Message;
-  old: Message | null;
-  eventType: 'INSERT' | 'UPDATE' | 'DELETE';
-};
+import { useState, useRef, useEffect } from 'react';
+import { useRealtimeChat } from '@/hooks/use-realtime-chat';
 
 export default function MessagePage() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
   const [username, setUsername] = useState('');
+  const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { messages, sendMessage, isConnected } = useRealtimeChat('general');
 
-  useEffect(() => {
-    fetchMessages();
-
-    // Set up realtime subscription
-    const channel = supabase.channel('public:messages');
-    
-    channel
-      .on('broadcast', { event: 'message' }, (payload) => {
-        if (payload.payload && typeof payload.payload === 'object' && 'message' in payload.payload) {
-          const message = payload.payload.message as Message;
-          setMessages((msgs) => [...msgs, message]);
-        }
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  useEffect(() => {
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
   }, [messages]);
 
-  async function fetchMessages() {
-    const { data } = await supabase
-      .from('messages')
-      .select('*')
-      .order('inserted_at', { ascending: true });
-    setMessages(data || []);
-  }
-
-  async function sendMessage(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || !username.trim()) return;
-    
-    // Insert message into database
-    const { data, error } = await supabase.from('messages').insert([{ 
-      content: input, 
-      username 
-    }]).select();
-    
-    if (error) {
-      console.error('Error sending message:', error);
-      return;
-    }
-    
-    // Broadcast message to channel
-    if (data && data.length > 0) {
-      await supabase.channel('public:messages').send({
-        type: 'broadcast',
-        event: 'message',
-        payload: { message: data[0] }
-      });
-    }
-    
+
+    await sendMessage(input, username);
     setInput('');
-  }
+  };
 
   return (
-    <div style={{ maxWidth: 500, margin: '2rem auto', padding: 16 }}>
-      <h2>Supabase Realtime Chat</h2>
-      <div style={{ marginBottom: 8 }}>
-        <input
-          placeholder="Your name"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          style={{ width: '100%', marginBottom: 8 }}
-        />
-      </div>
-      <div
-        style={{
-          border: '1px solid #ccc',
-          height: 300,
-          overflowY: 'auto',
-          padding: 8,
-          marginBottom: 8,
-          background: '#fafafa',
-        }}
-      >
-        {messages.map(msg => (
-          <div key={msg.id} style={{ marginBottom: 6 }}>
-            <b>{msg.username}:</b> {msg.content}
-            <span style={{ color: '#888', fontSize: 10, marginLeft: 8 }}>
-              {new Date(msg.inserted_at).toLocaleTimeString()}
-            </span>
+    <div className="max-w-2xl mx-auto p-4">
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold">Chat Room</h2>
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+            <span className="text-sm text-gray-600">{isConnected ? 'Connected' : 'Disconnected'}</span>
           </div>
-        ))}
-        <div ref={messagesEndRef} />
+        </div>
+
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Your name"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div className="h-[400px] overflow-y-auto mb-4 border rounded-lg p-4 bg-gray-50">
+          {messages.map((msg) => (
+            <div key={msg.id} className="mb-3">
+              <div className="flex items-baseline gap-2">
+                <span className="font-semibold text-blue-600">{msg.username}</span>
+                <span className="text-xs text-gray-500">
+                  {new Date(msg.inserted_at).toLocaleTimeString()}
+                </span>
+              </div>
+              <p className="text-gray-800">{msg.content}</p>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type a message..."
+            className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="submit"
+            disabled={!input.trim() || !username.trim()}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Send
+          </button>
+        </form>
       </div>
-      <form onSubmit={sendMessage} style={{ display: 'flex', gap: 8 }}>
-        <input
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder="Type a message..."
-          style={{ flex: 1 }}
-        />
-        <button type="submit" disabled={!input.trim() || !username.trim()}>
-          Send
-        </button>
-      </form>
     </div>
   );
 }
