@@ -15,7 +15,7 @@ export default function Landing({ onGetStarted }: LandingContentProps) {
         <p className="text-lg md:text-xl text-muted-foreground">
           Connect with founders, mentors, and investors to build your startup.
         </p>
-    </div>
+      </div>
       <Button 
         onClick={onGetStarted}
         size="lg"
@@ -23,7 +23,6 @@ export default function Landing({ onGetStarted }: LandingContentProps) {
       >
         Get started
       </Button>
-
-      </div>
+    </div>
   );
 } 

@@ -1,19 +1,26 @@
-"use client"
+"use client";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
-import { FaUser, FaInfoCircle } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaTwitter, FaGlobe } from "react-icons/fa";
 
-export default function UserBioStep({ handleNext, handlePrevious }: any) {
-  const [username, setUsername] = useState('');
-  const [bio, setBio] = useState('');
+export default function Contact({ handleNext, handlePrevious }:any) {
+  const [socials, setSocials] = useState({
+    github: '',
+    linkedin: '',
+  });
 
   const handleSubmit = () => {
-    handleNext({
-      username,
-      bio
-    });
+    handleNext(socials);
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setSocials(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   return (
@@ -30,7 +37,7 @@ export default function UserBioStep({ handleNext, handlePrevious }: any) {
           transition={{ delay: 0.2 }}
           className="text-3xl font-bold mb-3"
         >
-          Tell us about yourself
+          Connect Your Socials
         </motion.h2>
         <motion.p 
           initial={{ opacity: 0 }}
@@ -38,7 +45,7 @@ export default function UserBioStep({ handleNext, handlePrevious }: any) {
           transition={{ delay: 0.3 }}
           className="text-muted-foreground text-lg"
         >
-          Create your unique profile to get started
+          Link your professional profiles to showcase your work
         </motion.p>
       </div>
       
@@ -51,26 +58,26 @@ export default function UserBioStep({ handleNext, handlePrevious }: any) {
         >
           <div className="space-y-2">
             <label className="text-lg font-medium flex items-center gap-2">
-              <FaUser className="text-primary" />
-              Username
+              <FaGithub className="text-primary" />
+              GitHub Profile
             </label>
             <Input 
-              placeholder="Enter your username" 
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="https://github.com/username" 
+              value={socials.github}
+              onChange={(e) => handleInputChange('github', e.target.value)}
               className="h-14 text-lg"
             />
           </div>
           
           <div className="space-y-2">
             <label className="text-lg font-medium flex items-center gap-2">
-              <FaInfoCircle className="text-primary" />
-              Bio
+              <FaLinkedin className="text-primary" />
+              LinkedIn Profile
             </label>
             <Input 
-              placeholder="Tell us about yourself" 
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
+              placeholder="https://linkedin.com/in/username" 
+              value={socials.linkedin}
+              onChange={(e) => handleInputChange('linkedin', e.target.value)}
               className="h-14 text-lg"
             />
           </div>

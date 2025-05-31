@@ -1,5 +1,5 @@
 import Container from "./comp/Container";
-import { GithubLoginButton } from "./comp/GithubLogin";
+import { GithubLoginButton } from "./comp/buttons/GithubLogin";
 import Header from "./comp/Header";
 
 export default function Page() {
@@ -8,7 +8,6 @@ export default function Page() {
         {/* header bar */}
         <Header/>
        <Container/>
-       <GithubLoginButton/> 
       </div>
   );
 }

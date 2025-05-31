@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button'
 import React, { useTransition } from 'react'
 import { FaSignOutAlt } from 'react-icons/fa'
-import { signOut } from '../actions'
+import { signOut } from '../../actions'
 
 export default function SignOutButton() {
   const [isPending, startTransition] = useTransition()
