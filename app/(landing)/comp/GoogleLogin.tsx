@@ -2,14 +2,13 @@
 import { Button } from "@/components/ui/button"
 import { useTransition } from "react"
 import { FaGithub } from "react-icons/fa"
-import { signinWithGithub } from "../actions"
-
-export function GithubLoginButton() {
+import { handleOAuthLogin } from "../actions"
+export function GoogleLoginButton() {
     const [isPending, startTransition] = useTransition()
   
     const handleLogin = async () => {
         startTransition(async () => 
-             signinWithGithub
+            await handleOAuthLogin("google")
         )
     }
   
@@ -21,7 +20,7 @@ export function GithubLoginButton() {
                 className="w-full"
             >
                 <FaGithub className="mr-2 h-4 w-4" />
-                {isPending ? "Signing in..." : "Sign in with GitHub"}
+                {isPending ? "Signing in..." : "Sign in with Google"}
             </Button>
         </div>
     )

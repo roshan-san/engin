@@ -3,7 +3,7 @@ import { Providers } from "@/app/providers"
 import "@/app/globals.css"
 export const metadata: Metadata = {
   title: "Engin",
-  description: "Connect and Collaborate",
+  description: "Engin is a platform where startup founders, collaborators, mentors, and investors connect to build, fund, and grow startups together",
 }
 
 export default function RootLayout({
