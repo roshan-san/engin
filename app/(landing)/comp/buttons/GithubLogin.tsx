@@ -4,6 +4,7 @@ import { useTransition } from "react"
 import { FaGithub } from "react-icons/fa"
 import { handleOAuthLogin } from "../../actions"
 
+
 export function GithubLoginButton() {
     const [isPending, startTransition] = useTransition()
   
@@ -13,15 +14,15 @@ export function GithubLoginButton() {
         )
     }
     return (
-        <div className="w-full">
             <Button 
                 onClick={handleLogin}
                 disabled={isPending}
-                className="w-full"
+                className="bg-[#24292F] hover:bg-[#2C3238] text-white"
             >
-                <FaGithub className="mr-2 h-4 w-4" />
-                {isPending ? "Signing in..." : "Sign in with GitHub"}
+                <FaGithub className="h-5 w-5" />
+                <span className="text-base">
+                    {isPending ? "Signing in..." : "Sign in with GitHub"}
+                </span>
             </Button>
-        </div>
     )
 }

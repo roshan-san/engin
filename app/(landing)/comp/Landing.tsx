@@ -1,9 +1,6 @@
-import { Button } from "@/components/ui/button";
-interface LandingContentProps {
-  onGetStarted: () => void;
-}
-
-export default function Landing({ onGetStarted }: LandingContentProps) {
+import { GithubLoginButton } from "./buttons/GithubLogin";
+import { GoogleLoginButton } from "./buttons/GoogleLogin";
+export default function Landing() {
   return (
     <div className="flex flex-1 flex-col">
       <div className="flex-1 flex w-full items-center justify-center p-4">
@@ -17,14 +14,9 @@ export default function Landing({ onGetStarted }: LandingContentProps) {
           </p>
 
           </div>
-          <div className="p-4 w-full flex justify-end sm:justify-center items-center">
-            <Button
-              onClick={onGetStarted} 
-              size="lg"
-              className="w-40 px-8 py-6 text-lg hover:scale-105 transition-transform"
-            >
-              Get Started
-            </Button>
+          <div className="p-4  border-2 flex justify-center gap-4 items-center">
+            <GithubLoginButton/>
+            <GoogleLoginButton/>
           </div>
         </div>
       </div>

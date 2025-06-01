@@ -1,7 +1,6 @@
 "use client"
 import { Progress } from "@/components/ui/progress";
 import { useFormSteps } from "./hooks/useFormSteps";
-import Landing from "./onboarding/Landing";
 import UserName from "./onboarding/UserName";
 import Role from "./onboarding/Role";
 import Skill from "./onboarding/Skiill";
@@ -18,16 +17,14 @@ export default function Container() {
           {(() => {
             switch (currentStep) {
               case 0:
-                return <Landing onGetStarted={() => handleNext({})} />;
-              case 1:
                 return <UserName handleNext={handleNext} handlePrevious={handlePrevious} />;
-              case 2:
+              case 1:
                 return <Role handleNext={handleNext} handlePrevious={handlePrevious} />;
-              case 3:
+              case 2:
                 return <Skill handleNext={handleNext} handlePrevious={handlePrevious} />;
-              case 4:
+              case 3:
                 return <WorkType handleNext={handleNext} handlePrevious={handlePrevious} />;
-              case 5:
+              case 4:
                 return <Contact handleNext={handleNext} handlePrevious={handlePrevious} />;
               default:
                 return null;

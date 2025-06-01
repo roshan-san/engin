@@ -1,8 +1,9 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { useTransition } from "react"
-import { FaGithub } from "react-icons/fa"
-import { handleOAuthLogin } from "../actions"
+import { FcGoogle } from "react-icons/fc"
+import { handleOAuthLogin } from "../../actions"
+
 export function GoogleLoginButton() {
     const [isPending, startTransition] = useTransition()
   
@@ -13,15 +14,15 @@ export function GoogleLoginButton() {
     }
   
     return (
-        <div className="w-full">
             <Button 
                 onClick={handleLogin}
                 disabled={isPending}
-                className="w-full"
+                className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300"
             >
-                <FaGithub className="mr-2 h-4 w-4" />
-                {isPending ? "Signing in..." : "Sign in with Google"}
+                <FcGoogle className="h-5 w-5" />
+                <span className="text-base">
+                    {isPending ? "Signing in..." : "Sign in with Google"}
+                </span>
             </Button>
-        </div>
     )
 }

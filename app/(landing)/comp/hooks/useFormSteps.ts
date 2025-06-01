@@ -10,7 +10,8 @@ export const useFormSteps = () => {
     if (currentStep < 5) {
       setCurrentStep((prev) => prev + 1);
     } else {
-      console.log("Final form data:", { ...formData, ...data });
+      const finalData = { ...formData, ...data };
+      console.table(finalData);
     }
   };
 
@@ -18,7 +19,6 @@ export const useFormSteps = () => {
     if (currentStep > 0) {
       setCurrentStep((prev) => prev - 1);
     }
-    
   };
 
   return {
