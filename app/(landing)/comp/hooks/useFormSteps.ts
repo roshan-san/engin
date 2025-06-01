@@ -7,7 +7,7 @@ export const useFormSteps = () => {
 
   const handleNext = (data: Partial<typeof profiles.$inferSelect>) => {
     setFormData((prev) => ({ ...prev, ...data }));
-    if (currentStep < 5) {
+    if (currentStep < 4) {
       setCurrentStep((prev) => prev + 1);
     } else {
       console.log("Final form data:", { ...formData, ...data });
@@ -18,6 +18,7 @@ export const useFormSteps = () => {
     if (currentStep > 0) {
       setCurrentStep((prev) => prev - 1);
     }
+    
   };
 
   return {

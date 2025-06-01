@@ -1,5 +1,5 @@
-"use client";
 import { Button } from "@/components/ui/button";
+import Header from "../Header";
 
 interface LandingContentProps {
   onGetStarted: () => void;
@@ -7,22 +7,29 @@ interface LandingContentProps {
 
 export default function Landing({ onGetStarted }: LandingContentProps) {
   return (
-    <div className="min-h-138 p-5 flex flex-col items-center justify-center text-center gap-4">
-      <div className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-6xl font-bold bg-gradient-to-r from-primary to-accent-foreground text-transparent bg-clip-text tracking-tight">
-          Got an idea? Launch your startup today!
-        </h1>
-        <p className="text-lg md:text-xl text-muted-foreground">
-          Connect with founders, mentors, and investors to build your startup.
-        </p>
+    <div className="flex flex-1 flex-col">
+      <div className="flex-1 flex w-full items-center justify-center p-4">
+        <div className="space-y-6">
+          <div className=" flex flex-col justify-center items-center gap-2">
+          <h1 className="text-left sm:text-center text-5xl font-bold bg-gradient-to-r from-primary to-accent-foreground text-transparent bg-clip-text">
+            Got an idea? Launch your startup today!
+          </h1>
+          <p className="text-lg text-muted-foreground">           
+            Connect with founders, mentors, and investors to build your startup.
+          </p>
+
+          </div>
+          <div className="p-4 w-full flex justify-end sm:justify-center items-center">
+            <Button
+              onClick={onGetStarted} 
+              size="lg"
+              className="w-40 px-8 py-6 text-lg hover:scale-105 transition-transform"
+            >
+              Get Started
+            </Button>
+          </div>
+        </div>
       </div>
-      <Button 
-        onClick={onGetStarted}
-        size="lg"
-        className="text-lg px-8 py-6 rounded-full hover:scale-105 transition-transform"
-      >
-        Get started
-      </Button>
     </div>
   );
 } 

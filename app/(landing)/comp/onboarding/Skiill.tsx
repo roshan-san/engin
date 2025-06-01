@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaTools, FaHeart, FaPlus, FaTimes } from "react-icons/fa";
-import { motion } from "framer-motion";
 
 export default function SkillInterestStep({ handleNext, handlePrevious }: any) {
   const [skills, setSkills] = useState<string[]>([]);
@@ -42,38 +41,18 @@ export default function SkillInterestStep({ handleNext, handlePrevious }: any) {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="w-full max-w-2xl mx-auto flex flex-col h-full py-8"
-    >
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="text-center mb-12"
-      >
+    <div className="w-full max-w-2xl mx-auto flex flex-col h-full py-8">
+      <div className="text-center mb-12">
         <h2 className="text-3xl font-bold mb-3">
           Your Skills & Interests
         </h2>
         <p className="text-muted-foreground text-lg">
           Help us understand your expertise and what excites you
         </p>
-      </motion.div>
+      </div>
       
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="space-y-8"
-      >
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5 }}
-          className="space-y-4"
-        >
+      <div className="space-y-8">
+        <div className="space-y-4">
           <label className="text-lg font-medium text-muted-foreground tracking-wide uppercase flex items-center gap-2">
             <FaTools className="text-primary" />
             Skills
@@ -99,16 +78,10 @@ export default function SkillInterestStep({ handleNext, handlePrevious }: any) {
               <FaPlus className="h-5 w-5" />
             </Button>
           </div>
-          <motion.div 
-            layout
-            className="flex flex-wrap gap-2"
-          >
+          <div className="flex flex-wrap gap-2">
             {skills.map((skill, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
                 className="bg-primary/10 text-primary px-4 py-2 rounded-full flex items-center gap-2 shadow-sm"
               >
                 {skill}
@@ -118,17 +91,12 @@ export default function SkillInterestStep({ handleNext, handlePrevious }: any) {
                 >
                   <FaTimes className="h-4 w-4" />
                 </button>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
         
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.6 }}
-          className="space-y-4"
-        >
+        <div className="space-y-4">
           <label className="text-lg font-medium text-muted-foreground tracking-wide uppercase flex items-center gap-2">
             <FaHeart className="text-primary" />
             Interests
@@ -154,16 +122,10 @@ export default function SkillInterestStep({ handleNext, handlePrevious }: any) {
               <FaPlus className="h-5 w-5" />
             </Button>
           </div>
-          <motion.div 
-            layout
-            className="flex flex-wrap gap-2"
-          >
+          <div className="flex flex-wrap gap-2">
             {interests.map((interest, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
                 className="bg-primary/10 text-primary px-4 py-2 rounded-full flex items-center gap-2 shadow-sm"
               >
                 {interest}
@@ -173,18 +135,13 @@ export default function SkillInterestStep({ handleNext, handlePrevious }: any) {
                 >
                   <FaTimes className="h-4 w-4" />
                 </button>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
-        </motion.div>
-      </motion.div>
+          </div>
+        </div>
+      </div>
       
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-        className="flex justify-between gap-4 pt-8 mt-auto"
-      >
+      <div className="flex justify-between gap-4 pt-8 mt-auto">
         <Button 
           type="button" 
           variant="outline" 
@@ -200,7 +157,7 @@ export default function SkillInterestStep({ handleNext, handlePrevious }: any) {
         >
           Next
         </Button>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
