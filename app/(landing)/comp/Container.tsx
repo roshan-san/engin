@@ -6,6 +6,7 @@ import UserName from "./onboarding/UserName";
 import Role from "./onboarding/Role";
 import Skill from "./onboarding/Skiill";
 import Contact from "./onboarding/Contact";
+import WorkType from "./onboarding/WorkType";
 
 export default function Container() {
   const { currentStep, handleNext, handlePrevious } = useFormSteps();
@@ -25,6 +26,8 @@ export default function Container() {
               case 3:
                 return <Skill handleNext={handleNext} handlePrevious={handlePrevious} />;
               case 4:
+                return <WorkType handleNext={handleNext} handlePrevious={handlePrevious} />;
+              case 5:
                 return <Contact handleNext={handleNext} handlePrevious={handlePrevious} />;
               default:
                 return null;

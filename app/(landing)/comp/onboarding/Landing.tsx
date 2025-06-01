@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import Header from "../Header";
-
 interface LandingContentProps {
   onGetStarted: () => void;
 }

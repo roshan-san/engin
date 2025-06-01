@@ -76,9 +76,9 @@ export default function WorkType({ handleNext, handlePrevious }:any) {
         </RadioGroup>
       </div>
 
-      <div className="mt-auto pt-8">
-        <div className="flex justify-between gap-4">
+      <div className="w-100 p-3 flex justify-evenly gap-4">
           <Button 
+            type="button" 
             variant="outline" 
             onClick={handlePrevious}
             className="flex-1 h-12 text-lg"
@@ -86,14 +86,13 @@ export default function WorkType({ handleNext, handlePrevious }:any) {
             Previous
           </Button>
           <Button 
+            type="button"
             onClick={handleSubmit}
-            disabled={!selectedWorkType }
             className="flex-1 h-12 text-lg"
           >
             Next
           </Button>
         </div>
-      </div>
     </div>
   )
 }

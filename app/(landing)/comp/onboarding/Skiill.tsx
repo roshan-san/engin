@@ -41,7 +41,7 @@ export default function Skill({ handleNext, handlePrevious }: any) {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col h-full py-8">
+    <div className="w-full flex flex-col h-full">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold mb-3">
           Your Skills & Interests
