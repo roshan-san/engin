@@ -9,7 +9,7 @@ export async function handleOAuthLogin(provider: 'github' | 'google') {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`,
     },
   })
 
@@ -32,14 +32,9 @@ export async function signOut() {
   redirect('/')
 }
 
-export async function isUserAuthenticated() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  return !!user
-}
-
 export async function getUser() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   return user
 }
+

@@ -1,11 +1,12 @@
 "use client"
 import { Progress } from "@/components/ui/progress";
-import { useFormSteps } from "./hooks/useFormSteps";
+import { useFormSteps } from "../hooks/useFormSteps";
 import UserName from "./onboarding/UserName";
 import Role from "./onboarding/Role";
 import Skill from "./onboarding/Skiill";
 import Contact from "./onboarding/Contact";
 import WorkType from "./onboarding/WorkType";
+import Location from "./onboarding/Location";
 
 export default function Container() {
   const { currentStep, handleNext, handlePrevious } = useFormSteps();
@@ -13,18 +14,20 @@ export default function Container() {
   const renderStep = () => {    
     return (
         <div className="flex flex-col flex-1">
-          <Progress hidden={currentStep==0} value={(currentStep/5)*100}/>
+          <Progress hidden={currentStep==0} value={(currentStep/6)*100}/>
           {(() => {
             switch (currentStep) {
-              case 0:
-                return <UserName handleNext={handleNext} handlePrevious={handlePrevious} />;
               case 1:
-                return <Role handleNext={handleNext} handlePrevious={handlePrevious} />;
+                return <UserName handleNext={handleNext} handlePrevious={handlePrevious} />;
               case 2:
-                return <Skill handleNext={handleNext} handlePrevious={handlePrevious} />;
+                return <Location handleNext={handleNext} handlePrevious={handlePrevious} />;
               case 3:
-                return <WorkType handleNext={handleNext} handlePrevious={handlePrevious} />;
+                return <Role handleNext={handleNext} handlePrevious={handlePrevious} />;
               case 4:
+                return <Skill handleNext={handleNext} handlePrevious={handlePrevious} />;
+              case 5:
+                return <WorkType handleNext={handleNext} handlePrevious={handlePrevious} />;
+              case 6:
                 return <Contact handleNext={handleNext} handlePrevious={handlePrevious} />;
               default:
                 return null;

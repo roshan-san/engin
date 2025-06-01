@@ -27,7 +27,7 @@ export const profiles = pgTable("profiles", {
   github_url: text("github_url"),
   linkedin_url: text("linkedin_url"),
   username: text("username").notNull(),
-  bio: text("bio").notNull(),
+  bio: text("bio").default(""),
   location: text("location").notNull(),
   skills: text("skills").array(),
   interests: text("interests").array(),
