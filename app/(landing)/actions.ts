@@ -30,4 +30,16 @@ export async function signOut() {
     throw new Error(error.message)
   }
   redirect('/')
-} 
+}
+
+export async function isUserAuthenticated() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  return !!user
+}
+
+export async function getUser() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  return user
+}

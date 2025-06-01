@@ -2,10 +2,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FaUser } from "react-icons/fa";
-
+import { getUser, signOut } from "../../actions";
+import { useQuery } from "@tanstack/react-query";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export default function UserName({ handleNext, handlePrevious }: any) {
   const [username, setUsername] = useState('');
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: getUser,
+  });
 
   const handleSubmit = () => {
     handleNext({
@@ -17,13 +22,20 @@ export default function UserName({ handleNext, handlePrevious }: any) {
     <div className="w-full flex justify-center items-center gap-6 flex-col h-full p-4 max-w-2xl mx-auto">
       <div className="flex flex-col gap-6 w-full">
         <h3 className="text-xl font-semibold text-foreground tracking-wide uppercase flex items-center gap-3">
-          <FaUser className="text-primary w-5 h-5" />
-          Choose Your Username
+          <Avatar className="w-10 h-10">
+            <AvatarImage src={user?.user_metadata.avatar_url} />
+            <AvatarFallback>
+              {user?.user_metadata.name?.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+          <span>
+            hello {user?.user_metadata.name}
+          </span>
         </h3>
         
         <div className="space-y-2">
           <Input 
-            placeholder="Enter your username" 
+            placeholder="Choose Your Username" 
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="h-14 text-lg rounded-xl"
@@ -35,10 +47,13 @@ export default function UserName({ handleNext, handlePrevious }: any) {
         <Button 
           type="button" 
           variant="outline" 
-          onClick={handlePrevious}
+          onClick={() => {
+            signOut()
+            handlePrevious()
+          }}
           className="flex-1 h-12 text-lg font-medium hover:bg-muted/50 transition-colors"
         >
-          Previous
+          Sign Out 
         </Button>
         <Button 
           type="button"
