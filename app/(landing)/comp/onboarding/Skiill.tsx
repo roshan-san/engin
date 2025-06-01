@@ -41,23 +41,23 @@ export default function Skill({ handleNext, handlePrevious }: any) {
   };
 
   return (
-    <div className="w-full flex flex-col h-full">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold mb-3">
+    <div className="w-full flex flex-col h-full p-2">
+      <div className="text-center mb-16">
+        <h2 className="text-4xl font-bold mb-4">
           Your Skills & Interests
         </h2>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
           Help us understand your expertise and what excites you
         </p>
       </div>
       
       <div className="space-y-8">
-        <div className="space-y-4">
-          <label className="text-lg font-medium text-muted-foreground tracking-wide uppercase flex items-center gap-2">
-            <FaTools className="text-primary" />
+        <div className="space-y-6">
+          <label className="text-xl font-semibold text-muted-foreground tracking-wide uppercase flex items-center gap-3">
+            <FaTools className="text-primary h-6 w-6" />
             Skills
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Input 
               placeholder="Add a skill" 
               value={newSkill}
@@ -68,21 +68,21 @@ export default function Skill({ handleNext, handlePrevious }: any) {
                   addSkill();
                 }
               }}
-              className="h-14 text-lg rounded-xl"
+              className="h-14 text-lg rounded-xl flex-1"
             />
             <Button
               type="button"
               onClick={addSkill}
-              className="h-14 px-4 rounded-xl"
+              className="h-14 w-14 rounded-xl"
             >
               <FaPlus className="h-5 w-5" />
             </Button>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {skills.map((skill, index) => (
               <div
                 key={index}
-                className="bg-primary/10 text-primary px-4 py-2 rounded-full flex items-center gap-2 shadow-sm"
+                className="bg-primary/10 text-primary px-5 py-2.5 rounded-full flex items-center gap-2 shadow-sm"
               >
                 {skill}
                 <button
@@ -96,12 +96,12 @@ export default function Skill({ handleNext, handlePrevious }: any) {
           </div>
         </div>
         
-        <div className="space-y-4">
-          <label className="text-lg font-medium text-muted-foreground tracking-wide uppercase flex items-center gap-2">
-            <FaHeart className="text-primary" />
+        <div className="space-y-6">
+          <label className="text-xl font-semibold text-muted-foreground tracking-wide uppercase flex items-center gap-3">
+            <FaHeart className="text-primary h-6 w-6" />
             Interests
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Input 
               placeholder="Add an interest" 
               value={newInterest}
@@ -112,21 +112,21 @@ export default function Skill({ handleNext, handlePrevious }: any) {
                   addInterest();
                 }
               }}
-              className="h-14 text-lg rounded-xl"
+              className="h-14 text-lg rounded-xl flex-1"
             />
             <Button
               type="button"
               onClick={addInterest}
-              className="h-14 px-4 rounded-xl"
+              className="h-14 w-14 rounded-xl"
             >
               <FaPlus className="h-5 w-5" />
             </Button>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {interests.map((interest, index) => (
               <div
                 key={index}
-                className="bg-primary/10 text-primary px-4 py-2 rounded-full flex items-center gap-2 shadow-sm"
+                className="bg-primary/10 text-primary px-5 py-2.5 rounded-full flex items-center gap-2 shadow-sm"
               >
                 {interest}
                 <button
@@ -141,7 +141,7 @@ export default function Skill({ handleNext, handlePrevious }: any) {
         </div>
       </div>
       
-      <div className="flex justify-between gap-4 pt-8 mt-auto">
+      <div className="mt-8 flex justify-evenly gap-4">
         <Button 
           type="button" 
           variant="outline" 
