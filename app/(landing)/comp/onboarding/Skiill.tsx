@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaTools, FaHeart, FaPlus, FaTimes } from "react-icons/fa";
 
-export default function SkillInterestStep({ handleNext, handlePrevious }: any) {
+export default function Skill({ handleNext, handlePrevious }: any) {
   const [skills, setSkills] = useState<string[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
   const [newSkill, setNewSkill] = useState('');

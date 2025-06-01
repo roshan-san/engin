@@ -3,6 +3,9 @@ import { Progress } from "@/components/ui/progress";
 import { useFormSteps } from "./hooks/useFormSteps";
 import Landing from "./onboarding/Landing";
 import UserName from "./onboarding/UserName";
+import Role from "./onboarding/Role";
+import Skill from "./onboarding/Skiill";
+import Contact from "./onboarding/Contact";
 
 export default function Container() {
   const { currentStep, handleNext, handlePrevious } = useFormSteps();
@@ -18,7 +21,7 @@ export default function Container() {
               case 1:
                 return <UserName handleNext={handleNext} handlePrevious={handlePrevious} />;
               case 2:
-                return < handleNext={handleNext} handlePrevious={handlePrevious} />;
+                return <Role handleNext={handleNext} handlePrevious={handlePrevious} />;
               case 3:
                 return <Skill handleNext={handleNext} handlePrevious={handlePrevious} />;
               case 4:

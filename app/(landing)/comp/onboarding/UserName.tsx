@@ -14,18 +14,12 @@ export default function UserName({ handleNext, handlePrevious }: any) {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col h-full py-8">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold mb-3">
-          Tell Us About Yourself
+    <div className="w-screen h-full items-center justify-evenly flex gap-4 flex-col">
+        <h2 className="text-3xl text-center font-bold ">
+          Choose Your Unique Username
         </h2>
-        <p className="text-muted-foreground text-lg">
-          Choose a username and write a short bio to introduce yourself
-        </p>
-      </div>
       
-      <div className="space-y-8 w-full">
-        <div className="space-y-6">
+        <div className="w-100">
           <div className="space-y-2">
             <label className="text-lg font-medium text-muted-foreground tracking-wide uppercase flex items-center gap-2">
               <FaUser className="text-primary" />
@@ -40,7 +34,7 @@ export default function UserName({ handleNext, handlePrevious }: any) {
           </div>
         </div>
         
-        <div className="flex justify-between gap-4 pt-6">
+        <div className="w-100 p-3 border-2 flex justify-evenly gap-4">
           <Button 
             type="button" 
             variant="outline" 
@@ -58,6 +52,5 @@ export default function UserName({ handleNext, handlePrevious }: any) {
           </Button>
         </div>
       </div>
-    </div>
   );
 }
