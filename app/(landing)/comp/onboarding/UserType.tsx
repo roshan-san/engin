@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { FaUserCog, FaUserGraduate, FaUserTie, FaBriefcase, FaClock, FaFileContract } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const roles = [
   {
@@ -58,10 +59,35 @@ export default function UserTypeStep({ handleNext, handlePrevious }:any) {
   };
 
   return (
-    <div className="w-full flex flex-1 flex-col h-full">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="w-full max-w-4xl mx-auto flex flex-col h-full py-8"
+    >
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-center mb-12"
+      >
+        <h2 className="text-3xl font-bold mb-3">
+          Choose Your Role
+        </h2>
+        <p className="text-muted-foreground text-lg">
+          Select your primary role and preferred work type
+        </p>
+      </motion.div>
+
       <div className="flex flex-col lg:flex-row gap-8 flex-1">
-        <div className="space-y-4 flex-1">
-          <h3 className="text-lg font-medium text-muted-foreground tracking-wide uppercase">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4 }}
+          className="space-y-4 flex-1"
+        >
+          <h3 className="text-lg font-medium text-muted-foreground tracking-wide uppercase flex items-center gap-2">
+            <FaUserCog className="text-primary" />
             Select your primary role
           </h3>
           <RadioGroup 
@@ -72,18 +98,21 @@ export default function UserTypeStep({ handleNext, handlePrevious }:any) {
             {roles.map((role) => {
               const Icon = role.icon;
               return (
-                <label
+                <motion.label
                   key={role.id}
-                  className={`flex items-center space-x-4 p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className={`flex items-center space-x-4 p-6 rounded-xl border cursor-pointer transition-all duration-200 ${
                     selectedRole === role.id 
-                      ? 'border-primary bg-primary/5' 
-                      : 'border-border hover:border-primary/50'
+                      ? 'border-primary bg-primary/5 shadow-lg' 
+                      : 'border-border hover:border-primary/50 hover:shadow-md'
                   }`}
                 >
                   <RadioGroupItem value={role.id} id={role.id} className="mt-1" />
                   <div className="flex items-center gap-4 flex-1">
                     <div 
-                      className={`p-2 rounded-full transition-colors duration-200 ${
+                      className={`p-3 rounded-full transition-colors duration-200 ${
                         selectedRole === role.id ? 'bg-primary text-primary-foreground' : 'bg-muted'
                       }`}
                     >
@@ -94,14 +123,20 @@ export default function UserTypeStep({ handleNext, handlePrevious }:any) {
                       <div className="text-sm text-muted-foreground">{role.description}</div>
                     </div>
                   </div>
-                </label>
+                </motion.label>
               );
             })}
           </RadioGroup>
-        </div>
+        </motion.div>
 
-        <div className="space-y-4 flex-1">
-          <h3 className="text-lg font-medium text-muted-foreground tracking-wide uppercase">
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4 }}
+          className="space-y-4 flex-1"
+        >
+          <h3 className="text-lg font-medium text-muted-foreground tracking-wide uppercase flex items-center gap-2">
+            <FaBriefcase className="text-primary" />
             Select your preferred work type
           </h3>
           <RadioGroup 
@@ -112,18 +147,21 @@ export default function UserTypeStep({ handleNext, handlePrevious }:any) {
             {workTypes.map((type) => {
               const Icon = type.icon;
               return (
-                <label
+                <motion.label
                   key={type.id}
-                  className={`flex items-center space-x-4 p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className={`flex items-center space-x-4 p-6 rounded-xl border cursor-pointer transition-all duration-200 ${
                     selectedWorkType === type.id 
-                      ? 'border-primary bg-primary/5' 
-                      : 'border-border hover:border-primary/50'
+                      ? 'border-primary bg-primary/5 shadow-lg' 
+                      : 'border-border hover:border-primary/50 hover:shadow-md'
                   }`}
                 >
                   <RadioGroupItem value={type.id} id={type.id} className="mt-1" />
                   <div className="flex items-center gap-4 flex-1">
                     <div 
-                      className={`p-2 rounded-full transition-colors duration-200 ${
+                      className={`p-3 rounded-full transition-colors duration-200 ${
                         selectedWorkType === type.id ? 'bg-primary text-primary-foreground' : 'bg-muted'
                       }`}
                     >
@@ -134,14 +172,19 @@ export default function UserTypeStep({ handleNext, handlePrevious }:any) {
                       <div className="text-sm text-muted-foreground">{type.description}</div>
                     </div>
                   </div>
-                </label>
+                </motion.label>
               );
             })}
           </RadioGroup>
-        </div>
+        </motion.div>
       </div>
 
-      <div className="mt-auto">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="mt-auto pt-8"
+      >
         <div className="flex justify-between gap-4">
           <Button 
             variant="outline" 
@@ -158,8 +201,8 @@ export default function UserTypeStep({ handleNext, handlePrevious }:any) {
             Next
           </Button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 

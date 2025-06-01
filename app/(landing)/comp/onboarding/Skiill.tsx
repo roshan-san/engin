@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaTools, FaHeart, FaPlus, FaTimes } from "react-icons/fa";
-import { StepProps, SkillsData } from "./types";
+import { motion } from "framer-motion";
 
-export default function SkillInterestStep({ handleNext, handlePrevious }: StepProps) {
+export default function SkillInterestStep({ handleNext, handlePrevious }: any) {
   const [skills, setSkills] = useState<string[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
   const [newSkill, setNewSkill] = useState('');
@@ -38,23 +38,43 @@ export default function SkillInterestStep({ handleNext, handlePrevious }: StepPr
     handleNext({
       skills,
       interests
-    } as SkillsData);
+    });
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div className="text-center mb-8">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="w-full max-w-2xl mx-auto flex flex-col h-full py-8"
+    >
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-center mb-12"
+      >
         <h2 className="text-3xl font-bold mb-3">
           Your Skills & Interests
         </h2>
         <p className="text-muted-foreground text-lg">
           Help us understand your expertise and what excites you
         </p>
-      </div>
+      </motion.div>
       
-      <div className="space-y-6">
-        <div className="space-y-4">
-          <label className="text-lg font-medium flex items-center gap-2">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="space-y-8"
+      >
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.5 }}
+          className="space-y-4"
+        >
+          <label className="text-lg font-medium text-muted-foreground tracking-wide uppercase flex items-center gap-2">
             <FaTools className="text-primary" />
             Skills
           </label>
@@ -69,36 +89,47 @@ export default function SkillInterestStep({ handleNext, handlePrevious }: StepPr
                   addSkill();
                 }
               }}
-              className="h-14 text-lg"
+              className="h-14 text-lg rounded-xl"
             />
             <Button
               type="button"
               onClick={addSkill}
-              className="h-14 px-4"
+              className="h-14 px-4 rounded-xl"
             >
               <FaPlus className="h-5 w-5" />
             </Button>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <motion.div 
+            layout
+            className="flex flex-wrap gap-2"
+          >
             {skills.map((skill, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="bg-primary/10 text-primary px-4 py-2 rounded-full flex items-center gap-2"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="bg-primary/10 text-primary px-4 py-2 rounded-full flex items-center gap-2 shadow-sm"
               >
                 {skill}
                 <button
                   onClick={() => removeSkill(index)}
-                  className="hover:text-destructive"
+                  className="hover:text-destructive transition-colors"
                 >
                   <FaTimes className="h-4 w-4" />
                 </button>
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
         
-        <div className="space-y-4">
-          <label className="text-lg font-medium flex items-center gap-2">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.6 }}
+          className="space-y-4"
+        >
+          <label className="text-lg font-medium text-muted-foreground tracking-wide uppercase flex items-center gap-2">
             <FaHeart className="text-primary" />
             Interests
           </label>
@@ -113,36 +144,47 @@ export default function SkillInterestStep({ handleNext, handlePrevious }: StepPr
                   addInterest();
                 }
               }}
-              className="h-14 text-lg"
+              className="h-14 text-lg rounded-xl"
             />
             <Button
               type="button"
               onClick={addInterest}
-              className="h-14 px-4"
+              className="h-14 px-4 rounded-xl"
             >
               <FaPlus className="h-5 w-5" />
             </Button>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <motion.div 
+            layout
+            className="flex flex-wrap gap-2"
+          >
             {interests.map((interest, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="bg-primary/10 text-primary px-4 py-2 rounded-full flex items-center gap-2"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="bg-primary/10 text-primary px-4 py-2 rounded-full flex items-center gap-2 shadow-sm"
               >
                 {interest}
                 <button
                   onClick={() => removeInterest(index)}
-                  className="hover:text-destructive"
+                  className="hover:text-destructive transition-colors"
                 >
                   <FaTimes className="h-4 w-4" />
                 </button>
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
       
-      <div className="flex justify-between gap-4 pt-6">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+        className="flex justify-between gap-4 pt-8 mt-auto"
+      >
         <Button 
           type="button" 
           variant="outline" 
@@ -158,7 +200,7 @@ export default function SkillInterestStep({ handleNext, handlePrevious }: StepPr
         >
           Next
         </Button>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
