@@ -1,6 +1,6 @@
 import { ModeToggle } from '@/components/themes/theme-toggle'
 import { Card } from '@/components/ui/card'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 // Mock data for startups - replace with actual data from your backend
 const startups = [
@@ -31,7 +31,7 @@ export default function DashboardPage() {
           <span className="text-4xl font-bold text-primary tracking-wider hover:text-accent transition-colors duration-300">
             Dashboard
           </span>
-          <ModeToggle />   
+           <ModeToggle />   
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {startups.map((startup) => (
