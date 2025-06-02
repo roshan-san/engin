@@ -26,7 +26,7 @@ const startups = [
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen flex flex-col flex-1 p-6 gap-10">
+    <div className="min-h-screen flex flex-col flex-1 p-4 gap-10">
       <div className="max-w-screen m-4 flex items-center justify-between">
           <span className="text-4xl font-bold text-primary tracking-wider hover:text-accent transition-colors duration-300">
             Dashboard

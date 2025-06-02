@@ -14,4 +14,5 @@ export const startups = pgTable("startups", {
   created_at: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("startups_id_idx").on(table.id),
-]); 
+]);
+export type Startup= typeof startups.$inferInsert
