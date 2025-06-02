@@ -5,19 +5,19 @@ import { FaBriefcase, FaClock, FaFileContract } from "react-icons/fa";
 
 const workTypes = [
     {
-      id: 'full-time',
+      id: 'Full-Time',
       title: 'Full Time',
       icon: FaBriefcase,
       description: '40+ hours per week'
     },
     {
-      id: 'part-time',
+      id: 'Part-Time',
       title: 'Part Time',
       icon: FaClock,
       description: '20-30 hours per week'
     },
     {
-      id: 'contract',
+      id: 'Contract',
       title: 'Contract',
       icon: FaFileContract,
       description: 'Project-based work'
@@ -27,12 +27,6 @@ const workTypes = [
 export default function WorkType({ handleNext, handlePrevious }:any) {
 
     const [selectedWorkType, setSelectedWorkType] = useState<string>('');
-    const handleSubmit = () => {  
-        handleNext({
-          workType: selectedWorkType
-        });
-      };
-
   return (
     <div className="w-full flex justify-center items-center gap-6 flex-col h-full p-4 max-w-2xl mx-auto">   
     <div className="flex flex-col gap-6 w-full">
@@ -42,7 +36,12 @@ export default function WorkType({ handleNext, handlePrevious }:any) {
         </h3>                 
         <RadioGroup 
           value={selectedWorkType} 
-          onValueChange={setSelectedWorkType}
+          onValueChange={(value) => {
+            setSelectedWorkType(value);
+            handleNext({
+              work_type: value,
+            });
+          }}
           className="grid gap-4 w-full"
           >
           {workTypes.map((type) => {
@@ -86,13 +85,6 @@ export default function WorkType({ handleNext, handlePrevious }:any) {
             className="flex-1 h-12 text-lg font-medium hover:bg-muted/50 transition-colors"
           >
             Previous
-          </Button>
-          <Button 
-            type="button"
-            onClick={handleSubmit}
-            className="flex-1 h-12 text-lg font-medium transition-all hover:scale-[1.02]"
-          >
-            Next
           </Button>
       </div>
     </div>

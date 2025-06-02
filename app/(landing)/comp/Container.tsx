@@ -2,7 +2,7 @@
 import { Progress } from "@/components/ui/progress";
 import { useFormSteps } from "../hooks/useFormSteps";
 import UserName from "./onboarding/UserName";
-import Role from "./onboarding/Role";
+import Role from "./onboarding/UserType";
 import Skill from "./onboarding/Skiill";
 import Contact from "./onboarding/Contact";
 import WorkType from "./onboarding/WorkType";

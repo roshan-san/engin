@@ -35,8 +35,8 @@ export default function Skill({ handleNext, handlePrevious }: any) {
 
   const handleSubmit = () => {
     handleNext({
-      skills,
-      interests
+      skills: skills.map(skill => skill.trim()),
+      interests: interests.map(interest => interest.trim())
     });
   };
 
@@ -60,6 +60,7 @@ export default function Skill({ handleNext, handlePrevious }: any) {
                     addSkill();
                   }
                 }}
+                autoFocus
                 className="h-14 text-lg rounded-xl flex-1"
               />
               <Button

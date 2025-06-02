@@ -1,21 +1,51 @@
 "use client"
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getUser, signOut } from "../../actions";
 import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+
+const usernameSchema = z.object({
+  username: z.string()
+    .min(2, { message: "Username must be at least 2 characters" })
+    .max(30, { message: "Username must be less than 30 characters" })
+    .regex(/^[a-zA-Z0-9_-]+$/, {
+      message: "Username can only contain letters, numbers, underscores, and hyphens"
+    })
+});
+
+type UsernameFormValues = z.infer<typeof usernameSchema>;
+
 export default function UserName({ handleNext, handlePrevious }: any) {
-  const [username, setUsername] = useState('');
   const { data: user } = useQuery({
     queryKey: ['user'],
     queryFn: getUser,
   });
 
-  const handleSubmit = () => {
-    handleNext({
-      username,
-    });
+  const form = useForm<UsernameFormValues>({
+    resolver: zodResolver(usernameSchema),
+    defaultValues: {
+      username: "",
+    },
+  });
+
+  const handleSubmit = async (data: UsernameFormValues) => {
+    const isValid = await form.trigger();
+    if (isValid) {
+      handleNext({
+        username: data.username,
+      });
+    }
   };
 
   return (
@@ -33,14 +63,26 @@ export default function UserName({ handleNext, handlePrevious }: any) {
           </span>
         </h3>
         
-        <div className="space-y-2">
-          <Input 
-            placeholder="Choose Your Username" 
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="h-14 text-lg rounded-xl"
-          />
-        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input 
+                      placeholder="Choose Your Username" 
+                      {...field}
+                      className="h-14 text-lg rounded-xl"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
       </div>
 
       <div className="w-full p-4 flex justify-between gap-4 mt-4">
@@ -56,8 +98,8 @@ export default function UserName({ handleNext, handlePrevious }: any) {
           Sign Out 
         </Button>
         <Button 
-          type="button"
-          onClick={handleSubmit}
+          type="submit"
+          onClick={form.handleSubmit(handleSubmit)}
           className="flex-1 h-12 text-lg font-medium transition-all hover:scale-[1.02]"
         >
           Next

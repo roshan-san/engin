@@ -1,15 +1,40 @@
 "use client"
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+
+const locationSchema = z.object({
+  location: z.string()
+    .min(2, { message: "Location must be at least 2 characters" })
+    .max(100, { message: "Location must be less than 100 characters" })
+});
+
+type LocationFormValues = z.infer<typeof locationSchema>;
 
 export default function Location({ handleNext, handlePrevious }: any) {
-  const [location, setLocation] = useState('');
+  const form = useForm<LocationFormValues>({
+    resolver: zodResolver(locationSchema),
+    defaultValues: {
+      location: "",
+    },
+  });
 
-  const handleSubmit = () => {
-    handleNext({
-      location,
-    });
+  const handleSubmit = async (data: LocationFormValues) => {
+    const isValid = await form.trigger();
+    if (isValid) {
+      handleNext({
+        location: data.location,
+      });
+    }
   };
 
   return (
@@ -19,14 +44,27 @@ export default function Location({ handleNext, handlePrevious }: any) {
           Where are you located?
         </h3>
         
-        <div className="space-y-2">
-          <Input 
-            placeholder="Enter your location" 
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="h-14 text-lg rounded-xl"
-          />
-        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter your location" 
+                      {...field}
+                      className="h-14 text-lg rounded-xl"
+                      autoFocus
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
       </div>
 
       <div className="w-full p-4 flex justify-between gap-4 mt-4">
@@ -39,8 +77,8 @@ export default function Location({ handleNext, handlePrevious }: any) {
           Previous
         </Button>
         <Button 
-          type="button"
-          onClick={handleSubmit}
+          type="submit"
+          onClick={form.handleSubmit(handleSubmit)}
           className="flex-1 h-12 text-lg font-medium transition-all hover:scale-[1.02]"
         >
           Next

@@ -3,23 +3,21 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { FaBriefcase, FaUserCog, FaUserGraduate, FaUserTie} from "react-icons/fa";
-import { Divide } from "lucide-react";
-
 const roles = [
   {
-    id: 'creator',
+    id: 'Creator/Collaborator',
     title: 'Creator/Collaborator',
     icon: FaUserCog,
     description: 'Build and collaborate on projects'
   },
   {
-    id: 'mentor',
+    id: 'Mentor',
     title: 'Mentor',
     icon: FaUserGraduate,
     description: 'Guide and support others'
   },
   {
-    id: 'investor',
+    id: 'Investor',
     title: 'Investor',
     icon: FaUserTie,
     description: 'Support promising projects'
@@ -27,14 +25,7 @@ const roles = [
 ];
 
 export default function Role({ handleNext, handlePrevious }:any) {
-  const [selectedRole, setSelectedRole] = useState<string>('');
-
-  const handleSubmit = () => {  
-    handleNext({
-      role: selectedRole,
-    });
-  };
-
+  const [selectedUserType, setSelectedUserType] = useState<string>('');
   return (
     <div className="w-full flex justify-center items-center gap-6 flex-col h-full p-4 max-w-2xl mx-auto">   
     <div className="flex flex-col gap-6 w-full">
@@ -43,8 +34,13 @@ export default function Role({ handleNext, handlePrevious }:any) {
           Select your primary role
         </h3>                 
         <RadioGroup 
-          value={selectedRole} 
-          onValueChange={setSelectedRole}
+          value={selectedUserType} 
+          onValueChange={(value) => {
+            setSelectedUserType(value);
+            handleNext({
+              user_type: value,
+            });
+          }}
           className="grid gap-4 w-full"
           >
           {roles.map((type) => {
@@ -53,7 +49,7 @@ export default function Role({ handleNext, handlePrevious }:any) {
               <label
               key={type.id}
               className={`flex items-center space-x-4 p-6 rounded-xl border cursor-pointer transition-all duration-200 ease-in-out ${
-                selectedRole === type.id 
+                selectedUserType === type.id 
                 ? 'border-primary bg-primary/10 shadow-lg scale-[1.02]' 
                 : 'border-border hover:border-primary/50 hover:shadow-md hover:scale-[1.01]'
               }`}
@@ -62,7 +58,7 @@ export default function Role({ handleNext, handlePrevious }:any) {
                 <div className="flex items-center gap-5 flex-1">
                   <div 
                     className={`p-3.5 rounded-full transition-all duration-200 ${
-                      selectedRole === type.id 
+                      selectedUserType === type.id 
                         ? 'bg-primary text-primary-foreground scale-110' 
                         : 'bg-muted/80 hover:bg-muted'
                     }`}
@@ -88,13 +84,6 @@ export default function Role({ handleNext, handlePrevious }:any) {
             className="flex-1 h-12 text-lg font-medium hover:bg-muted/50 transition-colors"
           >
             Previous
-          </Button>
-          <Button 
-            type="button"
-            onClick={handleSubmit}
-            className="flex-1 h-12 text-lg font-medium transition-all hover:scale-[1.02]"
-          >
-            Next
           </Button>
       </div>
     </div>

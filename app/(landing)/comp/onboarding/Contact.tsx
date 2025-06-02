@@ -13,6 +13,7 @@ export default function Contact({ handleNext, handlePrevious }:any) {
 
   const handleSubmit = () => {
     handleNext(socials);
+    window.location.reload();
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -68,7 +69,7 @@ export default function Contact({ handleNext, handlePrevious }:any) {
           onClick={handleSubmit}
           className="flex-1 h-12 text-lg font-medium transition-all hover:scale-[1.02]"
         >
-          Next
+          Finish
         </Button>
       </div>
     </div>

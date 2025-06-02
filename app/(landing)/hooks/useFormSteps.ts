@@ -1,19 +1,20 @@
 import { useState } from "react";
-import { profiles } from "@/lib/db/schema";
-
+import { Profile, profiles } from "@/lib/db/schema";
+import { createProfile } from "../actions";
 const MAX_STEPS = 6;
 
 export const useFormSteps = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<Partial<typeof profiles.$inferSelect>>({});
+  const [formData, setFormData] = useState<Partial<Profile>>({});
 
-  const handleNext = (data: Partial<typeof profiles.$inferSelect>) => {
+  const handleNext = (data: Partial<Profile>) => {
     setFormData((prev) => ({ ...prev, ...data }));
     if (currentStep < MAX_STEPS) {
       setCurrentStep((prev) => prev + 1);
     } else {
       const finalData = { ...formData, ...data };
       console.table(finalData);
+      createProfile(finalData as Profile);
     }
   };
 
