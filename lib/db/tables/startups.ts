@@ -4,6 +4,7 @@ import { profiles } from "./profiles";
 export const startups = pgTable("startups", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
+  location:text("location").notNull(),
   description: text("description").notNull(),
   problem: text("problem").notNull(),
   solution: text("solution").notNull(),
