@@ -1,17 +1,16 @@
 "use client"
-import { Laptop, Search, Users, MessageCircle, User } from "lucide-react";
+import { Laptop, Search, Users, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { UserAvatar } from "./UserAvatar";
 
 const navigationItems = [
   { href: "/dashboard", icon: Laptop, },
   { href: "/startups", icon: Search, },
   { href: "/connect", icon: Users, },
   { href: "/message", icon: MessageCircle,},
-  { href: `/profile/`, icon: User,},
 ];
-
 export function BottomBar() {
   const pathname = usePathname();
 
@@ -23,15 +22,26 @@ export function BottomBar() {
             key={href}
             href={href} 
             className={cn(
-              "flex h-12 w-12 items-center justify-center rounded-xl transition-colors",
+              "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-200",
               pathname === href 
-                ? "bg-primary/10 text-primary" 
-                : "text-muted-foreground hover:bg-primary/5 hover:text-foreground"
+                ? "bg-primary text-primary-foreground shadow-sm" 
+                : "text-muted-foreground hover:bg-primary/10 hover:text-foreground"
             )}
           >
-            <Icon className="h-6 w-6" />
+            <Icon className="h-5 w-5" />
           </Link>
         ))}
+        <Link 
+          href="/profile"
+          className={cn(
+            "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-200",
+            pathname === "/profile" 
+              ? "bg-primary text-primary-foreground shadow-sm" 
+              : "text-muted-foreground hover:bg-primary/10 hover:text-foreground"
+          )}
+        >
+          <UserAvatar />
+        </Link>
       </div>
     </div>
   );

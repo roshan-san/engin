@@ -1,19 +1,17 @@
 'use client';
 import { Laptop, Search, Users, MessageCircle, LogOut } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/app/(landing)/server/actions";
-import { createClient } from "@/lib/supabase/client";
-import { useQuery } from "@tanstack/react-query";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { UserAvatar } from "./UserAvatar";
 
 const mainNavigationItems = [
   { href: "/dashboard", icon: Laptop, label: "Dashboard" },
@@ -22,20 +20,8 @@ const mainNavigationItems = [
   { href: "/message", icon: MessageCircle, label: "Messages" },
 ];
 
-async function getUser() {
-  const supabase = createClient();
-  const { data } = await supabase.auth.getUser();
-  return data.user;
-}
-
 export function LeftBar() {
   const pathname = usePathname();
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: getUser,
-  });
-  
-  const avatarUrl = user?.user_metadata?.avatar_url;
 
   return (
     <div className="flex h-screen flex-col items-center ">
@@ -64,26 +50,27 @@ export function LeftBar() {
         ))}
       </div>
     
-      <div className="flex flex-col items-center gap-6 p-4 w-full">
-        {isLoading ? (
-          <div className="h-10 w-10 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
-        ) : (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Avatar className="h-10 w-10 rounded-full ring-2 ring-primary/10 transition-all hover:ring-primary/20">
-                  <AvatarImage src={avatarUrl || undefined} />
-                  <AvatarFallback className="bg-primary/10 text-primary">
-                    {user?.email?.[0]?.toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>Profile</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
+      <div className="flex flex-col items-center gap-4 pb-8">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="/profile"
+                className={cn(
+                  "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-200",
+                  pathname === "/profile" 
+                    ? "bg-primary text-primary-foreground shadow-sm" 
+                    : "text-muted-foreground hover:bg-primary/10 hover:text-foreground"
+                )}
+              >
+                <UserAvatar />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              <p>Profile</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         
         <TooltipProvider>
           <Tooltip>
