@@ -9,11 +9,11 @@ export const startups = pgTable("startups", {
   problem: text("problem").notNull().default(""),
   solution: text("solution").notNull().default(""),
   teamSize: integer("team_size").notNull().default(1),
-  patent: text("patent").notNull().default("NA"),
+  patent: text("patent").notNull().default(""),
   funding: integer("funding").notNull().default(0),
   founderId: uuid("founder_id").references(() => profiles.id),
   created_at: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("startups_id_idx").on(table.id),
 ]);
-export type Startup= typeof startups.$inferInsert
+export type Startup= typeof startups.$inferSelect
