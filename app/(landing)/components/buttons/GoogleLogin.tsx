@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button"
 import { useTransition } from "react"
 import { FcGoogle } from "react-icons/fc"
-import { handleOAuthLogin } from "../../actions"
+import { handleOAuthLogin } from "../../server/actions"
 
 export function GoogleLoginButton() {
     const [isPending, startTransition] = useTransition()

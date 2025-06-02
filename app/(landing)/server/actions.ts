@@ -1,5 +1,4 @@
 "use server"
-
 import { Profile, profiles } from "@/lib/db/schema"
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"

@@ -4,8 +4,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaTools, FaHeart, FaPlus, FaTimes } from "react-icons/fa";
+import { Profile } from "@/lib/db/schema";
 
-export default function Skill({ handleNext, handlePrevious }: any) {
+interface StepProps {
+  handleNext: (data: Partial<Profile>) => void;
+  handlePrevious: () => void;
+}
+
+export default function Skill({ handleNext, handlePrevious }: StepProps) {
   const [skills, setSkills] = useState<string[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
   const [newSkill, setNewSkill] = useState('');

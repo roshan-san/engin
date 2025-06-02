@@ -4,11 +4,17 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa";
+import { Profile } from "@/lib/db/schema";
 
-export default function Contact({ handleNext, handlePrevious }:any) {
-  const [socials, setSocials] = useState({
-    github: '',
-    linkedin: '',
+interface StepProps {
+  handleNext: (data: Partial<Profile>) => void;
+  handlePrevious: () => void;
+}
+
+export default function Contact({ handleNext, handlePrevious }: StepProps) {
+  const [socials, setSocials] = useState<Partial<Profile>>({
+    github_url: '',
+    linkedin_url: '',
   });
 
   const handleSubmit = () => {
@@ -16,7 +22,7 @@ export default function Contact({ handleNext, handlePrevious }:any) {
     window.location.reload();
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: keyof Pick<Profile, 'github_url' | 'linkedin_url'>, value: string) => {
     setSocials(prev => ({
       ...prev,
       [field]: value
@@ -34,8 +40,8 @@ export default function Contact({ handleNext, handlePrevious }:any) {
             </label>
             <Input 
               placeholder="https://github.com/username" 
-              value={socials.github}
-              onChange={(e) => handleInputChange('github', e.target.value)}
+              value={socials.github_url || ''}
+              onChange={(e) => handleInputChange('github_url', e.target.value)}
               className="h-14 text-lg rounded-xl"
             />
           </div>
@@ -47,8 +53,8 @@ export default function Contact({ handleNext, handlePrevious }:any) {
             </label>
             <Input 
               placeholder="https://www.linkedin.com/in/username/" 
-              value={socials.linkedin}
-              onChange={(e) => handleInputChange('linkedin', e.target.value)}
+              value={socials.linkedin_url || ''}
+              onChange={(e) => handleInputChange('linkedin_url', e.target.value)}
               className="h-14 text-lg rounded-xl"
             />
           </div>

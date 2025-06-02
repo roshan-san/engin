@@ -1,7 +1,7 @@
-import Container from "./comp/Container";
-import Header from "./comp/Header";
-import Landing from "./comp/Landing";
-import { getUser, checkProfile } from "./actions";
+import Container from "./components/Container";
+import Header from "./components/Header";
+import Landing from "./components/Landing";
+import { getUser, checkProfile } from "./server/actions";
 import { redirect } from "next/navigation";
 
 export default async function Page() {

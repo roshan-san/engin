@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button"
 import { useTransition } from "react"
 import { FaGithub } from "react-icons/fa"
-import { handleOAuthLogin } from "../../actions"
+import { handleOAuthLogin } from "../../server/actions"
 
 
 export function GithubLoginButton() {

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Profile, profiles } from "@/lib/db/schema";
-import { createProfile } from "../actions";
+import { Profile } from "@/lib/db/schema";
+import { createProfile } from "../server/actions";
 const MAX_STEPS = 6;
 
 export const useFormSteps = () => {
