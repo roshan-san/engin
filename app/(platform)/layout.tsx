@@ -1,5 +1,5 @@
-import { BottomBar } from "./_comp/BottomBar";
-import { LeftBar } from "./_comp/LeftBar";
+import { BottomBar } from "./components/BottomBar";
+import { LeftBar } from "./components/LeftBar";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (
