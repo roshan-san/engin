@@ -3,8 +3,6 @@ import React from 'react'
 import StartupCard from './StartupCard'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useStartups } from '../hooks/useStartups'
-import Link from 'next/link'
-
 export default function DashHero() {
     const { data: startups, isLoading } = useStartups()
 
@@ -17,13 +15,10 @@ export default function DashHero() {
             </div>
         )
       }
-    
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {startups?.map((startup) => (
-            <Link key={startup.id} href={`/startups/${startup.id}`}>
-                <StartupCard startup={startup} />
-            </Link>
+                <StartupCard key={startup.id} startup={startup} />
         ))}
     </div>  )
 }

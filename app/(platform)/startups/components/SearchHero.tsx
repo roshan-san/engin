@@ -12,20 +12,21 @@ export default function SearchHero() {
   const { data, isLoading } = useStartups(search)
 
   return (
-    <div className="h-full space-y-6">
+    <div className="h-full flex flex-col gap-10">
       {/* Searchbar */}
-      <div className="w-full max-w-2xl mx-auto">
+      <div className="w-full p-2">
         <Input
           type="search"
           placeholder="Search startups..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full"
+          autoFocus
         />
       </div>
 
       {/* Results */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
         {isLoading ? (
           // Loading skeletons
           [...Array(3)].map((_, i) => (
@@ -34,9 +35,7 @@ export default function SearchHero() {
         ) : (
           // Startup cards
           data?.map((startup: Startup) => (
-            <Link key={startup.id} href={`/startups/${startup.id}`}>
-              <StartupCard startup={startup} />
-            </Link>
+              <StartupCard key={startup.id} startup={startup} />
           ))
         )}
       </div>

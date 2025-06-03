@@ -1,10 +1,12 @@
 import { Card } from '@/components/ui/card'
 import { Startup } from '@/lib/db/schema'
 import { Users, DollarSign, Calendar, Building2, MapPin, } from 'lucide-react'
+import Link from 'next/link'
 
 export default function StartupCard({ startup }: { startup: Startup }) {
   return (
-    <Card className="group relative p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+    <Link key={startup.id} href={`/startups/${startup.id}`}>
+      <Card className="w-full p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -38,5 +40,6 @@ export default function StartupCard({ startup }: { startup: Startup }) {
         </div>
       </div>
     </Card>
+    </Link>
   )
 } 
