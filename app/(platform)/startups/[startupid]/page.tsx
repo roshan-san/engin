@@ -1,8 +1,7 @@
-import React from 'react'
-export default async function page() {
-  return (
-    <div>
-      display startup/startupid full page editable on logged user-match
+export default async function StartupPage({ params }: { params: { startupid: string } }) {
+  return(
+    <div className='h-full lala'>
+      yoyo {params.startupid}
     </div>
   )
 }

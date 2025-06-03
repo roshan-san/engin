@@ -1,15 +1,14 @@
 "use client"
 import { useState } from 'react'
-import { useStartups } from '../hooks/useStartups'
+import { useStartupSearch } from '../hooks/useStartupSearch'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import StartupCard from '@/app/(platform)/dashboard/components/StartupCard'
-import Link from 'next/link'
 import { Startup } from '@/lib/db/schema'
 
 export default function SearchHero() {
   const [search, setSearch] = useState('')
-  const { data, isLoading } = useStartups(search)
+  const { data, isLoading } = useStartupSearch(search)
 
   return (
     <div className="h-full flex flex-col gap-10">

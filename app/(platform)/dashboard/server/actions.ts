@@ -20,17 +20,5 @@ export async function getMyStartups() {
   return userStartups
 }
 
-export async function getUserById(user_id: string) {
-  const userProfile = await db
-    .select()
-    .from(profiles)
-    .where(eq(profiles.id, user_id))
-
-  if (!userProfile.length) {
-    throw new Error("User not found")
-  }
-
-  return userProfile
-}
 
     

@@ -19,4 +19,4 @@ export const profiles = pgTable("profiles", {
 }, (table) => [
   index("profiles_id_idx").on(table.id),
 ]); 
-export type Profile = typeof profiles.$inferInsert
+export type Profile = typeof profiles.$inferSelect
