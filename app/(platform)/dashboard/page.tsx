@@ -1,5 +1,4 @@
-'use client'
-
+"use client"
 import DashHeader from './components/DashHeader'
 import StartupCard from './components/StartupCard'
 import { useStartups } from './hooks/useStartups'
@@ -13,7 +12,7 @@ export default function Page() {
       <div className="h-full flex flex-col p-4 gap-10">
         <DashHeader />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(3)].map((_, i) => (
             <Skeleton key={i} className="h-[200px] w-full" />
           ))}
         </div>

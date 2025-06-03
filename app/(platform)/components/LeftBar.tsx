@@ -12,6 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { UserAvatar } from "./UserAvatar";
+import SignOutButton from "./SignOut";
 
 const mainNavigationItems = [
   { href: "/dashboard", icon: Laptop, label: "Dashboard" },
@@ -75,14 +76,7 @@ export function LeftBar() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-10 w-10 rounded-full text-red-500 hover:bg-red-100"
-                onClick={() => signOut()}
-              >
-                <LogOut className="h-5 w-5" />
-              </Button>
+              <SignOutButton/>
             </TooltipTrigger>
             <TooltipContent side="right">
               <p>Sign out</p>

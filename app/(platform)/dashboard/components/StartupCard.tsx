@@ -1,13 +1,8 @@
 import { Card } from '@/components/ui/card'
-import { Startup, Profile } from '@/lib/db/schema'
-import { Users, DollarSign, Calendar, Building2, MapPin, User } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Startup } from '@/lib/db/schema'
+import { Users, DollarSign, Calendar, Building2, MapPin, } from 'lucide-react'
 
-interface StartupWithFounder extends Startup {
-  founder?: Profile
-}
-
-export default function StartupCard({ startup }: { startup: StartupWithFounder }) {
+export default function StartupCard({ startup }: { startup: Startup }) {
   return (
     <Card className="group relative p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <div className="space-y-4">
@@ -41,18 +36,6 @@ export default function StartupCard({ startup }: { startup: StartupWithFounder }
             <span>{new Date(startup.created_at).toLocaleDateString()}</span>
           </div>
         </div>
-
-        {startup.founder && (
-          <div className="flex items-center gap-2 pt-2 border-t">
-            <Avatar className="w-6 h-6">
-              <AvatarImage src={startup.founder.avatar_url} alt={startup.founder.full_name} />
-              <AvatarFallback>
-                <User className="w-4 h-4" />
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-sm font-medium">{startup.founder.full_name}</span>
-          </div>
-        )}
       </div>
     </Card>
   )
