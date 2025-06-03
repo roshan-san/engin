@@ -1,9 +1,9 @@
-import React from 'react'
-
+import SearchStartupsHeader from './components/SearchStartupsHeader'
 export default function page() {
   return (
-    <div>
-      search for startups here clicking will go to startup/startupid
+    <div className='h-full flex flex-col p-4 gap-10 border-2'>
+      <SearchStartupsHeader/>
+
     </div>
   )
 }

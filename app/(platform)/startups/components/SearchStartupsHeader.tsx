@@ -1,10 +1,9 @@
 import { ModeToggle } from "@/components/themes/theme-toggle";
-
-export default function DashHeader() {
+export default function SearchStartupsHeader() {
   return (
-      <div className="w-full flex items-center justify-between">
+<div className="w-full flex items-center justify-between">
           <span className="text-4xl uppercase font-bold text-primary tracking-wider">
-            Dashboard
+            Explore
           </span>
            <ModeToggle />   
       </div>  )
