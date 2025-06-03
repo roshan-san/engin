@@ -23,16 +23,12 @@ export default function SearchHero() {
           autoFocus
         />
       </div>
-
-      {/* Results */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
         {isLoading ? (
-          // Loading skeletons
           [...Array(3)].map((_, i) => (
             <Skeleton key={i} className="h-[200px] w-full" />
           ))
         ) : (
-          // Startup cards
           data?.map((startup: Startup) => (
               <StartupCard key={startup.id} startup={startup} />
           ))
