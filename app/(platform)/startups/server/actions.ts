@@ -4,10 +4,7 @@ import { startups, type Startup } from '@/lib/db/schema'
 import { desc, ilike, or } from 'drizzle-orm'
 
 export async function searchStartups(searchText: string): Promise<Startup[]> {
-  if (!searchText) {
-    return []
-  }
-
+ 
   const searchPattern = `%${searchText}%`
   
   const results = await db
@@ -18,10 +15,11 @@ export async function searchStartups(searchText: string): Promise<Startup[]> {
         ilike(startups.name, searchPattern),
         ilike(startups.description, searchPattern),
         ilike(startups.problem, searchPattern),
-        ilike(startups.solution, searchPattern)
+        ilike(startups.solution, searchPattern),
+        ilike(startups.location, searchPattern)
       )
     ).orderBy(desc(startups.created_at))
-    .limit(10)
+    .limit(6)
 
   return results
 }
