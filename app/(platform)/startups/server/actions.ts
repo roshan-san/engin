@@ -1,9 +1,9 @@
 "use server"
 import { db } from '@/lib/db/drizzle'
-import { startups } from '@/lib/db/schema'
+import { startups, type Startup } from '@/lib/db/schema'
 import { desc, ilike, or } from 'drizzle-orm'
 
-export async function searchStartups(searchText: string) {
+export async function searchStartups(searchText: string): Promise<Startup[]> {
   if (!searchText) {
     return []
   }

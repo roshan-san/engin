@@ -1,7 +1,45 @@
-export default function SearchHero() {
-  return (
-    <div className="h-full border-2 ">
+"use client"
+import { useState } from 'react'
+import { useStartups } from '../hooks/useStartups'
+import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
+import StartupCard from '@/app/(platform)/dashboard/components/StartupCard'
+import Link from 'next/link'
+import { Startup } from '@/lib/db/schema'
 
+export default function SearchHero() {
+  const [search, setSearch] = useState('')
+  const { data, isLoading } = useStartups(search)
+
+  return (
+    <div className="h-full space-y-6">
+      {/* Searchbar */}
+      <div className="w-full max-w-2xl mx-auto">
+        <Input
+          type="search"
+          placeholder="Search startups..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full"
+        />
+      </div>
+
+      {/* Results */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {isLoading ? (
+          // Loading skeletons
+          [...Array(3)].map((_, i) => (
+            <Skeleton key={i} className="h-[200px] w-full" />
+          ))
+        ) : (
+          // Startup cards
+          data?.map((startup: Startup) => (
+            <Link key={startup.id} href={`/startups/${startup.id}`}>
+              <StartupCard startup={startup} />
+            </Link>
+          ))
+        )}
+      </div>
     </div>
   )
 }
