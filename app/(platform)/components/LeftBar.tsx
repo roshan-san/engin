@@ -35,7 +35,7 @@ export function LeftBar() {
                   href={item.href}
                   className={cn(
                     "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-200",
-                    pathname === item.href 
+                    pathname.startsWith(item.href)
                       ? "bg-primary text-primary-foreground shadow-sm" 
                       : "text-muted-foreground hover:bg-primary/10 hover:text-foreground"
                   )}
@@ -59,7 +59,7 @@ export function LeftBar() {
                 href="/profile"
                 className={cn(
                   "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-200",
-                  pathname === "/profile" 
+                  pathname.startsWith("/profile")
                     ? "bg-primary text-primary-foreground shadow-sm" 
                     : "text-muted-foreground hover:bg-primary/10 hover:text-foreground"
                 )}

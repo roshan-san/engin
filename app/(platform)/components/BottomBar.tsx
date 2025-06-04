@@ -11,9 +11,11 @@ const navigationItems = [
   { href: "/connect", icon: Users, },
   { href: "/message", icon: MessageCircle,},
 ];
+
 export function BottomBar() {
   const pathname = usePathname();
   return (
+    <div className="fixed bottom-0 left-0 right-0 h-16 bg-background border-t">
       <div className="flex justify-around items-center h-full p-2">
         {navigationItems.map(({ href, icon: Icon }) => (
           <Link 
@@ -21,7 +23,7 @@ export function BottomBar() {
             href={href} 
             className={cn(
               "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-200",
-              pathname === href 
+              pathname.startsWith(href)
                 ? "bg-primary text-primary-foreground shadow-sm" 
                 : "text-muted-foreground hover:bg-primary/10 hover:text-foreground"
             )}
@@ -33,7 +35,7 @@ export function BottomBar() {
           href="/profile"
           className={cn(
             "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-200",
-            pathname =="profile"
+            pathname.startsWith("/profile")
               ? "bg-primary text-primary-foreground shadow-sm" 
               : "text-muted-foreground hover:bg-primary/10 hover:text-foreground"
           )}
@@ -41,5 +43,6 @@ export function BottomBar() {
           <UserAvatar />
         </Link>
       </div>
+    </div>
   );
 } 
