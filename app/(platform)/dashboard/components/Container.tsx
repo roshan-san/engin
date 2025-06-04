@@ -8,15 +8,16 @@ import StartupName from "./startup-creation/StartupName";
 import StartupProblem from "./startup-creation/StartupProblem";
 import StartupSolution from "./startup-creation/StartupSolution";
 import StartupTeam from "./startup-creation/StartupTeam";
+import { useStartupCreation } from "../hooks/useStartupCreation";
 
-interface ContainerProps {
-  currentStep: number;
-  progress: number;
-  handleNext: (data: Partial<Startup>) => void;
-  handlePrevious: () => void;
-}
+export default function Container() {
+  const {
+    currentStep,
+    handleNext,
+    handlePrevious,
+    progress
+  } = useStartupCreation();
 
-export default function Container({ currentStep, progress, handleNext, handlePrevious }: ContainerProps) {
   const renderStep = () => {
     switch (currentStep) {
       case 1:

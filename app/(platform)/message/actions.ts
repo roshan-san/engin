@@ -33,7 +33,7 @@ async function getAllMessages(chatId: number) {
     return { data: data as Message[] };
 }
 
-async function getAllChats() {
+export async function getAllChats() {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     

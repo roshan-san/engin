@@ -4,34 +4,40 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { db } from "@/lib/db/drizzle"
 import { eq } from "drizzle-orm"
+import { handleError } from "@/lib/utils"
 
 export async function handleOAuthLogin(provider: 'github' | 'google') {
-  const supabase = await createClient()
+  try {
+    const supabase = await createClient()
   
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
       redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`,
     },
+    
   })
-
-  if (error) {
-    throw new Error(error.message)
-  }
 
   if (data.url) {
     redirect(data.url)
   }
+  } catch (error) {
+    throw new Error(handleError(error))
+    
+  }
+  
 }
 
 export async function signOut() {
-  const supabase = await createClient()
-  const { error } = await supabase.auth.signOut()
-  
-  if (error) {
-    throw new Error(error.message)
+  try {
+    const supabase = await createClient()
+    const { error } = await supabase.auth.signOut()
+    redirect('/')
+  } catch (error) {
+    
+    throw new Error(handleError(error))
   }
-  redirect('/')
+
 }
 
 export async function getUser() {

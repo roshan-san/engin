@@ -1,5 +1,5 @@
 import Header from '../components/Header'
-import CreateStartupButton from './components/CreateStartupButton'
+import CreateStartupButton from './components/buttons/CreateStartupButton'
 import DashHero from './components/DashHero'
 export default function Page() {
   return (

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Startup } from "@/lib/db/schema";
 
 export const useStartupCreation = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [startupData, setStartupData] = useState<Partial<Startup>>({});
 
@@ -18,8 +17,6 @@ export const useStartupCreation = () => {
   const progress = (currentStep / 7) * 100;
 
   return {
-    isOpen,
-    setIsOpen,
     currentStep,
     startupData,
     handleNext,
