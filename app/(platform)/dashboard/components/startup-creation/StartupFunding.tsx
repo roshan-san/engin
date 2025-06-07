@@ -1,8 +1,6 @@
 "use client";
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,45 +12,27 @@ import {
 } from "@/components/ui/form";
 import { Startup } from "@/lib/db/schema";
 import { FaMoneyBillWave } from "react-icons/fa";
-import { useStartupMutations } from "../../hooks/useStartupMutations";
-import { useMultiForm } from "../../hooks/useMultiForm";
-import { useRouter } from "next/navigation";
+import { startupFundingSchema, type StartupFundingFormValues } from "@/app/(platform)/dashboard/validations/startup";
 
 interface StepProps {
   handleNext: (data: Partial<Startup>) => void;
   handlePrevious: () => void;
 }
 
-const fundingSchema = z.object({
-  funding: z.coerce.number().min(0, "Funding amount cannot be negative"),
-});
-
-type FundingFormValues = z.infer<typeof fundingSchema>;
-
 export default function StartupFunding({ handleNext, handlePrevious }: StepProps) {
-  const { createStartup, isCreating } = useStartupMutations();
-  const { startupData } = useMultiForm();
-  const router = useRouter();
-
-  const form = useForm<FundingFormValues>({
-    resolver: zodResolver(fundingSchema),
+  const form = useForm<StartupFundingFormValues>({
+    resolver: zodResolver(startupFundingSchema),
     defaultValues: {
       funding: 0,
     },
   });
 
-  const handleSubmit = async (data: FundingFormValues) => {
+  const handleSubmit = async (data: StartupFundingFormValues) => {
     const isValid = await form.trigger();
     if (isValid) {
-      try {
-        await createStartup({
-          ...startupData,
-          funding: data.funding,
-        });
-        router.refresh();
-      } catch (error) {
-        console.error('Failed to create startup:', error);
-      }
+      handleNext({
+        funding: data.funding,
+      });
     }
   };
 
@@ -88,13 +68,12 @@ export default function StartupFunding({ handleNext, handlePrevious }: StepProps
         </Form>
       </div>
 
-      <div className="flex gap-4 w-full">
+      <div className="w-full p-4 flex justify-between gap-4 mt-4">
         <Button 
           type="button" 
           variant="outline" 
           onClick={handlePrevious}
           className="flex-1 h-12 text-lg font-medium hover:bg-muted/50 transition-colors"
-          disabled={isCreating}
         >
           Previous
         </Button>
@@ -102,9 +81,8 @@ export default function StartupFunding({ handleNext, handlePrevious }: StepProps
           type="submit"
           onClick={form.handleSubmit(handleSubmit)}
           className="flex-1 h-12 text-lg font-medium transition-all hover:scale-[1.02]"
-          disabled={isCreating}
         >
-          {isCreating ? 'Creating...' : 'Create Startup'}
+          Create Startup
         </Button>
       </div>
     </div>

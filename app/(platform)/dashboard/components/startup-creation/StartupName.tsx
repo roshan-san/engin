@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,27 +13,22 @@ import {
 } from "@/components/ui/form";
 import { Startup } from "@/lib/db/schema";
 import { FaBuilding } from "react-icons/fa";
+import { startupNameSchema, type StartupNameFormValues } from "@/app/(platform)/dashboard/validations/startup";
 
 interface StepProps {
   handleNext: (data: Partial<Startup>) => void;
   handlePrevious: () => void;
 }
 
-const nameSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-});
-
-type NameFormValues = z.infer<typeof nameSchema>;
-
 export default function StartupName({ handleNext, handlePrevious }: StepProps) {
-  const form = useForm<NameFormValues>({
-    resolver: zodResolver(nameSchema),
+  const form = useForm<StartupNameFormValues>({
+    resolver: zodResolver(startupNameSchema),
     defaultValues: {
       name: "",
     },
   });
 
-  const handleSubmit = async (data: NameFormValues) => {
+  const handleSubmit = async (data: StartupNameFormValues) => {
     const isValid = await form.trigger();
     if (isValid) {
       handleNext({

@@ -33,21 +33,9 @@ export const contactSchema = z.object({
   linkedin_url: z.string().url().optional()
 });
 
-// Combined schema for the entire onboarding process
-export const onboardingSchema = z.object({
-  ...usernameSchema.shape,
-  ...locationSchema.shape,
-  ...userTypeSchema.shape,
-  ...workTypeSchema.shape,
-  ...skillsSchema.shape,
-  ...contactSchema.shape
-});
-
-// Type exports
 export type UsernameFormValues = z.infer<typeof usernameSchema>;
 export type LocationFormValues = z.infer<typeof locationSchema>;
 export type UserTypeFormValues = z.infer<typeof userTypeSchema>;
 export type WorkTypeFormValues = z.infer<typeof workTypeSchema>;
 export type SkillsFormValues = z.infer<typeof skillsSchema>;
 export type ContactFormValues = z.infer<typeof contactSchema>;
-export type OnboardingFormValues = z.infer<typeof onboardingSchema>; 

@@ -7,7 +7,6 @@ import Container from "../Container";
 export default function CreateBtn() {
   return (
     <>
-      {/* Drawer for mobile screens */}
       <div className=" fixed bottom-20 right-10 z-50">
         <Drawer>
           <DrawerTrigger asChild>
@@ -16,6 +15,10 @@ export default function CreateBtn() {
             </Button>
           </DrawerTrigger>
           <DrawerContent className=" w-full">
+            <DrawerHeader>
+              <DrawerTitle></DrawerTitle>
+              <DrawerDescription></DrawerDescription>
+            </DrawerHeader>
             <Container />
           </DrawerContent>
         </Drawer>

@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,27 +13,22 @@ import {
 } from "@/components/ui/form";
 import { Startup } from "@/lib/db/schema";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import { startupLocationSchema, type StartupLocationFormValues } from "@/app/(platform)/dashboard/validations/startup";
 
 interface StepProps {
   handleNext: (data: Partial<Startup>) => void;
   handlePrevious: () => void;
 }
 
-const locationSchema = z.object({
-  location: z.string().min(2, "Location must be at least 2 characters"),
-});
-
-type LocationFormValues = z.infer<typeof locationSchema>;
-
 export default function StartupLocation({ handleNext, handlePrevious }: StepProps) {
-  const form = useForm<LocationFormValues>({
-    resolver: zodResolver(locationSchema),
+  const form = useForm<StartupLocationFormValues>({
+    resolver: zodResolver(startupLocationSchema),
     defaultValues: {
       location: "",
     },
   });
 
-  const handleSubmit = async (data: LocationFormValues) => {
+  const handleSubmit = async (data: StartupLocationFormValues) => {
     const isValid = await form.trigger();
     if (isValid) {
       handleNext({

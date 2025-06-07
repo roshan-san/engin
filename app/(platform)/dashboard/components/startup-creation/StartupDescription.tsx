@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,27 +13,22 @@ import {
 import { Startup } from "@/lib/db/schema";
 import { FaInfoCircle } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
+import { startupDescriptionSchema, type StartupDescriptionFormValues } from "@/app/(platform)/dashboard/validations/startup";
 
 interface StepProps {
   handleNext: (data: Partial<Startup>) => void;
   handlePrevious: () => void;
 }
 
-const descriptionSchema = z.object({
-  description: z.string().min(10, "Description must be at least 10 characters"),
-});
-
-type DescriptionFormValues = z.infer<typeof descriptionSchema>;
-
 export default function StartupDescription({ handleNext, handlePrevious }: StepProps) {
-  const form = useForm<DescriptionFormValues>({
-    resolver: zodResolver(descriptionSchema),
+  const form = useForm<StartupDescriptionFormValues>({
+    resolver: zodResolver(startupDescriptionSchema),
     defaultValues: {
       description: "",
     },
   });
 
-  const handleSubmit = async (data: DescriptionFormValues) => {
+  const handleSubmit = async (data: StartupDescriptionFormValues) => {
     const isValid = await form.trigger();
     if (isValid) {
       handleNext({

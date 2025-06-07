@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,27 +13,22 @@ import {
 } from "@/components/ui/form";
 import { Startup } from "@/lib/db/schema";
 import { FaUsers } from "react-icons/fa";
+import { startupTeamSchema, type StartupTeamFormValues } from "@/app/(platform)/dashboard/validations/startup";
 
 interface StepProps {
   handleNext: (data: Partial<Startup>) => void;
   handlePrevious: () => void;
 }
 
-const teamSchema = z.object({
-  teamSize: z.coerce.number().min(1, "Team size must be at least 1"),
-});
-
-type TeamFormValues = z.infer<typeof teamSchema>;
-
 export default function StartupTeam({ handleNext, handlePrevious }: StepProps) {
-  const form = useForm<TeamFormValues>({
-    resolver: zodResolver(teamSchema),
+  const form = useForm<StartupTeamFormValues>({
+    resolver: zodResolver(startupTeamSchema),
     defaultValues: {
       teamSize: 1,
     },
   });
 
-  const handleSubmit = async (data: TeamFormValues) => {
+  const handleSubmit = async (data: StartupTeamFormValues) => {
     const isValid = await form.trigger();
     if (isValid) {
       handleNext({
