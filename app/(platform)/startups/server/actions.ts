@@ -74,18 +74,32 @@ export async function getStartupWithFounder(startupId: string) {
 export async function getStartups(page: number = 1, limit: number = 10) {
   const offset = (page - 1) * limit
   
-  const results = await db.select()
-    .from(startups)
-    .orderBy(desc(startups.created_at))
-    .limit(limit)
-    .offset(offset)
-
-  const total = await db.select({ count: startups.id })
-    .from(startups)
-    .then(res => res.length)
+  const [results, totalCount] = await Promise.all([
+    db.select({
+      id: startups.id,
+      name: startups.name,
+      location: startups.location,
+      description: startups.description,
+      problem: startups.problem,
+      solution: startups.solution,
+      teamSize: startups.teamSize,
+      patent: startups.patent,
+      funding: startups.funding,
+      founderId: startups.founderId,
+      created_at: startups.created_at,
+    })
+      .from(startups)
+      .orderBy(desc(startups.created_at))
+      .limit(limit)
+      .offset(offset),
+    db.select({ count: startups.id })
+      .from(startups)
+      .then(res => res.length)
+  ])
 
   return {
     startups: results,
-    nextPage: offset + limit < total ? page + 1 : undefined
+    nextPage: offset + limit < totalCount ? page + 1 : undefined,
+    totalCount
   }
 } 
