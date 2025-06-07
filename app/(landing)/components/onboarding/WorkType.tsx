@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
 import { FaBriefcase, FaClock, FaFileContract } from "react-icons/fa";
 import { Profile } from "@/lib/db/schema";
-import { workTypeSchema, type WorkTypeFormValues } from "../../schemas/onboarding";
+import { workTypeSchema, type WorkTypeFormValues } from "@/app/(landing)/validations/onboarding";
 
 const workTypes = [
     {
@@ -32,13 +32,16 @@ interface StepProps {
 }
 
 export default function WorkType({ handleNext, handlePrevious }: StepProps) {
-    const [selectedWorkType, setSelectedWorkType] = useState<Profile['work_type'] | ''>('');
+    const [selectedWorkType, setSelectedWorkType] = useState<WorkTypeFormValues['work_type'] | ''>('');
 
-    const handleSubmit = (value: Profile['work_type']) => {
-      setSelectedWorkType(value);
-      handleNext({
-        work_type: value,
-      });
+    const handleSubmit = (value: WorkTypeFormValues['work_type']) => {
+      const result = workTypeSchema.safeParse({ work_type: value });
+      if (result.success) {
+        setSelectedWorkType(value);
+        handleNext({
+          work_type: value,
+        });
+      }
     };
 
   return (

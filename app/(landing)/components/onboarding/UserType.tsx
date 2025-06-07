@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { FaBriefcase, FaUserCog, FaUserGraduate, FaUserTie} from "react-icons/fa";
 import { Profile } from "@/lib/db/schema";
-import { userTypeSchema, type UserTypeFormValues } from "../../schemas/onboarding";
+import { userTypeSchema, type UserTypeFormValues } from "@/app/(landing)/validations/onboarding";
 
 interface StepProps {
   handleNext: (data: Partial<Profile>) => void;
@@ -33,13 +33,16 @@ const roles = [
 ];
 
 export default function UserType({ handleNext, handlePrevious }: StepProps) {
-  const [selectedUserType, setSelectedUserType] = useState<Profile['user_type'] | ''>('');
+  const [selectedUserType, setSelectedUserType] = useState<UserTypeFormValues['user_type'] | ''>('');
 
-  const handleSubmit = (value: Profile['user_type']) => {
-    setSelectedUserType(value);
-    handleNext({
-      user_type: value,
-    });
+  const handleSubmit = (value: UserTypeFormValues['user_type']) => {
+    const result = userTypeSchema.safeParse({ user_type: value });
+    if (result.success) {
+      setSelectedUserType(value);
+      handleNext({
+        user_type: value,
+      });
+    }
   };
 
   return (

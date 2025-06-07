@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Profile } from "@/lib/db/schema";
-import { locationSchema, type LocationFormValues } from "../../schemas/onboarding";
+import { LocationFormValues, locationSchema } from "../../validations/onboarding";
 
 interface StepProps {
   handleNext: (data: Partial<Profile>) => void;

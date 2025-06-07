@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Profile } from "@/lib/db/schema";
 import { useAuth } from "../../hooks/useAuth";
-import { usernameSchema, type UsernameFormValues } from "../../schemas/onboarding";
+import { UsernameFormValues, usernameSchema } from "../../validations/onboarding";
 
 interface StepProps {
   handleNext: (data: Partial<Profile>) => void;
