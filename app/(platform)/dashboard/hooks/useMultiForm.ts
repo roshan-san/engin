@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Startup } from "@/lib/db/schema";
 
-export const useStartupCreation = () => {
+export function useMultiForm(){
   const [currentStep, setCurrentStep] = useState(1);
   const [startupData, setStartupData] = useState<Partial<Startup>>({});
 

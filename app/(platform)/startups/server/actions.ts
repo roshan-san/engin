@@ -69,4 +69,23 @@ export async function getStartupWithFounder(startupId: string) {
   } catch (error) {
     throw new Error(handleError(error))
   }
+}
+
+export async function getStartups(page: number = 1, limit: number = 10) {
+  const offset = (page - 1) * limit
+  
+  const results = await db.select()
+    .from(startups)
+    .orderBy(desc(startups.created_at))
+    .limit(limit)
+    .offset(offset)
+
+  const total = await db.select({ count: startups.id })
+    .from(startups)
+    .then(res => res.length)
+
+  return {
+    startups: results,
+    nextPage: offset + limit < total ? page + 1 : undefined
+  }
 } 

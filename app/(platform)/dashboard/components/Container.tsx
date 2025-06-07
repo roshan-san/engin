@@ -1,6 +1,5 @@
 "use client";
 import { Progress } from "@/components/ui/progress";
-import { Startup } from "@/lib/db/schema";
 import StartupDescription from "./startup-creation/StartupDescription";
 import StartupFunding from "./startup-creation/StartupFunding";
 import StartupLocation from "./startup-creation/StartupLocation";
@@ -8,7 +7,7 @@ import StartupName from "./startup-creation/StartupName";
 import StartupProblem from "./startup-creation/StartupProblem";
 import StartupSolution from "./startup-creation/StartupSolution";
 import StartupTeam from "./startup-creation/StartupTeam";
-import { useStartupCreation } from "../hooks/useStartupCreation";
+import { useMultiForm } from "../hooks/useMultiForm";
 
 export default function Container() {
   const {
@@ -16,7 +15,7 @@ export default function Container() {
     handleNext,
     handlePrevious,
     progress
-  } = useStartupCreation();
+  } = useMultiForm();
 
   const renderStep = () => {
     switch (currentStep) {
