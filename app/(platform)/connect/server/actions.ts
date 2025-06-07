@@ -4,10 +4,10 @@ import { profiles } from '@/lib/db/schema'
 import { desc, ilike, or } from 'drizzle-orm'
 import { eq } from 'drizzle-orm'
 import { connections } from '@/lib/db/schema'
+import { createClient } from '@/lib/supabase/server'
 
 export async function searchProfiles(searchText: string) {
-  const searchPattern = `%${searchText}%`
-  
+  const searchPattern = `%${searchText}%` 
   const results = await db
     .select()
     .from(profiles)
@@ -25,7 +25,8 @@ export async function searchProfiles(searchText: string) {
 }
 
 export async function getConnectionRequests() {
-  const session = await auth()
+  const supabase = createClient()
+  const { data: { session } } = await supabase.
   if (!session?.user?.id) return []
 
   const requests = await db.query.connections.findMany({

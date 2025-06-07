@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Profile } from '@/lib/db/schema'
 import ProfileCard from './ProfileCard'
-import ConnectionRequestsDrawer from './ConnectionRequestsDrawer'
+import ConnectionRequestsDrawer from './ReqDrawer'
 
 export default function ConnectHero() {
   const [search, setSearch] = useState('')

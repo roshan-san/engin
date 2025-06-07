@@ -27,7 +27,6 @@ export async function signOut() {
     await supabase.auth.signOut()
     redirect('/')
   } catch (error) {
-    
     throw new Error(handleError(error))
   }
 

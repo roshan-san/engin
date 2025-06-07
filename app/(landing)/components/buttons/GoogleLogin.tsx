@@ -1,27 +1,38 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { useTransition } from "react"
+import { useState } from "react"
 import { FcGoogle } from "react-icons/fc"
-import { handleOAuthLogin } from "../../server/actions"
+import { createClient } from "@/lib/supabase/client"
 
 export function GoogleLoginButton() {
-    const [isPending, startTransition] = useTransition()
+    const [isLoading, setIsLoading] = useState(false)
+    const supabase = createClient()
   
     const handleLogin = async () => {
-        startTransition(async () => 
-            await handleOAuthLogin("google")
-        )
+        try {
+            setIsLoading(true)
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/api/auth/callback`
+                }
+            })
+            if (error) throw error
+        } catch (error) {
+            console.error('Error signing in with Google:', error)
+            setIsLoading(false)
+        }
     }
   
     return (
             <Button 
                 onClick={handleLogin}
-                disabled={isPending}
+                disabled={isLoading}
                 className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300"
             >
                 <FcGoogle className="h-5 w-5" />
                 <span className="text-base">
-                    {isPending ? "Signing in..." : "Sign in with Google"}
+                    {isLoading ? "Signing in..." : "Sign in with Google"}
                 </span>
             </Button>
     )
