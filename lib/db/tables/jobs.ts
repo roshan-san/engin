@@ -10,3 +10,6 @@ export const jobs = pgTable("jobs", {
 },(table) => [
   index("jobs_startup_id_idx").on(table.startupId),
 ]); 
+
+export type Job = typeof jobs.$inferSelect
+export type JobInsert = typeof jobs.$inferInsert 

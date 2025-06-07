@@ -11,3 +11,6 @@ export const applications = pgTable("applications", {
   index("applications_job_id_idx").on(table.jobId),
   index("applications_profile_id_idx").on(table.profileId),
 ]); 
+
+export type Application = typeof applications.$inferSelect
+export type ApplicationInsert = typeof applications.$inferInsert 

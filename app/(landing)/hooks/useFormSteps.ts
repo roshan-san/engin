@@ -12,9 +12,9 @@ export const useFormSteps = () => {
     if (currentStep < MAX_STEPS) {
       setCurrentStep((prev) => prev + 1);
     } else {
-      const finalData = { ...formData, ...data };
+      const finalData = { ...formData, ...data } as Profile;
       console.table(finalData);
-      createProfile(finalData as Profile);
+      createProfile(finalData);
     }
   };
 

@@ -12,3 +12,6 @@ export const connections = pgTable("connections", {
   index("connections_sender_id_idx").on(table.senderId),
   index("connections_receiver_id_idx").on(table.receiverId),
 ]); 
+
+export type Connection = typeof connections.$inferSelect
+export type ConnectionInsert = typeof connections.$inferInsert 
