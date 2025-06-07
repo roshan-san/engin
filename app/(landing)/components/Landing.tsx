@@ -1,5 +1,5 @@
-import { GithubLoginButton } from "./buttons/GithubLogin";
-import { GoogleLoginButton } from "./buttons/GoogleLogin";
+import { GithubLoginButton } from "../buttons/GithubLogin";
+import { GoogleLoginButton } from "../buttons/GoogleLogin";
 export default function Landing() {
   return (
       <div className="flex-1 flex-col flex w-full items-center justify-center gap-4 p-4">

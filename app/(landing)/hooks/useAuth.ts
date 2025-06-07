@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { checkProfile } from "../server/actions";
@@ -23,6 +23,21 @@ export function useAuth() {
     enabled: !!user?.email,
   });
 
+  const { mutate: login, isPending: isLoginLoading } = useMutation({
+    mutationFn: async (provider: 'google' | 'github') => {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+      if (error) throw error;
+    }
+  });
+
+  const loginWithGoogle = () => login('google');
+  const loginWithGithub = () => login('github');
+
   const logout = async () => {
     await supabase.auth.signOut();
     queryClient.clear(); // Clear all queries on logout
@@ -35,6 +50,9 @@ export function useAuth() {
     isLoading,
     error,
     isError,
-    logout
+    logout,
+    loginWithGoogle,
+    loginWithGithub,
+    isLoginLoading
   };
 }
