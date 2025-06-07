@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Startup } from "@/lib/db/schema";
 import { FaExclamationTriangle } from "react-icons/fa";
+import { Input } from "@/components/ui/input";
 
 interface StepProps {
   handleNext: (data: Partial<Startup>) => void;
@@ -59,7 +59,7 @@ export default function StartupProblem({ handleNext, handlePrevious }: StepProps
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea 
+                    <Input 
                       placeholder="Describe the problem your startup is solving..." 
                       {...field}
                       className="h-32 text-lg rounded-xl resize-none"

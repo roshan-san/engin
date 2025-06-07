@@ -33,7 +33,7 @@ export default function ReqDrawer() {
           ) : connrequests?.length === 0 ? (
             <p className="text-center text-muted-foreground">No pending connection requests</p>
           ) : (
-            connrequests?.map((request) => (
+            connrequests.map((request) => (
               <ProfileCard key={request.id} profile={request.sender} />
             ))
           )}
