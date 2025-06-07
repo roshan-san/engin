@@ -1,5 +1,4 @@
 import { ModeToggle } from "@/components/themes/theme-toggle";
-import { ReactNode } from "react";
 export default function Header({children}:{children:string}) {
   return (
 <div className="w-full flex items-center justify-between p-4">

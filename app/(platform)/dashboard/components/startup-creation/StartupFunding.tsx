@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/form";
 import { Startup } from "@/lib/db/schema";
 import { FaMoneyBillWave } from "react-icons/fa";
+import { useStartupMutations } from "../../hooks/useStartupMutations";
+import { useMultiForm } from "../../hooks/useMultiForm";
+import { useRouter } from "next/navigation";
 
 interface StepProps {
   handleNext: (data: Partial<Startup>) => void;
@@ -27,6 +30,10 @@ const fundingSchema = z.object({
 type FundingFormValues = z.infer<typeof fundingSchema>;
 
 export default function StartupFunding({ handleNext, handlePrevious }: StepProps) {
+  const { createStartup, isCreating } = useStartupMutations();
+  const { startupData } = useMultiForm();
+  const router = useRouter();
+
   const form = useForm<FundingFormValues>({
     resolver: zodResolver(fundingSchema),
     defaultValues: {
@@ -37,9 +44,15 @@ export default function StartupFunding({ handleNext, handlePrevious }: StepProps
   const handleSubmit = async (data: FundingFormValues) => {
     const isValid = await form.trigger();
     if (isValid) {
-      handleNext({
-        funding: data.funding,
-      });
+      try {
+        await createStartup({
+          ...startupData,
+          funding: data.funding,
+        });
+        router.refresh();
+      } catch (error) {
+        console.error('Failed to create startup:', error);
+      }
     }
   };
 
@@ -75,12 +88,13 @@ export default function StartupFunding({ handleNext, handlePrevious }: StepProps
         </Form>
       </div>
 
-      <div className="w-full p-4 flex justify-between gap-4 mt-4">
+      <div className="flex gap-4 w-full">
         <Button 
           type="button" 
           variant="outline" 
           onClick={handlePrevious}
           className="flex-1 h-12 text-lg font-medium hover:bg-muted/50 transition-colors"
+          disabled={isCreating}
         >
           Previous
         </Button>
@@ -88,8 +102,9 @@ export default function StartupFunding({ handleNext, handlePrevious }: StepProps
           type="submit"
           onClick={form.handleSubmit(handleSubmit)}
           className="flex-1 h-12 text-lg font-medium transition-all hover:scale-[1.02]"
+          disabled={isCreating}
         >
-          Create Startup
+          {isCreating ? 'Creating...' : 'Create Startup'}
         </Button>
       </div>
     </div>

@@ -14,9 +14,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       defaultTheme="dark"
     >
       <TanProvider>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        {children}
       </TanProvider>
     </ThemeProvider>
   )
