@@ -1,16 +1,14 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
 import { FaGithub } from "react-icons/fa"
 import { createClient } from "@/lib/supabase/client"
+import { useMutation } from "@tanstack/react-query"
 
 export function GithubLoginButton() {
-    const [isLoading, setIsLoading] = useState(false)
     const supabase = createClient()
   
-    const handleLogin = async () => {
-        try {
-            setIsLoading(true)
+    const { mutate: login, isPending } = useMutation({
+        mutationFn: async () => {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'github',
                 options: {
@@ -18,21 +16,21 @@ export function GithubLoginButton() {
                 }
             })
             if (error) throw error
-        } catch (error) {
+        },
+        onError: (error) => {
             console.error('Error signing in with GitHub:', error)
-            setIsLoading(false)
         }
-    }
+    })
 
     return (
             <Button 
-                onClick={handleLogin}
-                disabled={isLoading}
+                onClick={() => login()}
+                disabled={isPending}
                 className="bg-[#24292F] hover:bg-[#2C3238] text-white"
             >
                 <FaGithub className="h-5 w-5" />
                 <span className="text-base">
-                    {isLoading ? "Signing in..." : "Sign in with GitHub"}
+                    {isPending ? "Signing in..." : "Sign in with GitHub"}
                 </span>
             </Button>
     )
