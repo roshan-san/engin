@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaTools, FaHeart, FaPlus, FaTimes } from "react-icons/fa";
 import { Profile } from "@/lib/db/schema";
+import { skillsSchema, type SkillsFormValues } from "../../schemas/onboarding";
 
 interface StepProps {
   handleNext: (data: Partial<Profile>) => void;
@@ -40,10 +41,11 @@ export default function Skill({ handleNext, handlePrevious }: StepProps) {
   };
 
   const handleSubmit = () => {
-    handleNext({
+    const formData: SkillsFormValues = {
       skills: skills.map(skill => skill.trim()),
       interests: interests.map(interest => interest.trim())
-    });
+    };
+    handleNext(formData);
   };
 
   return (

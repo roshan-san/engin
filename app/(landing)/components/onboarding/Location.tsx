@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -12,14 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Profile } from "@/lib/db/schema";
-
-const locationSchema = z.object({
-  location: z.string()
-    .min(2, { message: "Location must be at least 2 characters" })
-    .max(100, { message: "Location must be less than 100 characters" })
-});
-
-type LocationFormValues = z.infer<typeof locationSchema>;
+import { locationSchema, type LocationFormValues } from "../../schemas/onboarding";
 
 interface StepProps {
   handleNext: (data: Partial<Profile>) => void;

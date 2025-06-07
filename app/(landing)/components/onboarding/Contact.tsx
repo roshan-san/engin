@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa";
 import { Profile } from "@/lib/db/schema";
+import { contactSchema, type ContactFormValues } from "../../schemas/onboarding";
 
 interface StepProps {
   handleNext: (data: Partial<Profile>) => void;
@@ -12,49 +13,40 @@ interface StepProps {
 }
 
 export default function Contact({ handleNext, handlePrevious }: StepProps) {
-  const [socials, setSocials] = useState<Partial<Profile>>({
+  const [socials, setSocials] = useState<ContactFormValues>({
     github_url: '',
-    linkedin_url: '',
+    linkedin_url: ''
   });
 
   const handleSubmit = () => {
     handleNext(socials);
-    window.location.reload();
-  };
-
-  const handleInputChange = (field: keyof Pick<Profile, 'github_url' | 'linkedin_url'>, value: string) => {
-    setSocials(prev => ({
-      ...prev,
-      [field]: value
-    }));
   };
 
   return (
     <div className="w-full flex justify-center items-center gap-6 flex-col h-full p-4 max-w-2xl mx-auto">
       <div className="flex flex-col gap-6 w-full">
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-lg font-medium text-muted-foreground tracking-wide uppercase flex items-center gap-2">
-              <FaGithub className="text-primary w-5 h-5" />
-              Github Profile
-            </label>
+        <h3 className="text-xl font-semibold text-foreground tracking-wide uppercase">
+          Add your social links
+        </h3>
+        
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <FaGithub className="w-6 h-6 text-foreground/80" />
             <Input 
-              placeholder="https://github.com/username" 
-              value={socials.github_url || ''}
-              onChange={(e) => handleInputChange('github_url', e.target.value)}
+              placeholder="GitHub URL" 
+              value={socials.github_url}
+              onChange={(e) => setSocials(prev => ({ ...prev, github_url: e.target.value }))}
               className="h-14 text-lg rounded-xl"
+              autoFocus
             />
           </div>
-
-          <div className="space-y-2">
-            <label className="text-lg font-medium text-muted-foreground tracking-wide uppercase flex items-center gap-2">
-              <FaLinkedinIn className="text-primary w-5 h-5" />
-              LinkedIn Profile
-            </label>
+          
+          <div className="flex items-center gap-3">
+            <FaLinkedinIn className="w-6 h-6 text-foreground/80" />
             <Input 
-              placeholder="https://www.linkedin.com/in/username/" 
-              value={socials.linkedin_url || ''}
-              onChange={(e) => handleInputChange('linkedin_url', e.target.value)}
+              placeholder="LinkedIn URL" 
+              value={socials.linkedin_url}
+              onChange={(e) => setSocials(prev => ({ ...prev, linkedin_url: e.target.value }))}
               className="h-14 text-lg rounded-xl"
             />
           </div>

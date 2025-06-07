@@ -8,31 +8,29 @@ export function useAuth() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { data, isLoading, error, isError } = useQuery({
+  const { data: user, isLoading, error, isError } = useQuery({
     queryKey: ['user'],
     queryFn: async () => {
       const { data } = await supabase.auth.getUser();
-      return data;
+      return data.user;
     },
     staleTime: Infinity,
   });
 
-  const email = data?.user?.email;
-
   const { data: profile } = useQuery({
-    queryKey: ['profile', email],
-    queryFn: () => checkProfile(email || ''),
-    enabled: !!email,
+    queryKey: ['profile', user?.email],
+    queryFn: () => checkProfile(user?.email ?? ''),
+    enabled: !!user?.email,
   });
 
   const logout = async () => {
     await supabase.auth.signOut();
-    queryClient.invalidateQueries({ queryKey: ['user','profile'] });
+    queryClient.clear(); // Clear all queries on logout
     router.push('/');
   };
 
   return {
-    data,
+    user,
     profile,
     isLoading,
     error,

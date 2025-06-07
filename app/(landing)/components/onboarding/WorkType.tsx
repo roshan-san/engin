@@ -3,6 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
 import { FaBriefcase, FaClock, FaFileContract } from "react-icons/fa";
 import { Profile } from "@/lib/db/schema";
+import { workTypeSchema, type WorkTypeFormValues } from "../../schemas/onboarding";
 
 const workTypes = [
     {
@@ -32,6 +33,14 @@ interface StepProps {
 
 export default function WorkType({ handleNext, handlePrevious }: StepProps) {
     const [selectedWorkType, setSelectedWorkType] = useState<Profile['work_type'] | ''>('');
+
+    const handleSubmit = (value: Profile['work_type']) => {
+      setSelectedWorkType(value);
+      handleNext({
+        work_type: value,
+      });
+    };
+
   return (
     <div className="w-full flex justify-center items-center gap-6 flex-col h-full p-4 max-w-2xl mx-auto">   
     <div className="flex flex-col gap-6 w-full">
@@ -41,12 +50,7 @@ export default function WorkType({ handleNext, handlePrevious }: StepProps) {
         </h3>                 
         <RadioGroup 
           value={selectedWorkType} 
-          onValueChange={(value: Profile['work_type']) => {
-            setSelectedWorkType(value);
-            handleNext({
-              work_type: value,
-            });
-          }}
+          onValueChange={handleSubmit}
           className="grid gap-4 w-full"
           >
           {workTypes.map((type) => {

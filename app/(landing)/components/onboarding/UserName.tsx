@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -14,17 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Profile } from "@/lib/db/schema";
 import { useAuth } from "../../hooks/useAuth";
-
-const usernameSchema = z.object({
-  username: z.string()
-    .min(2, { message: "Username must be at least 2 characters" })
-    .max(30, { message: "Username must be less than 30 characters" })
-    .regex(/^[a-zA-Z0-9_-]+$/, {
-      message: "Username can only contain letters, numbers, underscores, and hyphens"
-    })
-});
-
-type UsernameFormValues = z.infer<typeof usernameSchema>;
+import { usernameSchema, type UsernameFormValues } from "../../schemas/onboarding";
 
 interface StepProps {
   handleNext: (data: Partial<Profile>) => void;
@@ -32,13 +21,13 @@ interface StepProps {
 }
 
 export default function UserName({ handleNext, handlePrevious }: StepProps) {
-  const {data, logout, isError, isLoading} = useAuth()
+  const {user, logout, isError, isLoading} = useAuth()
 
   if (isLoading) {
     return <div>Loading...</div>
   }
 
-  if (isError || !data?.user) {
+  if (isError || !user) {
     return <div>Error loading user data</div>
   }
 
@@ -63,13 +52,13 @@ export default function UserName({ handleNext, handlePrevious }: StepProps) {
       <div className="flex flex-col gap-6 w-full">
         <h3 className="text-xl font-semibold text-foreground tracking-wide uppercase flex items-center gap-3">
           <Avatar className="w-10 h-10">
-            <AvatarImage src={data.user.user_metadata.avatar_url} />
+            <AvatarImage src={user.user_metadata.avatar_url} />
             <AvatarFallback>
-              {data.user.user_metadata.name?.charAt(0)}
+              {user.user_metadata.name?.charAt(0)}
             </AvatarFallback>
           </Avatar>
           <span>
-            hello {data.user.user_metadata.name}
+            hello {user.user_metadata.name}
           </span>
         </h3>
         
