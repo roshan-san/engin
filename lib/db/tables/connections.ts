@@ -7,6 +7,7 @@ export const connections = pgTable("connections", {
   senderId: uuid("sender_id").references(() => profiles.id).notNull(),
   receiverId: uuid("receiver_id").references(() => profiles.id).notNull(),
   status: connectionStatusEnum("status").default("pending").notNull(),
+  
   created_at: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("connections_sender_id_idx").on(table.senderId),

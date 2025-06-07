@@ -3,6 +3,7 @@ import { Profile, profiles } from "@/lib/db/schema"
 import { createClient } from "@/lib/supabase/server"
 import { db } from "@/lib/db/drizzle"
 import { eq } from "drizzle-orm"
+import { safeWrap } from "@/lib/utils/error-handler"
 
 export async function createProfile(data: Profile) {
   const supabase = await createClient()
@@ -23,10 +24,15 @@ export async function createProfile(data: Profile) {
 
 //returns the existence of email in profile table
 export async function checkProfile(email: string): Promise<boolean> {
-  const result = await db.select()
-    .from(profiles)
-    .where(eq(profiles.email, email))
-    .limit(1)
-  
-  return result.length > 0
+  return safeWrap(
+    async () => {
+      const result = await db.select()
+        .from(profiles)
+        .where(eq(profiles.email, email))
+        .limit(1)
+      
+      return result.length > 0
+    },
+    "Failed to check profile"
+  )
 }
