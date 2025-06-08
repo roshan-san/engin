@@ -1,6 +1,6 @@
 "use client"
-import { useProfile } from '@/app/(landing)/register/hooks/useProfile';
 import React from 'react'
+import { useProfile } from './hooks/useProfile';
 
 export default function Page() {
   const { isLoading, profile } = useProfile();

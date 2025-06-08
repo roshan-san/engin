@@ -1,6 +1,6 @@
 "use server"
 import { Profile, profiles } from "@/lib/db/schema"
-import { db } from "@/lib/db/drizzle"
+import { db } from "@/lib/db/"
 import { eq } from "drizzle-orm"
 import { safeWrap } from "@/lib/utils/error-handler"
 

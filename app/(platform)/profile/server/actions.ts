@@ -1,4 +1,6 @@
-import { db } from "@/lib/db/drizzle";
+"use server"
+
+import { db } from "@/lib/db/";
 import { profiles } from "@/lib/db/schema";
 import { safeWrap } from "@/lib/utils/error-handler";
 import { eq } from "drizzle-orm";

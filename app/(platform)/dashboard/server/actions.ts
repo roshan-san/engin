@@ -1,5 +1,5 @@
 "use server"
-import { db } from '@/lib/db/drizzle'
+import { db } from '@/lib/db/'
 import { startups } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { Startup } from '@/lib/db/schema'
