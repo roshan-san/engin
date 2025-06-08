@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { signOut } from "@/app/register/server/actions";
+import { signOut } from "@/app/(landing)/register/server/actions";
 import {
   Tooltip,
   TooltipContent,

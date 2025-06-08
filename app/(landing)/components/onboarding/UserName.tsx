@@ -12,8 +12,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Profile } from "@/lib/db/schema";
-import { useAuth } from "../../../register/hooks/useAuth";
-import { UsernameFormValues, usernameSchema } from "../../../register/validations/onboarding";
+import { useAuth } from "../../register/hooks/useAuth";
+import { UsernameFormValues, usernameSchema } from "../../register/validations/onboarding";
 
 interface StepProps {
   handleNext: (data: Partial<Profile>) => void;

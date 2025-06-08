@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
 import { FaBriefcase, FaClock, FaFileContract } from "react-icons/fa";
 import { Profile } from "@/lib/db/schema";
-import { workTypeSchema, type WorkTypeFormValues } from "@/app/register/validations/onboarding";
+import { workTypeSchema, type WorkTypeFormValues } from "@/app/(landing)/register/validations/onboarding";
 
 const workTypes = [
     {

@@ -1,11 +1,8 @@
 import { createClient } from "@/lib/supabase/client";
-import { checkProfile } from "../server/actions";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 
 export function useAuth() {
   const supabase = createClient();
-  const router = useRouter();
 
   // Get current user
   const { data: userData, isLoading: isLoadingUserData, isError: isUserDataError } = useQuery({
@@ -18,7 +15,7 @@ export function useAuth() {
   });
 
   // Login mutation
-  const { mutate: login, isPending : isLoggingIn, isError: isLoginError } = useMutation({
+  const { mutate: login, isPending: isLoggingIn, isError: isLoginError } = useMutation({
     mutationFn: async (provider: "github" | "google") => {
       await supabase.auth.signInWithOAuth({
         provider,
@@ -29,7 +26,6 @@ export function useAuth() {
     },
     onSuccess: () => {
       console.log("User logged in successfully");
-      router.push("/register");
     },
     onError: (error) => {
       console.error("Login error:", error);
@@ -46,12 +42,15 @@ export function useAuth() {
     },
     onSuccess: () => {
       console.log("User logged out successfully");
-      router.push("/");
-    },
+     },
   });
+
+  // Combined loading state that accounts for both auth operations and navigation
+  const isLoading = isLoadingUserData || isLoggingIn || isLoggingOut;
 
   return {
     userData,
+    isLoading,
     isLoadingUserData,
     login,
     logout,

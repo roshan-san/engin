@@ -1,7 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { FaGithub } from "react-icons/fa"
-import { useAuth } from "../../register/hooks/useAuth"
+import { useAuth } from "../register/hooks/useAuth"
 
 export function GithubLoginButton() {
     const { login, isLoggingIn, isLoginError } = useAuth()
