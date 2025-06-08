@@ -14,5 +14,5 @@ export async function GET(request: NextRequest) {
   }
 
   // Return the user to an error page with some instructions
-  return NextResponse.redirect(`${requestUrl.origin}/auth/auth-code-error`)
+  return NextResponse.redirect(`${requestUrl.origin}/api/auth/auth-code-error`)
 }

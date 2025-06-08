@@ -29,7 +29,7 @@ export function useAuth() {
     },
     onSuccess: () => {
       console.log("User logged in successfully");
-      router.push("/dashboard");
+      router.push("/register");
     },
     onError: (error) => {
       console.error("Login error:", error);
