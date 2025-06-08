@@ -1,7 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
-import { checkUserProfile } from '@/app/(platform)/auth/server/actions'
-
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -34,7 +32,7 @@ export async function updateSession(request: NextRequest) {
 
   // IMPORTANT: DO NOT REMOVE auth.getUser()
 
-  const {data: { user },} = await supabase.auth.getUser()
+  const {data: { user }} = await supabase.auth.getUser()
 
   if (
     !user &&
@@ -45,17 +43,6 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
     return NextResponse.redirect(url)
-  }
-
-  // Check if user has a profile
-  if (user && request.nextUrl.pathname !== '/register' && !request.nextUrl.pathname.startsWith('/api')) {
-    const hasProfile = await checkUserProfile(user.id)
-    if (!hasProfile) {
-      // no profile, redirect to register page
-      const url = request.nextUrl.clone()
-      url.pathname = '/register'
-      return NextResponse.redirect(url)
-    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
