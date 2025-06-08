@@ -22,6 +22,12 @@ interface StepProps {
 
 export default function UserName({ handleNext, handlePrevious }: StepProps) {
   const { userData, logout, isLoadingUserData, isUserDataError } = useAuth()
+  const form = useForm<UsernameFormValues>({
+    resolver: zodResolver(usernameSchema),
+    defaultValues: {
+      username: "",
+    },
+  });
 
   if (isLoadingUserData) {
     return <div>Loading...</div>
@@ -30,13 +36,6 @@ export default function UserName({ handleNext, handlePrevious }: StepProps) {
   if (isUserDataError || !userData) {
     return <div>Error loading user data</div>
   }
-
-  const form = useForm<UsernameFormValues>({
-    resolver: zodResolver(usernameSchema),
-    defaultValues: {
-      username: "",
-    },
-  });
 
   const handleSubmit = async (data: UsernameFormValues) => {
     const isValid = await form.trigger();

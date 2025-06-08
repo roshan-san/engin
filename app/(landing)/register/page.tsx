@@ -12,6 +12,8 @@ export default function Page() {
   const { currentStep, handleNext, handlePrevious } = useFormSteps();
   const renderStep = () => {    
     return (
+      <div className="flex flex-col h-screen">
+
         <div className="flex flex-col flex-1">
           <Progress hidden={currentStep==0} value={(currentStep/6)*100}/>
           {(() => {
@@ -33,6 +35,8 @@ export default function Page() {
             }
           })()}
         </div>
+        </div>
+
     );
   };
 

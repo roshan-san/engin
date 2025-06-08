@@ -1,8 +1,10 @@
 import { createClient } from "@/lib/supabase/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export function useAuth() {
   const supabase = createClient();
+  const router = useRouter();
 
   // Get current user
   const { data: userData, isLoading: isLoadingUserData, isError: isUserDataError } = useQuery({
@@ -26,6 +28,7 @@ export function useAuth() {
     },
     onSuccess: () => {
       console.log("User logged in successfully");
+      router.push("/dashboard")  
     },
     onError: (error) => {
       console.error("Login error:", error);
@@ -41,6 +44,7 @@ export function useAuth() {
       console.error("Logout error:", error);
     },
     onSuccess: () => {
+      router.push("/")
       console.log("User logged out successfully");
      },
   });
