@@ -1,12 +1,12 @@
 "use client"
 import { Progress } from "@/components/ui/progress";
-import { useFormSteps } from "../hooks/useFormSteps";
-import UserName from "./onboarding/UserName";
-import Role from "./onboarding/UserType";
-import Skill from "./onboarding/Skiill";
-import Contact from "./onboarding/Contact";
-import WorkType from "./onboarding/WorkType";
-import Location from "./onboarding/Location";
+import { useFormSteps } from "./hooks/useFormSteps";
+import UserName from "../register/onboarding/UserName";
+import Role from "../register/onboarding/UserType";
+import Skill from "../register/onboarding/Skiill";
+import Contact from "../register/onboarding/Contact";
+import WorkType from "../register/onboarding/WorkType";
+import Location from "../register/onboarding/Location";
 
 export default function Container() {
   const { currentStep, handleNext, handlePrevious } = useFormSteps();

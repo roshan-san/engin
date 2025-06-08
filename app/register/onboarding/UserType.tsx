@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { FaBriefcase, FaUserCog, FaUserGraduate, FaUserTie} from "react-icons/fa";
 import { Profile } from "@/lib/db/schema";
-import { userTypeSchema, type UserTypeFormValues } from "@/app/(landing)/validations/onboarding";
+import { userTypeSchema, type UserTypeFormValues } from "@/app/register/validations/onboarding";
 
 interface StepProps {
   handleNext: (data: Partial<Profile>) => void;

@@ -1,11 +1,10 @@
 "use client";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa";
 import { Profile } from "@/lib/db/schema";
-import { ContactFormValues } from "../../validations/onboarding";
+import { ContactFormValues } from "../validations/onboarding";
 
 interface StepProps {
   handleNext: (data: Partial<Profile>) => void;

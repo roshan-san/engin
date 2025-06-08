@@ -1,7 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -12,37 +11,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Profile } from "@/lib/db/schema";
-import { useAuth } from "../../../register/hooks/useAuth";
-import { UsernameFormValues, usernameSchema } from "../../../register/validations/onboarding";
+import { LocationFormValues, locationSchema } from "../validations/onboarding";
 
 interface StepProps {
   handleNext: (data: Partial<Profile>) => void;
   handlePrevious: () => void;
 }
 
-export default function UserName({ handleNext, handlePrevious }: StepProps) {
-  const { userData, logout, isLoadingUserData, isUserDataError } = useAuth()
-
-  if (isLoadingUserData) {
-    return <div>Loading...</div>
-  }
-
-  if (isUserDataError || !userData) {
-    return <div>Error loading user data</div>
-  }
-
-  const form = useForm<UsernameFormValues>({
-    resolver: zodResolver(usernameSchema),
+export default function Location({ handleNext, handlePrevious }: StepProps) {
+  const form = useForm<LocationFormValues>({
+    resolver: zodResolver(locationSchema),
     defaultValues: {
-      username: "",
+      location: "",
     },
   });
 
-  const handleSubmit = async (data: UsernameFormValues) => {
+  const handleSubmit = async (data: LocationFormValues) => {
     const isValid = await form.trigger();
     if (isValid) {
       handleNext({
-        username: data.username,
+        location: data.location,
       });
     }
   };
@@ -50,30 +38,23 @@ export default function UserName({ handleNext, handlePrevious }: StepProps) {
   return (
     <div className="w-full flex justify-center items-center gap-6 flex-col h-full p-4 max-w-2xl mx-auto">
       <div className="flex flex-col gap-6 w-full">
-        <h3 className="text-xl font-semibold text-foreground tracking-wide uppercase flex items-center gap-3">
-          <Avatar className="w-10 h-10">
-            <AvatarImage src={userData.user.user_metadata.avatar_url} />
-            <AvatarFallback>
-              {userData.user.user_metadata.name?.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          <span>
-            hello {userData.user.user_metadata.name}
-          </span>
+        <h3 className="text-xl font-semibold text-foreground tracking-wide uppercase">
+          Where are you located?
         </h3>
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="username"
+              name="location"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input 
-                      placeholder="Choose Your Username" 
+                      placeholder="Enter your location" 
                       {...field}
                       className="h-14 text-lg rounded-xl"
+                      autoFocus
                     />
                   </FormControl>
                   <FormMessage />
@@ -88,13 +69,10 @@ export default function UserName({ handleNext, handlePrevious }: StepProps) {
         <Button 
           type="button" 
           variant="outline" 
-          onClick={() => {
-            logout()
-            handlePrevious();
-          }}
+          onClick={handlePrevious}
           className="flex-1 h-12 text-lg font-medium hover:bg-muted/50 transition-colors"
         >
-          Sign Out 
+          Previous
         </Button>
         <Button 
           type="submit"
@@ -106,4 +84,4 @@ export default function UserName({ handleNext, handlePrevious }: StepProps) {
       </div>
     </div>
   );
-}
+} 
