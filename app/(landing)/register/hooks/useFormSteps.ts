@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Profile } from "@/lib/db/schema";
+import { Profile} from "@/lib/db/schema";
 import { createProfile } from "../server/actions";
 const MAX_STEPS = 6;
 
@@ -23,6 +23,7 @@ export const useFormSteps = () => {
       setCurrentStep((prev) => prev - 1);
     }
   };
+  
 
   return {
     currentStep,
