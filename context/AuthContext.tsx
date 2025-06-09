@@ -2,15 +2,16 @@
 import Spinner from "@/components/spinner";
 import { createClient } from "@/lib/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useEffect } from "react";
 import React from "react";
 
 interface AuthContextType {
-  userObj: User | undefined;
+  user: User | null;
   login: (provider: "github" | "google") => void;
   logout: () => void;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,62 +19,68 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
     const supabase = createClient();
     const router = useRouter();
+    const queryClient = useQueryClient();
     
-    // Get current user
-    const { data: userObj, isLoading: isLoadingUser, isError: isErrorUser} = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) throw error;
-      return data.user;
-    },
+    const { 
+      data: user = null,
+      isLoading,
+    } = useQuery({
+      queryKey: ["user"],
+      queryFn: async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return null;
+        return session.user;
+      }
     });
 
-    // Login mutation
-    const { mutate: login, isPending: isLoggingIn } = useMutation({
-    mutationFn: async (provider: "github" | "google") => {
-      await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/api/auth/callback`,
-        },
+    useEffect(() => {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN') {
+          queryClient.setQueryData(["user"], session?.user ?? null);
+          router.refresh();
+        } else if (event === 'SIGNED_OUT') {
+          queryClient.setQueryData(["user"], null);
+          queryClient.clear();
+          router.push('/');
+        }
       });
-    }
+
+      return () => subscription.unsubscribe();
+    }, [supabase, router, queryClient]);
+
+    const { mutate: login } = useMutation({
+      mutationFn: async (provider: "github" | "google") => {
+        await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: `${window.location.origin}/api/auth/callback`,
+          },
+        });
+      }
     });
 
-    // Logout mutation
-    const { mutate: logout, isPending: isLoggingOut } = useMutation({
-    mutationFn: async () => {
-      await supabase.auth.signOut();
-    }
+    const { mutate: logout } = useMutation({
+      mutationFn: async () => {
+        await supabase.auth.signOut();
+        queryClient.clear();
+        router.push('/');
+      }
     });
 
-    // Show loading spinner during any loading state
-    if (isLoadingUser || isLoggingIn || isLoggingOut) {
+    if (isLoading) {
       return <Spinner/>;
     }
-    
-    // Show Error during user error
-    if (isErrorUser){
-    return(
-        <div>
-            error pa
-        </div>
-    )
-    }
 
-  const value = {
-    userObj,
-    login,
-    logout
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+      <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+        {children}
+      </AuthContext.Provider>
+    );
 }
 
 export function useAuthContext() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;

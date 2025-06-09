@@ -12,7 +12,7 @@ export function GoogleLoginButton() {
         >
             <FcGoogle className="h-5 w-5" />
             <span className="text-base">
-                "Sign in with Google"
+                Sign in with Google
             </span>
         </Button>
     )

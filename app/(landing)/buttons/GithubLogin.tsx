@@ -11,7 +11,7 @@ export function GithubLoginButton() {
         >
             <FaGithub className="h-5 w-5" />
             <span className="text-base">
-                 "Sign in with GitHub"
+                Sign in with GitHub
             </span>
         </Button>
     )
