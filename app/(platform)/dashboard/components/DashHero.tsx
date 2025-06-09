@@ -3,7 +3,7 @@ import React from 'react'
 import StartupCard from './StartupCard'
 import CreateBtn from './buttons/CreateBtn'
 import { useMyStartups } from '../hooks/useMyStartups'
-import { useAuthContext } from '@/app/context/AuthContext'
+import { useAuthContext } from '@/context/AuthContext'
 
 export default function DashHero() {
     const { userObj }= useAuthContext()
