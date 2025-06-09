@@ -1,7 +1,6 @@
-'use client'
-
 import { ThemeProvider } from "@/components/themes/theme-provider"
 import TanProvider from "@/lib/tanstack/TanProvider"
+import { AuthProvider } from "@/app/context/AuthContext"
 
 export default function Providers({ children }: { children: React.ReactNode }) {
 
@@ -11,7 +10,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       defaultTheme="dark"
     >
       <TanProvider>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </TanProvider>
     </ThemeProvider>
   )
