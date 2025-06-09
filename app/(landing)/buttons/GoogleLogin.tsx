@@ -1,15 +1,13 @@
 "use client"
 import { Button } from "@/components/ui/button"
+import { useAuthContext } from "@/context/AuthContext"
 import { FcGoogle } from "react-icons/fc"
-import { useAuth } from "../register/hooks/useAuth"
-
 export function GoogleLoginButton() {
-    const { login, isLoggingIn,isLoginError } = useAuth()
+    const { login } = useAuthContext()
   
     return (
         <Button 
             onClick={()=>login("google")}
-            disabled={isLoggingIn}
             className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 "
         >
             <FcGoogle className="h-5 w-5" />
